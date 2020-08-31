@@ -72,7 +72,7 @@
 }
 
 /* first column with the categories */
-.yahtzee .scores tr td:nth-child(1), .yahtzee .scores tr th:nth-child(1) {
+.yahtzee .scores td:nth-child(1), .yahtzee .scores th:nth-child(1) {
     font-weight: bold;
     border-right-width: 2px;
     width: 10em;
@@ -90,6 +90,15 @@
 }
 
 /* current player highlight (bob) */
-.yahtzee .scores tr th:nth-child(3), .yahtzee .scores tr td:nth-child(3) {
+.yahtzee .scores th:nth-child(3), .yahtzee .scores td:nth-child(3) {
     background-color: #f0faff;
+}
+
+.yahtzee .scores .suggestion {
+    color: #aaa;
+    font-style: italic;
+}
+
+.yahtzee .scores td.selected {
+    background-color: #b3e5ff;
 }
