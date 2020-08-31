@@ -22,7 +22,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid black;
+    border: 2px double black;
     height: 1.5cm;
     width: 1.5cm;
     font-size: 1.5em;
@@ -50,6 +50,10 @@
 
 .yahtzee .dice.face-6::before {
     content: "6";
+}
+
+.yahtzee .dice.locked {
+    border: 2px solid black;
 }
 
 .yahtzee .controller {
