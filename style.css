@@ -1,3 +1,37 @@
-p {
-    color: red
+.yahtzee .dices {
+    display: grid;
+    grid-gap: 1em;
+    grid-template-columns: repeat(5, 1.5cm);
+    grid-template-rows: 1.5cm;
+}
+
+.yahtzee .dice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+}
+
+.yahtzee .dice.face-1::before {
+    content: "1";
+}
+
+.yahtzee .dice.face-2::before {
+    content: "2";
+}
+
+.yahtzee .dice.face-3::before {
+    content: "3";
+}
+
+.yahtzee .dice.face-4::before {
+    content: "4";
+}
+
+.yahtzee .dice.face-5::before {
+    content: "5";
+}
+
+.yahtzee .dice.face-6::before {
+    content: "6";
 }
