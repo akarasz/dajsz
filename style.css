@@ -62,6 +62,7 @@
 .yahtzee .scores th, .yahtzee .scores td {
     padding: .4em;
     border: 1px solid black;
+    text-align: center;
 }
 
 /* first row with the names */
@@ -83,7 +84,12 @@
 }
 
 /* separator above Total */
-.yahtzee .scores tr:nth-child(15) td {
-    border-bottom-width: 2px;
+.yahtzee .scores tr:last-child td {
+    border-top-width: 2px;
+    font-weight: bold;
 }
 
+/* current player highlight (bob) */
+.yahtzee .scores tr th:nth-child(3), .yahtzee .scores tr td:nth-child(3) {
+    background-color: #f0faff;
+}
