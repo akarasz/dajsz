@@ -35,3 +35,39 @@
 .yahtzee .dice.face-6::before {
     content: "6";
 }
+
+.yahtzee .scores table {
+    border-collapse: collapse;
+    border: 2px solid black;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.yahtzee .scores th, .yahtzee .scores td {
+    padding: .4em;
+    border: 1px solid black;
+}
+
+/* first row with the names */
+.yahtzee .scores tr:nth-child(1) th {
+    font-weight: bold;
+    border-bottom-width: 2px;
+}
+
+/* first column with the categories */
+.yahtzee .scores tr td:nth-child(1), .yahtzee .scores tr th:nth-child(1) {
+    font-weight: bold;
+    border-right-width: 2px;
+    width: 10em;
+}
+
+/* separator between upper and lower sections */
+.yahtzee .scores tr:nth-child(8) td {
+    border-bottom-width: 2px;
+}
+
+/* separator above Total */
+.yahtzee .scores tr:nth-child(15) td {
+    border-bottom-width: 2px;
+}
+
