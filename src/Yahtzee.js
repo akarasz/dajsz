@@ -72,98 +72,102 @@ function Scores(props) {
         <tr>
           <th/>
           {props.players.map((p, i) => {
-              return <th>{p.Name}</th>
+            return <th>{p.Name}</th>
           })}
         </tr>
         <tr>
           <td>Aces</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["ones"]}</td>
+            return <td>{p.ScoreSheet["ones"]}</td>
           })}
         </tr>
         <tr>
           <td>Twos</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["twos"]}</td>
+            return <td>{p.ScoreSheet["twos"]}</td>
           })}
         </tr>
         <tr>
           <td>Threes</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["threes"]}</td>
+            return <td>{p.ScoreSheet["threes"]}</td>
           })}
         </tr>
         <tr>
           <td>Fours</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["fours"]}</td>
+            return <td>{p.ScoreSheet["fours"]}</td>
           })}
         </tr>
         <tr>
           <td>Fives</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["fives"]}</td>
+            return <td>{p.ScoreSheet["fives"]}</td>
           })}
         </tr>
         <tr>
           <td>Sixes</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["sixes"]}</td>
+            return <td>{p.ScoreSheet["sixes"]}</td>
           })}
         </tr>
         <tr>
           <td>Bonus</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["bonus"]}</td>
+            return <td>{p.ScoreSheet["bonus"]}</td>
           })}
         </tr>
         <tr>
           <td>Three of a kind</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["three-of-a-kind"]}</td>
+            return <td>{p.ScoreSheet["three-of-a-kind"]}</td>
           })}
         </tr>
         <tr>
           <td>Four of a kind</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["four-of-a-kind"]}</td>
+            return <td>{p.ScoreSheet["four-of-a-kind"]}</td>
           })}
         </tr>
         <tr>
           <td>Full House</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["full-house"]}</td>
+            return <td>{p.ScoreSheet["full-house"]}</td>
           })}
         </tr>
         <tr>
           <td>Small Straight</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["small-straight"]}</td>
+            return <td>{p.ScoreSheet["small-straight"]}</td>
           })}
         </tr>
         <tr>
           <td>Large Straight</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["large-straight"]}</td>
+            return <td>{p.ScoreSheet["large-straight"]}</td>
           })}
         </tr>
         <tr>
           <td>Yahtzee</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["yahtzee"]}</td>
+            return <td>{p.ScoreSheet["yahtzee"]}</td>
           })}
         </tr>
         <tr>
           <td>Chance</td>
           {props.players.map((p, i) => {
-              return <td>{p.ScoreSheet["chance"]}</td>
+            return <td>{p.ScoreSheet["chance"]}</td>
           })}
         </tr>
         <tr>
           <td>Total</td>
-          <td>17</td>
-          <td>25</td>
-          <td>20</td>
+          {props.players.map((p, i) => {
+            let total = 0
+            Object.keys(p.ScoreSheet).map(function(c, ci) {
+              total += p.ScoreSheet[c]
+            })
+            return <td>{total}</td>
+          })}
         </tr>
       </table>
     </div>
