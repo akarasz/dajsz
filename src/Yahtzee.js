@@ -1,12 +1,28 @@
 import React from 'react';
 import './Yahtzee.css';
 
+const suggestions = {  // will come from backend
+  "chance": 20,
+  "fives": 15,
+  "four-of-a-kind": 0,
+  "fours": 0,
+  "full-house": 0,
+  "large-straight": 0,
+  "ones": 0,
+  "sixes": 0,
+  "small-straight": 0,
+  "three-of-a-kind": 15,
+  "threes": 3,
+  "twos": 2,
+  "yahtzee": 0
+}
+
 function Yahtzee(props) {
   return (
     <div className="yahtzee">
       <Dices dices={props.Dices} />
       <Controller rollCount={props.RollCount} />
-      <Scores players={props.Players} currentPlayer={props.Current} />
+      <Scores players={props.Players} suggestions={suggestions} currentPlayer={props.Current} />
     </div>
   );
 }
@@ -85,9 +101,20 @@ function ScoreLine(props) {
   return <tr>
       <td>{props.title}</td>
       {props.players.map((p, i) => {
-        return <td className={parseInt(props.currentPlayer) === i ? 'current-player' : ''}>
-         {p.ScoreSheet[props.category]}
-        </td>
+        const currentPlayer = parseInt(props.currentPlayer) === i
+        const hasScore = props.category in p.ScoreSheet
+
+        let className = ''
+        if (currentPlayer) {
+            className += ' current-player'
+        }
+        if (!hasScore) {
+            className += ' suggestion'
+        }
+
+        return <td className={className}>
+           {currentPlayer && !hasScore ? props.suggestions[props.category] : p.ScoreSheet[props.category]}
+          </td>
       })}
     </tr>
 }
