@@ -1,55 +1,12 @@
 import React from 'react';
 import './Yahtzee.css';
 
-function Yahtzee() {
-  const dices = [
-  {
-    "Value":3,
-    "Locked":false
-  },
-  {
-    "Value":5,
-    "Locked":true
-  },
-  {
-    "Value":2,
-    "Locked":false
-  },
-  {
-    "Value":5,
-    "Locked":true
-  },
-  {
-    "Value":5,
-    "Locked":true
-  }]
-
-  const players = [
-  {
-    "Name": "Alice",
-    "ScoreSheet": {
-      "ones": 5,
-      "threes": 12
-    }
-  },
-  {
-    "Name": "Bob",
-    "ScoreSheet": {
-      "full-house": 25
-    }
-  },
-  {
-    "Name": "Carol",
-    "ScoreSheet": {
-      "fives": 20
-    }
-  }]
-
+function Yahtzee(props) {
   return (
     <div className="yahtzee">
-      <Dices dices={dices} />
-      <Controller rollCount="2" />
-      <Scores players={players} currentPlayer="1" />
+      <Dices dices={props.Dices} />
+      <Controller rollCount={props.RollCount} />
+      <Scores players={props.Players} currentPlayer={props.Current} />
     </div>
   );
 }

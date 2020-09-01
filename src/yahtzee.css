@@ -105,8 +105,7 @@
     font-weight: bold;
 }
 
-/* current player highlight (bob) */
-.yahtzee .scores .current-player {
+.yahtzee .scores td.current-player {
     background-color: #f0faff;
 }
 
