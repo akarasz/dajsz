@@ -2,6 +2,28 @@ import React from 'react';
 import './Yahtzee.css';
 
 function Yahtzee() {
+  const dices = [
+  {
+    "Value":3,
+    "Locked":false
+  },
+  {
+    "Value":5,
+    "Locked":true
+  },
+  {
+    "Value":2,
+    "Locked":false
+  },
+  {
+    "Value":5,
+    "Locked":true
+  },
+  {
+    "Value":5,
+    "Locked":true
+  }]
+
   const players = [
   {
     "Name": "Alice",
@@ -25,21 +47,19 @@ function Yahtzee() {
 
   return (
     <div className="yahtzee">
-      <Dices />
-      <Controller />
+      <Dices dices={dices} />
+      <Controller rollCount="2" />
       <Scores players={players} currentPlayer="1" />
     </div>
   );
 }
 
-function Dices() {
+function Dices(props) {
   return (
     <div className="dices">
-      <Dice index="0" value="3" />
-      <Dice index="1" value="5" locked />
-      <Dice index="2" value="2" />
-      <Dice index="3" value="5" locked />
-      <Dice index="4" value="5" locked />
+      {props.dices.map((d, i) => {
+        return <Dice index={i} value={d.Value} locked={d.Locked} />
+      })}
     </div>
   );
 }
@@ -56,10 +76,10 @@ function Dice(props) {
   );
 }
 
-function Controller() {
+function Controller(props) {
   return (
     <div className="controller">
-      <div className="roll counter">2 rolls out of 3</div>
+      <div className="roll counter">{props.rollCount} rolls out of 3</div>
       <div className="roll button">Roll</div>
     </div>
   );
