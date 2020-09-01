@@ -106,7 +106,7 @@
 }
 
 /* current player highlight (bob) */
-.yahtzee .scores th:nth-child(3), .yahtzee .scores td:nth-child(3) {
+.yahtzee .scores .current-player {
     background-color: #f0faff;
 }
 
