@@ -27,7 +27,7 @@ function Yahtzee() {
     <div className="yahtzee">
       <Dices />
       <Controller />
-      <Scores players={players} />
+      <Scores players={players} currentPlayer="1" />
     </div>
   );
 }
@@ -75,103 +75,39 @@ function Scores(props) {
             return <th>{p.Name}</th>
           })}
         </tr>
-        <tr>
-          <td>Aces</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["ones"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Twos</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["twos"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Threes</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["threes"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Fours</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["fours"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Fives</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["fives"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Sixes</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["sixes"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Bonus</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["bonus"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Three of a kind</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["three-of-a-kind"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Four of a kind</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["four-of-a-kind"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Full House</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["full-house"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Small Straight</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["small-straight"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Large Straight</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["large-straight"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Yahtzee</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["yahtzee"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Chance</td>
-          {props.players.map((p, i) => {
-            return <td>{p.ScoreSheet["chance"]}</td>
-          })}
-        </tr>
-        <tr>
-          <td>Total</td>
-          {props.players.map((p, i) => {
+        <ScoreLine {...props} title="Aces" func={(p) => p.ScoreSheet["ones"]} />
+        <ScoreLine {...props} title="Twos" func={(p) => p.ScoreSheet["twos"]} />
+        <ScoreLine {...props} title="Threes" func={(p) => p.ScoreSheet["threes"]} />
+        <ScoreLine {...props} title="Fours" func={(p) => p.ScoreSheet["fours"]} />
+        <ScoreLine {...props} title="Fives" func={(p) => p.ScoreSheet["fives"]} />
+        <ScoreLine {...props} title="Sixes" func={(p) => p.ScoreSheet["sixes"]} />
+        <ScoreLine {...props} title="Bonus" func={(p) => p.ScoreSheet["bonus"]} />
+        <ScoreLine {...props} title="Three of a kind" func={(p) => p.ScoreSheet["three-of-a-kind"]} />
+        <ScoreLine {...props} title="Four of a kind" func={(p) => p.ScoreSheet["four-of-a-kind"]} />
+        <ScoreLine {...props} title="Full House" func={(p) => p.ScoreSheet["full-house"]} />
+        <ScoreLine {...props} title="Small Straight" func={(p) => p.ScoreSheet["small-straight"]} />
+        <ScoreLine {...props} title="Large Straight" func={(p) => p.ScoreSheet["large-straight"]} />
+        <ScoreLine {...props} title="Yahtzee" func={(p) => p.ScoreSheet["yahtzee"]} />
+        <ScoreLine {...props} title="Chance" func={(p) => p.ScoreSheet["chance"]} />
+        <ScoreLine {...props} title="Total" func={(p) => {
             let total = 0
             Object.keys(p.ScoreSheet).map(function(c, ci) {
               total += p.ScoreSheet[c]
             })
-            return <td>{total}</td>
-          })}
-        </tr>
+            return total
+        }} />
       </table>
     </div>
   );
+}
+
+function ScoreLine(props) {
+  return <tr>
+    <td>{props.title}</td>
+    {props.players.map((p, i) => {
+      return <td>{props.func(p)}</td>
+    })}
+    </tr>
 }
 
 export default Yahtzee;
