@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import './yahtzee.css';
 import Yahtzee from './Yahtzee';
 
 ReactDOM.render(
