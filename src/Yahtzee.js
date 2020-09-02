@@ -21,7 +21,10 @@ class Yahtzee extends React.Component {
   constructor(props) {
     super(props)
     this.handleNameChange = this.handleNameChange.bind(this)
-    this.state = {player: props.player}
+    this.state = {
+      player: props.player,
+      isLoaded: false
+    }
   }
 
   handleNameChange(newName) {
@@ -29,26 +32,52 @@ class Yahtzee extends React.Component {
   }
 
   render() {
-    const myTurn = this.props.Players[this.props.Current].Name === this.state.player
+    if (!this.state.isLoaded) {
+      return <p>Loading game <strong>{this.props.game}</strong>...</p>
+    }
+
+    const myTurn = this.state.Players[this.state.CurrentPlayer].Name === this.state.player
 
     return <div className="yahtzee">
-        <Dices
-          dices={this.props.Dices}
-          active={myTurn} />
-        <Controller
-          rollCount={this.props.RollCount}
-          active={myTurn} />
-        <Scores
-          players={this.props.Players}
-          suggestions={suggestions}
-          currentPlayer={this.props.Current}
-          active={myTurn} />
         <Player
           name={this.state.player}
           onNameChange={this.handleNameChange} />
+        <Dices
+          dices={this.state.Dices}
+          active={myTurn} />
+        <Controller
+          rollCount={this.state.RollCount}
+          active={myTurn} />
+        <Scores
+          players={this.state.Players}
+          suggestions={suggestions}
+          currentPlayer={this.state.Current}
+          active={myTurn} />
       </div>
   }
-}
+
+  componentDidMount() {
+    const headers = new Headers()
+    headers.append('Authorization', 'Basic ' + btoa(this.state.player + ':'))
+    fetch("https://enigmatic-everglades-66668.herokuapp.com/" + this.props.game, {
+      headers: headers,
+    })
+    .then(res => res.json())
+    .then(
+      (result) => {
+        this.setState({
+          ...result,
+          isLoaded: true
+        });
+      },
+      (error) => {
+        this.setState({
+          isLoaded: false,
+          error
+        });
+      }
+    )}
+  }
 
 function Dices(props) {
   return (
