@@ -17,15 +17,25 @@ const suggestions = {  // will come from backend
   "yahtzee": 0
 }
 
-function Yahtzee(props) {
-  return (
-    <div className="yahtzee">
-      <Dices dices={props.Dices} />
-      <Controller rollCount={props.RollCount} />
-      <Scores players={props.Players} suggestions={suggestions} currentPlayer={props.Current} />
-      <Player name={props.player} />
-    </div>
-  );
+class Yahtzee extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleNameChange = this.handleNameChange.bind(this)
+    this.state = {player: props.player}
+  }
+
+  handleNameChange(newName) {
+    this.setState({player: newName})
+  }
+
+  render() {
+    return <div className="yahtzee">
+        <Dices dices={this.props.Dices} />
+        <Controller rollCount={this.props.RollCount} player={this.state.player} />
+        <Scores players={this.props.Players} suggestions={suggestions} currentPlayer={this.props.Current} />
+        <Player name={this.state.player} onNameChange={this.handleNameChange} />
+      </div>
+  }
 }
 
 function Dices(props) {
@@ -166,22 +176,18 @@ class Player extends React.Component {
   constructor(props) {
     super(props)
     this.handleClick = this.handleClick.bind(this)
-    this.state = {name: props.name};
   }
 
   handleClick() {
-    console.log("clicked name")
-
     let newName = prompt("Please enter your name:", this.props.name);
-    this.setState({name: newName})
+    this.props.onNameChange(newName)
   }
 
   render() {
     return <div className="player">
-        You play as <em className="actionable" onClick={this.handleClick}>{this.state.name}</em>.
+        You play as <em className="actionable" onClick={this.handleClick}>{this.props.name}</em>.
       </div>
   }
 }
-
 
 export default Yahtzee;
