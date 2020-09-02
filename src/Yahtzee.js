@@ -72,36 +72,40 @@ function Scores(props) {
   return (
     <div className="scores">
       <table>
-        <tr>
-          <th/>
-          {props.players.map((p, i) => {
-            return <th>{p.Name}</th>
-          })}
-        </tr>
-        <ScoreLine {...props} title="Aces" category="ones" />
-        <ScoreLine {...props} title="Twos" category="twos" />
-        <ScoreLine {...props} title="Threes" category="threes" />
-        <ScoreLine {...props} title="Fours" category="fours" />
-        <ScoreLine {...props} title="Fives" category="fives" />
-        <ScoreLine {...props} title="Sixes" category="sixes" />
-        <ScoreLine {...props} title="Bonus" category="bonus" />
-        <ScoreLine {...props} title="Three of a kind" category="three-of-a-kind" />
-        <ScoreLine {...props} title="Four of a kind" category="four-of-a-kind" />
-        <ScoreLine {...props} title="Full House" category="full-house" />
-        <ScoreLine {...props} title="Small Straight" category="small-straight" />
-        <ScoreLine {...props} title="Large Straight" category="large-straight" />
-        <ScoreLine {...props} title="Yahtzee" category="yahtzee" />
-        <ScoreLine {...props} title="Chance" category="chance" />
-        <tr>
-          <td>Total</td>
-          {props.players.map((p, i) => {
-            let total = 0
-            Object.keys(p.ScoreSheet).map(function(c, ci) {
-              total += p.ScoreSheet[c]
-            })
-            return <td>{total}</td>
-          })}
-        </tr>
+        <thead>
+          <tr>
+            <th/>
+            {props.players.map((p, i) => {
+              return <th>{p.Name}</th>
+            })}
+          </tr>
+        </thead>
+        <tbody>
+          <ScoreLine {...props} title="Aces" category="ones" />
+          <ScoreLine {...props} title="Twos" category="twos" />
+          <ScoreLine {...props} title="Threes" category="threes" />
+          <ScoreLine {...props} title="Fours" category="fours" />
+          <ScoreLine {...props} title="Fives" category="fives" />
+          <ScoreLine {...props} title="Sixes" category="sixes" />
+          <ScoreLine {...props} title="Bonus" category="bonus" />
+          <ScoreLine {...props} title="Three of a kind" category="three-of-a-kind" />
+          <ScoreLine {...props} title="Four of a kind" category="four-of-a-kind" />
+          <ScoreLine {...props} title="Full House" category="full-house" />
+          <ScoreLine {...props} title="Small Straight" category="small-straight" />
+          <ScoreLine {...props} title="Large Straight" category="large-straight" />
+          <ScoreLine {...props} title="Yahtzee" category="yahtzee" />
+          <ScoreLine {...props} title="Chance" category="chance" />
+          <tr>
+            <td>Total</td>
+            {props.players.map((p, i) => {
+              let total = 0
+              Object.keys(p.ScoreSheet).map(function(c, ci) {
+                total += p.ScoreSheet[c]
+              })
+              return <td>{total}</td>
+            })}
+          </tr>
+        </tbody>
       </table>
     </div>
   );
