@@ -31,7 +31,7 @@ function Dices(props) {
   return (
     <div className="dices">
       {props.dices.map((d, i) => {
-        return <Dice index={i} value={d.Value} locked={d.Locked} />
+        return <Dice key={i} value={d.Value} locked={d.Locked} />
       })}
     </div>
   );
@@ -76,7 +76,7 @@ function Scores(props) {
           <tr>
             <th/>
             {props.players.map((p, i) => {
-              return <th>{p.Name}</th>
+              return <th key={i}>{p.Name}</th>
             })}
           </tr>
         </thead>
@@ -99,10 +99,8 @@ function Scores(props) {
             <td>Total</td>
             {props.players.map((p, i) => {
               let total = 0
-              Object.keys(p.ScoreSheet).map(function(c, ci) {
-                total += p.ScoreSheet[c]
-              })
-              return <td>{total}</td>
+              Object.entries(p.ScoreSheet).forEach(([c, v]) => total += v)
+              return <td key={i}>{total}</td>
             })}
           </tr>
         </tbody>
@@ -126,7 +124,7 @@ function ScoreLine(props) {
             className += ' suggestion'
         }
 
-        return <td className={className}>
+        return <td className={className} key={i}>
            {currentPlayer && !hasScore ? props.suggestions[props.category] : p.ScoreSheet[props.category]}
           </td>
       })}
