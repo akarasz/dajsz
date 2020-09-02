@@ -66,6 +66,7 @@
     border-radius: .5em;
     text-transform: uppercase;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .yahtzee .scores table {
@@ -116,4 +117,8 @@
 
 .yahtzee .scores td.selected {
     background-color: #b3e5ff;
+}
+
+.yahtzee .actionable {
+    cursor: pointer;
 }

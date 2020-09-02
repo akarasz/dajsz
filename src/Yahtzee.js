@@ -31,22 +31,30 @@ function Dices(props) {
   return (
     <div className="dices">
       {props.dices.map((d, i) => {
-        return <Dice key={i} value={d.Value} locked={d.Locked} />
+        return <Dice index={i} key={i} value={d.Value} locked={d.Locked} />
       })}
     </div>
   );
 }
 
-function Dice(props) {
-  let id = "dice-" + props.index
-  let className = "dice face-" + props.value
-  if (props.locked) {
-    className += " locked"
+class Dice extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
   }
 
-  return (
-    <div id={id} className={className} />
-  );
+  handleClick() {
+    console.log("clicked dice", this.props.index)
+  }
+
+  render() {
+    let className = "actionable dice face-" + this.props.value
+    if (this.props.locked) {
+      className += " locked"
+    }
+
+    return <div className={className} onClick={this.handleClick} />
+  }
 }
 
 function Controller(props) {
@@ -109,26 +117,48 @@ function Scores(props) {
   );
 }
 
-function ScoreLine(props) {
-  return <tr>
-      <td>{props.title}</td>
-      {props.players.map((p, i) => {
-        const currentPlayer = parseInt(props.currentPlayer) === i
-        const hasScore = props.category in p.ScoreSheet
+class ScoreLine extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick() {
+    if (this.props.category === 'bonus') {
+      return
+    }
+
+    console.log("clicked score", this.props.category)
+  }
+
+  render() {
+    return <tr>
+      <td>{this.props.title}</td>
+      {this.props.players.map((p, i) => {
+        const currentPlayer = parseInt(this.props.currentPlayer) === i
+        const hasScore = this.props.category in p.ScoreSheet
 
         let className = ''
         if (currentPlayer) {
-            className += ' current-player'
+          className += ' current-player'
+
+          if (this.props.category !== 'bonus') {
+            className += ' actionable'
+          }
+
         }
         if (!hasScore) {
-            className += ' suggestion'
+          className += ' suggestion'
         }
 
-        return <td className={className} key={i}>
-           {currentPlayer && !hasScore ? props.suggestions[props.category] : p.ScoreSheet[props.category]}
+        return <td className={className} key={i} onClick={currentPlayer ? this.handleClick : undefined}>
+           {currentPlayer && !hasScore ?
+             this.props.suggestions[this.props.category] :
+             p.ScoreSheet[this.props.category]}
           </td>
       })}
     </tr>
+  }
 }
 
 export default Yahtzee;
