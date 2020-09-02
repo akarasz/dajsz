@@ -162,6 +162,26 @@ class ScoreLine extends React.Component {
   }
 }
 
-const Player = props => (<div className="player">You play as <em>{props.name}</em>.</div>)
+class Player extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+    this.state = {name: props.name};
+  }
+
+  handleClick() {
+    console.log("clicked name")
+
+    let newName = prompt("Please enter your name:", this.props.name);
+    this.setState({name: newName})
+  }
+
+  render() {
+    return <div className="player">
+        You play as <em className="actionable" onClick={this.handleClick}>{this.state.name}</em>.
+      </div>
+  }
+}
+
 
 export default Yahtzee;
