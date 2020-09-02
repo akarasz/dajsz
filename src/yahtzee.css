@@ -96,7 +96,7 @@
 }
 
 /* separator between upper and lower sections */
-.yahtzee .scores tr:nth-child(8) td {
+.yahtzee .scores tr:nth-child(7) td {
     border-bottom-width: 2px;
 }
 
