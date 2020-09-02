@@ -58,8 +58,14 @@ function Controller(props) {
   );
 }
 
-function RollButton() {
-    return <div className="roll button">Roll</div>
+class RollButton extends React.Component {
+  handleClick() {
+    console.log("clicked roll")
+  }
+
+  render() {
+    return <div className="roll button" onClick={this.handleClick}>Roll</div>
+  }
 }
 
 function Scores(props) {
