@@ -53,9 +53,13 @@ function Controller(props) {
   return (
     <div className="controller">
       <div className="roll counter">{props.rollCount} rolls out of 3</div>
-      <div className="roll button">Roll</div>
+      <RollButton />
     </div>
   );
+}
+
+function RollButton() {
+    return <div className="roll button">Roll</div>
 }
 
 function Scores(props) {
