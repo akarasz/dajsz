@@ -69,6 +69,10 @@
     cursor: pointer;
 }
 
+.yahtzee .controller .roll.button.disabled {
+    cursor: not-allowed;
+}
+
 .yahtzee .scores table {
     border-collapse: collapse;
     border: 2px solid black;

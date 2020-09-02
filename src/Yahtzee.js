@@ -29,11 +29,23 @@ class Yahtzee extends React.Component {
   }
 
   render() {
+    const myTurn = this.props.Players[this.props.Current].Name === this.state.player
+
     return <div className="yahtzee">
-        <Dices dices={this.props.Dices} />
-        <Controller rollCount={this.props.RollCount} player={this.state.player} />
-        <Scores players={this.props.Players} suggestions={suggestions} currentPlayer={this.props.Current} />
-        <Player name={this.state.player} onNameChange={this.handleNameChange} />
+        <Dices
+          dices={this.props.Dices}
+          active={myTurn} />
+        <Controller
+          rollCount={this.props.RollCount}
+          active={myTurn} />
+        <Scores
+          players={this.props.Players}
+          suggestions={suggestions}
+          currentPlayer={this.props.Current}
+          active={myTurn} />
+        <Player
+          name={this.state.player}
+          onNameChange={this.handleNameChange} />
       </div>
   }
 }
@@ -42,7 +54,7 @@ function Dices(props) {
   return (
     <div className="dices">
       {props.dices.map((d, i) => {
-        return <Dice index={i} key={i} value={d.Value} locked={d.Locked} />
+        return <Dice index={i} key={i} value={d.Value} locked={d.Locked} active={props.active}/>
       })}
     </div>
   );
@@ -59,12 +71,15 @@ class Dice extends React.Component {
   }
 
   render() {
-    let className = "actionable dice face-" + this.props.value
+    let className = "dice face-" + this.props.value
     if (this.props.locked) {
       className += " locked"
     }
+    if (this.props.active) {
+      className += " actionable"
+    }
 
-    return <div className={className} onClick={this.handleClick} />
+    return <div className={className} onClick={this.props.active ? this.handleClick : undefined} />
   }
 }
 
@@ -72,7 +87,7 @@ function Controller(props) {
   return (
     <div className="controller">
       <div className="roll counter">{props.rollCount} rolls out of 3</div>
-      <RollButton />
+      <RollButton active={props.active} />
     </div>
   );
 }
@@ -83,7 +98,12 @@ class RollButton extends React.Component {
   }
 
   render() {
-    return <div className="roll button" onClick={this.handleClick}>Roll</div>
+    let className = "roll button"
+    if (!this.props.active) {
+      className += " disabled"
+    }
+
+    return <div className={className} onClick={this.props.active ? this.handleClick : undefined}>Roll</div>
   }
 }
 
@@ -153,7 +173,7 @@ class ScoreLine extends React.Component {
         if (currentPlayer) {
           className += ' current-player'
 
-          if (this.props.category !== 'bonus') {
+          if (this.props.category !== 'bonus' && this.props.active) {
             className += ' actionable'
           }
 
@@ -162,7 +182,7 @@ class ScoreLine extends React.Component {
           className += ' suggestion'
         }
 
-        return <td className={className} key={i} onClick={currentPlayer ? this.handleClick : undefined}>
+        return <td className={className} key={i} onClick={this.props.active ? this.handleClick : undefined}>
            {currentPlayer && !hasScore ?
              this.props.suggestions[this.props.category] :
              p.ScoreSheet[this.props.category]}
