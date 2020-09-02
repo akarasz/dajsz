@@ -51,7 +51,7 @@ const apiResponse = {
 
 ReactDOM.render(
   <React.StrictMode>
-    <Yahtzee {...apiResponse} />
+    <Yahtzee {...apiResponse} player="Bob" />
   </React.StrictMode>,
   document.getElementById('root')
 );

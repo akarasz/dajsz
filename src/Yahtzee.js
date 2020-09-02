@@ -23,6 +23,7 @@ function Yahtzee(props) {
       <Dices dices={props.Dices} />
       <Controller rollCount={props.RollCount} />
       <Scores players={props.Players} suggestions={suggestions} currentPlayer={props.Current} />
+      <Player name={props.player} />
     </div>
   );
 }
@@ -160,5 +161,7 @@ class ScoreLine extends React.Component {
     </tr>
   }
 }
+
+const Player = props => (<div className="player">You play as <em>{props.name}</em>.</div>)
 
 export default Yahtzee;

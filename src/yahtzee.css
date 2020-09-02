@@ -119,6 +119,10 @@
     background-color: #b3e5ff;
 }
 
+.yahtzee .player {
+    text-align: right;
+}
+
 .yahtzee .actionable {
     cursor: pointer;
 }
