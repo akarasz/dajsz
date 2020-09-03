@@ -51,8 +51,14 @@ class Player extends React.Component {
       "<Player>")
 
     return (
-      <div className="player">
-        You play as <em className="actionable" onClick={this.handleClick}>{name}</em>.
+      <div className="menu">
+        <div className="actions">
+          <div className="actionable"><em>New Game</em></div>
+        </div>
+
+        <div className="player" onClick={this.handleClick}>
+          You play as <em className="actionable">{name}</em>.
+        </div>
       </div>
     )
   }
