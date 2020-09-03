@@ -1,0 +1,7 @@
+.player {
+    text-align: right;
+}
+
+.actionable {
+    cursor: pointer;
+}

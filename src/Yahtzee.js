@@ -20,28 +20,20 @@ const suggestions = {  // will come from backend
 class Yahtzee extends React.Component {
   constructor(props) {
     super(props)
-    this.handleNameChange = this.handleNameChange.bind(this)
     this.state = {
-      player: props.player,
       isLoaded: false
     }
   }
 
-  handleNameChange(newName) {
-    this.setState({player: newName})
-  }
-
   render() {
     if (!this.state.isLoaded) {
-      return <p>Loading game <strong>{this.props.game}</strong>...</p>
+      return <p>Loading game <strong>{this.props.game}</strong>... {this.state.error}</p>
     }
 
-    const myTurn = this.state.Players[this.state.CurrentPlayer].Name === this.state.player
+    const myTurn = this.state.Players.length > 0 && this.state.Players[this.state.CurrentPlayer].Name === this.state.player
 
-    return <div className="yahtzee">
-        <Player
-          name={this.state.player}
-          onNameChange={this.handleNameChange} />
+    return (
+      <div className="yahtzee">
         <Dices
           dices={this.state.Dices}
           active={myTurn} />
@@ -54,6 +46,7 @@ class Yahtzee extends React.Component {
           currentPlayer={this.state.Current}
           active={myTurn} />
       </div>
+    )
   }
 
   componentDidMount() {
@@ -62,19 +55,31 @@ class Yahtzee extends React.Component {
     fetch("https://enigmatic-everglades-66668.herokuapp.com/" + this.props.game, {
       headers: headers,
     })
-    .then(res => res.json())
     .then(
-      (result) => {
-        this.setState({
-          ...result,
-          isLoaded: true
-        });
+      (res) => {
+        if (res.status === 200) {
+          this.setState({
+            ...res.json(),
+            isLoaded: true,
+          })
+        } else if (res.status === 404) {
+          this.setState({
+            isLoaded: false,
+            error: "not found",
+          })
+        } else {
+          this.setState({
+            isLoaded: false,
+            error: "error",
+          })
+        }
       },
       (error) => {
         this.setState({
           isLoaded: false,
-          error
-        });
+          error: "error",
+        })
+        console.log(error)
       }
     )}
   }
@@ -218,24 +223,6 @@ class ScoreLine extends React.Component {
           </td>
       })}
     </tr>
-  }
-}
-
-class Player extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick() {
-    let newName = prompt("Please enter your name:", this.props.name);
-    this.props.onNameChange(newName)
-  }
-
-  render() {
-    return <div className="player">
-        You play as <em className="actionable" onClick={this.handleClick}>{this.props.name}</em>.
-      </div>
   }
 }
 

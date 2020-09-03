@@ -74,7 +74,7 @@
 }
 
 .yahtzee .scores table {
-    border-collapse: collapse;
+    :x
     border: 2px solid black;
     table-layout: fixed;
     width: 100%;
@@ -121,12 +121,4 @@
 
 .yahtzee .scores td.selected {
     background-color: #b3e5ff;
-}
-
-.yahtzee .player {
-    text-align: right;
-}
-
-.yahtzee .actionable {
-    cursor: pointer;
 }
