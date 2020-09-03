@@ -33,7 +33,7 @@ class Yahtzee extends React.Component {
     const myTurn = this.state.Players.length > 0 && this.state.Players[this.state.CurrentPlayer].Name === this.state.player
 
     return (
-      <div className="yahtzee">
+      <div id={this.props.game} className="yahtzee">
         <Dices
           dices={this.state.Dices}
           active={myTurn} />
@@ -49,7 +49,11 @@ class Yahtzee extends React.Component {
     )
   }
 
-  componentDidMount() {
+  componentDidUpdate(prevProps) {
+    if (prevProps.game === this.props.game) {
+      return
+    }
+
     const headers = new Headers()
     headers.append('Authorization', 'Basic ' + btoa(this.state.player + ':'))
     fetch("https://enigmatic-everglades-66668.herokuapp.com/" + this.props.game, {
@@ -58,9 +62,11 @@ class Yahtzee extends React.Component {
     .then(
       (res) => {
         if (res.status === 200) {
-          this.setState({
-            ...res.json(),
-            isLoaded: true,
+          res.json().then((body) => {
+            this.setState({
+              ...body,
+              isLoaded: true,
+            })
           })
         } else if (res.status === 404) {
           this.setState({

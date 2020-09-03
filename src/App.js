@@ -6,8 +6,9 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.handleNameChange = this.handleNameChange.bind(this)
+    this.handleGameChange = this.handleGameChange.bind(this)
 
-    const game = window.location.hash.substring(1)
+    const game = window.location.hash.substring(2)
     this.state = {game: (game !== "" ? game : null)}
   }
 
@@ -15,14 +16,20 @@ class App extends React.Component {
     this.setState({player: newName})
   }
 
+  handleGameChange(newGame) {
+    this.setState({game: newGame})
+  }
+
   render() {
     return (
       <div>
         <Player
           name={this.state.player}
-          onNameChange={this.handleNameChange} />
+          onNameChange={this.handleNameChange}
+          onNewGame={this.handleGameChange}
+      />
         { this.state.game != null ?
-          <Yahtzee player={this.state.player} game={window.location.hash.substring(1)} /> :
+          <Yahtzee player={this.state.player} game={this.state.game} /> :
           undefined }
       </div>
     )
@@ -32,10 +39,11 @@ class App extends React.Component {
 class Player extends React.Component {
   constructor(props) {
     super(props)
-    this.handleClick = this.handleClick.bind(this)
+    this.handleClickOnName = this.handleClickOnName.bind(this)
+    this.handleClickOnNewGame = this.handleClickOnNewGame.bind(this)
   }
 
-  handleClick() {
+  handleClickOnName() {
     let newName = ""
 
     newName = prompt("Please enter your name:", this.props.name);
@@ -43,6 +51,46 @@ class Player extends React.Component {
     if (newName != null) {
       this.props.onNameChange(newName)
     }
+  }
+
+  handleClickOnNewGame() {
+    const headers = new Headers()
+    headers.append('Authorization', 'Basic ' + btoa(this.props.name + ':'))
+    fetch("https://enigmatic-everglades-66668.herokuapp.com/", {
+      method: "POST",
+      headers: headers,
+    })
+    .then(
+      (res) => {
+        if (res.status === 201) {
+          const game = res.headers.get("location")
+          window.location.hash = game
+
+          fetch("https://enigmatic-everglades-66668.herokuapp.com" + game + "/join", {
+            method: "POST",
+            headers: headers,
+          })
+          .then(
+            (res) => {
+              if (res.status === 201) {
+                this.props.onNewGame(game)
+              } else {
+                console.log("omg2", res)
+              }
+            },
+            (error) => {
+              console.log("omg2 error", error)
+            }
+          )
+
+        } else {
+          console.log("omg", res)
+        }
+      },
+      (error) => {
+        console.log("omg error", error)
+      }
+    )
   }
 
   render() {
@@ -53,10 +101,10 @@ class Player extends React.Component {
     return (
       <div className="menu">
         <div className="actions">
-          <div className="actionable"><em>New Game</em></div>
+          <div className="actionable" onClick={this.handleClickOnNewGame}><em>New Game</em></div>
         </div>
 
-        <div className="player" onClick={this.handleClick}>
+        <div className="player" onClick={this.handleClickOnName}>
           You play as <em className="actionable">{name}</em>.
         </div>
       </div>
@@ -65,7 +113,7 @@ class Player extends React.Component {
 
   componentDidMount() {
     if (this.props.name == null) {
-      this.handleClick()
+      this.handleClickOnName()
     }
   }
 }
