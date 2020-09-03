@@ -8,11 +8,15 @@ class App extends React.Component {
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleGameChange = this.handleGameChange.bind(this)
 
-    const game = window.location.hash.substring(2)
-    this.state = {game: (game !== "" ? game : null)}
+    const gameFromHash = window.location.hash.substring(2)
+    this.state = {
+      game: (gameFromHash !== "" ? gameFromHash : null),
+      player: window.localStorage.getItem("name"),
+    }
   }
 
   handleNameChange(newName) {
+    window.localStorage.setItem("name", newName)
     this.setState({player: newName})
   }
 
