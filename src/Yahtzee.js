@@ -21,12 +21,14 @@ class Yahtzee extends React.Component {
   constructor(props) {
     super(props)
     this.loadGame = this.loadGame.bind(this)
+    this.handleRoll = this.handleRoll.bind(this)
     this.state = {
       isLoaded: false
     }
   }
 
   render() {
+    console.log("update")
     if (!this.state.isLoaded) {
       return <p>Loading game <strong>{this.props.game}</strong>... {this.state.error}</p>
     }
@@ -40,7 +42,8 @@ class Yahtzee extends React.Component {
           active={myTurn} />
         <Controller
           rollCount={this.state.RollCount}
-          active={myTurn} />
+          active={myTurn}
+          onRoll={this.handleRoll} />
         <Scores
           players={this.state.Players}
           suggestions={suggestions}
@@ -96,6 +99,31 @@ class Yahtzee extends React.Component {
       }
     )
   }
+
+  handleRoll() {
+    const headers = new Headers()
+    headers.append('Authorization', 'Basic ' + btoa(this.props.player + ':'))
+    fetch("https://enigmatic-everglades-66668.herokuapp.com/" + this.props.game + "/roll", {
+      method: "POST",
+      headers: headers,
+    })
+    .then(
+      (res) => {
+        if (res.status === 200) {
+          res.json().then((body) => {
+            console.log(body)
+            this.setState({...body})
+          })
+        } else {
+          console.log(res)
+        }
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
+
 }
 
 function Dices(props) {
@@ -135,23 +163,19 @@ function Controller(props) {
   return (
     <div className="controller">
       <div className="roll counter">{props.rollCount} rolls out of 3</div>
-      <RollButton active={props.active} />
+      <RollButton {...props} />
     </div>
   );
 }
 
 class RollButton extends React.Component {
-  handleClick() {
-    console.log("clicked roll")
-  }
-
   render() {
     let className = "roll button"
     if (!this.props.active) {
       className += " disabled"
     }
 
-    return <div className={className} onClick={this.props.active ? this.handleClick : undefined}>Roll</div>
+    return <div className={className} onClick={this.props.active ? this.props.onRoll : undefined}>Roll</div>
   }
 }
 
