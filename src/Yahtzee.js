@@ -20,6 +20,7 @@ const suggestions = {  // will come from backend
 class Yahtzee extends React.Component {
   constructor(props) {
     super(props)
+    this.loadGame = this.loadGame.bind(this)
     this.state = {
       isLoaded: false
     }
@@ -49,11 +50,17 @@ class Yahtzee extends React.Component {
     )
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.game === this.props.game) {
-      return
-    }
+  componentDidMount() {
+    this.loadGame()
+  }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.game !== this.props.game) {
+      this.loadGame()
+    }
+  }
+
+  loadGame() {
     const headers = new Headers()
     headers.append('Authorization', 'Basic ' + btoa(this.state.player + ':'))
     fetch("https://enigmatic-everglades-66668.herokuapp.com/" + this.props.game, {
@@ -87,8 +94,9 @@ class Yahtzee extends React.Component {
         })
         console.log(error)
       }
-    )}
+    )
   }
+}
 
 function Dices(props) {
   return (
