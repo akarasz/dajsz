@@ -31,7 +31,7 @@ class Yahtzee extends React.Component {
       return <p>Loading game <strong>{this.props.game}</strong>... {this.state.error}</p>
     }
 
-    const myTurn = this.state.Players.length > 0 && this.state.Players[this.state.CurrentPlayer].Name === this.state.player
+    const myTurn = this.state.Players.length > 0 && this.state.Players[this.state.CurrentPlayer].Name === this.props.player
 
     return (
       <div id={this.props.game} className="yahtzee">
