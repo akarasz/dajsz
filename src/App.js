@@ -60,7 +60,7 @@ class Player extends React.Component {
   handleClickOnNewGame() {
     const headers = new Headers()
     headers.append('Authorization', 'Basic ' + btoa(this.props.name + ':'))
-    fetch("http://akarasz.me:8000/", {
+    fetch("http://yahtzee.akarasz.me/", {
       method: "POST",
       headers: headers,
     })
@@ -70,7 +70,7 @@ class Player extends React.Component {
           const game = res.headers.get("location")
           window.location.hash = game
 
-          fetch("http://akarasz.me:8000" + game + "/join", {
+          fetch("http://yahtzee.akarasz.me" + game + "/join", {
             method: "POST",
             headers: headers,
           })

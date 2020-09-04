@@ -56,7 +56,7 @@ class Yahtzee extends React.Component {
 
     if (gameNotStartedYet && !alreadyJoined) {
       if (window.confirm("Game hasn't started yet! Do you want to join?")) {
-        fetch("http://akarasz.me:8000/" + this.props.game + "/join", {
+        fetch("http://yahtzee.akarasz.me/" + this.props.game + "/join", {
           method: "POST",
           headers: new Headers({
             "Authorization": "Basic " + btoa(this.props.player + ':'),
@@ -91,7 +91,7 @@ class Yahtzee extends React.Component {
   loadGame() {
     const headers = new Headers()
     headers.append('Authorization', 'Basic ' + btoa(this.state.player + ':'))
-    fetch("http://akarasz.me:8000/" + this.props.game, {
+    fetch("http://yahtzee.akarasz.me/" + this.props.game, {
       headers: headers,
     })
     .then(
@@ -130,7 +130,7 @@ class Yahtzee extends React.Component {
   handleRoll() {
     const headers = new Headers()
     headers.append('Authorization', 'Basic ' + btoa(this.props.player + ':'))
-    fetch("http://akarasz.me:8000/" + this.props.game + "/roll", {
+    fetch("http://yahtzee.akarasz.me/" + this.props.game + "/roll", {
       method: "POST",
       headers: headers,
     })
@@ -160,7 +160,7 @@ class Yahtzee extends React.Component {
     }
 
     const params = dices.map(d => "dice=" + d.Value).join("&")
-    fetch("http://akarasz.me:8000/score?" + params, {
+    fetch("http://yahtzee.akarasz.me/score?" + params, {
       method: "GET",
       headers: new Headers({
         "Authorization": "Basic " + btoa(this.props.player + ":"),
@@ -187,7 +187,7 @@ class Yahtzee extends React.Component {
   handleScore(category) {
     const headers = new Headers()
     headers.append('Authorization', 'Basic ' + btoa(this.props.player + ':'))
-    fetch("http://akarasz.me:8000/" + this.props.game + "/score", {
+    fetch("http://yahtzee.akarasz.me/" + this.props.game + "/score", {
       method: "POST",
       headers: headers,
       body: category,
@@ -212,7 +212,7 @@ class Yahtzee extends React.Component {
   handleLock(idx) {
     const headers = new Headers()
     headers.append('Authorization', 'Basic ' + btoa(this.props.player + ':'))
-    fetch("http://akarasz.me:8000/" + this.props.game + "/lock/" + idx, {
+    fetch("http://yahtzee.akarasz.me/" + this.props.game + "/lock/" + idx, {
       method: "POST",
       headers: headers,
     })
