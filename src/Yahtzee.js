@@ -15,7 +15,6 @@ class Yahtzee extends React.Component {
   }
 
   render() {
-    console.log("update")
     if (!this.state.isLoaded) {
       return <p>Loading game <strong>{this.props.game}</strong>... {this.state.error}</p>
     }
@@ -26,17 +25,18 @@ class Yahtzee extends React.Component {
       <div id={this.props.game} className="yahtzee">
         <Dices
           dices={this.state.Dices}
-          active={myTurn}
+          active={myTurn && this.state.RollCount > 0 && this.state.RollCount < 3}
           onLock={this.handleLock} />
         <Controller
           rollCount={this.state.RollCount}
-          active={myTurn}
+          active={myTurn && this.state.RollCount < 3 && this.state.Round < 13}
           onRoll={this.handleRoll} />
         <Scores
           players={this.state.Players}
           suggestions={this.state.suggestions || {}}
           currentPlayer={this.state.CurrentPlayer}
-          active={myTurn}
+          round={this.state.Round}
+          active={myTurn && this.state.RollCount > 0}
           onScore={this.handleScore} />
       </div>
     )
@@ -317,7 +317,7 @@ class ScoreLine extends React.Component {
     return <tr>
       <td>{this.props.title}</td>
       {this.props.players.map((p, i) => {
-        const currentPlayer = parseInt(this.props.currentPlayer) === i
+        const currentPlayer = parseInt(this.props.currentPlayer) === i && this.props.round < 13
         const hasScore = this.props.category in p.ScoreSheet
 
         let className = ''
