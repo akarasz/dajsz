@@ -7,6 +7,7 @@ class Yahtzee extends React.Component {
     this.loadGame = this.loadGame.bind(this)
     this.handleRoll = this.handleRoll.bind(this)
     this.handleLock = this.handleLock.bind(this)
+    this.handleScore = this.handleScore.bind(this)
     this.handleSuggestionRefresh = this.handleSuggestionRefresh.bind(this)
     this.state = {
       isLoaded: false
@@ -35,7 +36,8 @@ class Yahtzee extends React.Component {
           players={this.state.Players}
           suggestions={this.state.suggestions || {}}
           currentPlayer={this.state.CurrentPlayer}
-          active={myTurn} />
+          active={myTurn}
+          onScore={this.handleScore} />
       </div>
     )
   }
@@ -64,6 +66,7 @@ class Yahtzee extends React.Component {
               ...body,
               isLoaded: true,
             })
+            this.handleSuggestionRefresh(body.Dices)
           })
         } else if (res.status === 404) {
           this.setState({
@@ -114,6 +117,11 @@ class Yahtzee extends React.Component {
   }
 
   handleSuggestionRefresh(dices) {
+    if (this.state.RollCount === 0) {
+      this.setState({suggestions: {}})
+      return
+    }
+
     const params = dices.map(d => "dice=" + d.Value).join("&")
     fetch("https://enigmatic-everglades-66668.herokuapp.com/score?" + params, {
       method: "GET",
@@ -137,7 +145,32 @@ class Yahtzee extends React.Component {
         console.log(error)
       }
     )
-    }
+  }
+
+  handleScore(category) {
+    const headers = new Headers()
+    headers.append('Authorization', 'Basic ' + btoa(this.props.player + ':'))
+    fetch("https://enigmatic-everglades-66668.herokuapp.com/" + this.props.game + "/score", {
+      method: "POST",
+      headers: headers,
+      body: category,
+    })
+    .then(
+      (res) => {
+        if (res.status === 200) {
+          res.json().then((body) => {
+            this.setState({...body})
+            this.handleSuggestionRefresh(body.Dices)
+          })
+        } else {
+          console.log(res)
+        }
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
 
   handleLock(idx) {
     const headers = new Headers()
@@ -277,7 +310,7 @@ class ScoreLine extends React.Component {
       return
     }
 
-    console.log("clicked score", this.props.category)
+    this.props.onScore(this.props.category)
   }
 
   render() {
