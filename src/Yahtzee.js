@@ -5,6 +5,7 @@ class Yahtzee extends React.Component {
   constructor(props) {
     super(props)
     this.loadGame = this.loadGame.bind(this)
+    this.offerJoin = this.offerJoin.bind(this)
     this.handleRoll = this.handleRoll.bind(this)
     this.handleLock = this.handleLock.bind(this)
     this.handleScore = this.handleScore.bind(this)
@@ -46,6 +47,41 @@ class Yahtzee extends React.Component {
     this.loadGame()
   }
 
+  offerJoin() {
+    const gameNotStartedYet =
+      this.state.RollCount === 0 &&
+      this.state.CurrentPlayer === 0 &&
+      this.state.Round === 0
+    const alreadyJoined = this.state.Players.map((p) => p.Name).includes(this.props.player)
+
+    if (gameNotStartedYet && !alreadyJoined) {
+      if (window.confirm("Game hasn't started yet! Do you want to join?")) {
+        fetch("http://akarasz.me:8000/" + this.props.game + "/join", {
+          method: "POST",
+          headers: new Headers({
+            "Authorization": "Basic " + btoa(this.props.player + ':'),
+          }),
+        })
+        .then(
+          (res) => {
+            if (res.status === 201) {
+              res.json().then((body) => {
+                this.setState({
+                  Players: body,
+                })
+              })
+            } else {
+              console.log("omg", res)
+            }
+          },
+          (error) => {
+            console.log("omg error", error)
+          }
+        )
+      }
+    }
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.game !== this.props.game) {
       this.loadGame()
@@ -67,6 +103,7 @@ class Yahtzee extends React.Component {
               isLoaded: true,
             })
             this.handleSuggestionRefresh(body.Dices)
+            this.offerJoin()
           })
         } else if (res.status === 404) {
           this.setState({
