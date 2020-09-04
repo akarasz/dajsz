@@ -1,27 +1,13 @@
 import React from 'react';
 import './Yahtzee.css';
 
-const suggestions = {  // will come from backend
-  "chance": 20,
-  "fives": 15,
-  "four-of-a-kind": 0,
-  "fours": 0,
-  "full-house": 0,
-  "large-straight": 0,
-  "ones": 0,
-  "sixes": 0,
-  "small-straight": 0,
-  "three-of-a-kind": 15,
-  "threes": 3,
-  "twos": 2,
-  "yahtzee": 0
-}
-
 class Yahtzee extends React.Component {
   constructor(props) {
     super(props)
     this.loadGame = this.loadGame.bind(this)
     this.handleRoll = this.handleRoll.bind(this)
+    this.handleLock = this.handleLock.bind(this)
+    this.handleSuggestionRefresh = this.handleSuggestionRefresh.bind(this)
     this.state = {
       isLoaded: false
     }
@@ -39,15 +25,16 @@ class Yahtzee extends React.Component {
       <div id={this.props.game} className="yahtzee">
         <Dices
           dices={this.state.Dices}
-          active={myTurn} />
+          active={myTurn}
+          onLock={this.handleLock} />
         <Controller
           rollCount={this.state.RollCount}
           active={myTurn}
           onRoll={this.handleRoll} />
         <Scores
           players={this.state.Players}
-          suggestions={suggestions}
-          currentPlayer={this.state.Current}
+          suggestions={this.state.suggestions || {}}
+          currentPlayer={this.state.CurrentPlayer}
           active={myTurn} />
       </div>
     )
@@ -113,6 +100,8 @@ class Yahtzee extends React.Component {
           res.json().then((body) => {
             console.log(body)
             this.setState({...body})
+
+            this.handleSuggestionRefresh(body.Dices)
           })
         } else {
           console.log(res)
@@ -124,13 +113,70 @@ class Yahtzee extends React.Component {
     )
   }
 
+  handleSuggestionRefresh(dices) {
+    const params = dices.map(d => "dice=" + d.Value).join("&")
+    fetch("https://enigmatic-everglades-66668.herokuapp.com/score?" + params, {
+      method: "GET",
+      headers: new Headers({
+        "Authorization": "Basic " + btoa(this.props.player + ":"),
+      }),
+    })
+    .then(
+      (res) => {
+        if (res.status === 200) {
+          res.json().then((body) => {
+            this.setState({
+              suggestions: body
+            })
+          })
+        } else {
+          console.log(res)
+        }
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+    }
+
+  handleLock(idx) {
+    const headers = new Headers()
+    headers.append('Authorization', 'Basic ' + btoa(this.props.player + ':'))
+    fetch("https://enigmatic-everglades-66668.herokuapp.com/" + this.props.game + "/lock/" + idx, {
+      method: "POST",
+      headers: headers,
+    })
+    .then(
+      (res) => {
+        if (res.status === 200) {
+          res.json().then((body) => {
+            console.log(body)
+            this.setState({
+              Dices: body,
+            })
+          })
+        } else {
+          console.log(res)
+        }
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
 }
 
 function Dices(props) {
   return (
     <div className="dices">
       {props.dices.map((d, i) => {
-        return <Dice index={i} key={i} value={d.Value} locked={d.Locked} active={props.active}/>
+        return <Dice
+          index={i}
+          key={i}
+          value={d.Value}
+          locked={d.Locked}
+          active={props.active}
+          onLock={props.onLock} />
       })}
     </div>
   );
@@ -143,7 +189,9 @@ class Dice extends React.Component {
   }
 
   handleClick() {
-    console.log("clicked dice", this.props.index)
+    if (this.props.active) {
+      this.props.onLock(this.props.index)
+    }
   }
 
   render() {
@@ -155,18 +203,16 @@ class Dice extends React.Component {
       className += " actionable"
     }
 
-    return <div className={className} onClick={this.props.active ? this.handleClick : undefined} />
+    return <div className={className} onClick={this.handleClick} />
   }
 }
 
-function Controller(props) {
-  return (
-    <div className="controller">
-      <div className="roll counter">{props.rollCount} rolls out of 3</div>
-      <RollButton {...props} />
-    </div>
-  );
-}
+const Controller = (props) => (
+  <div className="controller">
+    <div className="roll counter">{props.rollCount} rolls out of 3</div>
+    <RollButton {...props} />
+  </div>
+)
 
 class RollButton extends React.Component {
   render() {
