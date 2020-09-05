@@ -1,6 +1,7 @@
 import React from 'react'
 import Yahtzee from './Yahtzee'
 import './App.css'
+import * as api from './api'
 
 class App extends React.Component {
   constructor(props) {
@@ -58,43 +59,16 @@ class Player extends React.Component {
   }
 
   handleClickOnNewGame() {
-    const headers = new Headers()
-    headers.append('Authorization', 'Basic ' + btoa(this.props.name + ':'))
-    fetch("http://yahtzee.akarasz.me/", {
-      method: "POST",
-      headers: headers,
-    })
-    .then(
-      (res) => {
-        if (res.status === 201) {
-          const game = res.headers.get("location")
-          window.location.hash = game
-
-          fetch("http://yahtzee.akarasz.me" + game + "/join", {
-            method: "POST",
-            headers: headers,
-          })
-          .then(
-            (res) => {
-              if (res.status === 201) {
-                this.props.onNewGame(game)
-              } else {
-                console.log("omg2", res)
-              }
-            },
-            (error) => {
-              console.log("omg2 error", error)
-            }
-          )
-
-        } else {
-          console.log("omg", res)
-        }
-      },
-      (error) => {
-        console.log("omg error", error)
-      }
-    )
+    api.create(this.props.name)
+      .then((gameId) => {
+        window.location.hash = gameId
+        return gameId
+      })
+      .then(gameId => {
+        api.join(gameId, this.props.name)
+        return gameId
+      })
+      .then((gameId) => this.props.onNewGame(gameId))
   }
 
   render() {

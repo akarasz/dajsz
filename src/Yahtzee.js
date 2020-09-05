@@ -1,5 +1,6 @@
 import React from 'react';
 import './Yahtzee.css';
+import * as api from './api'
 
 class Yahtzee extends React.Component {
   constructor(props) {
@@ -56,28 +57,7 @@ class Yahtzee extends React.Component {
 
     if (gameNotStartedYet && !alreadyJoined) {
       if (window.confirm("Game hasn't started yet! Do you want to join?")) {
-        fetch("http://yahtzee.akarasz.me/" + this.props.game + "/join", {
-          method: "POST",
-          headers: new Headers({
-            "Authorization": "Basic " + btoa(this.props.player + ':'),
-          }),
-        })
-        .then(
-          (res) => {
-            if (res.status === 201) {
-              res.json().then((body) => {
-                this.setState({
-                  Players: body,
-                })
-              })
-            } else {
-              console.log("omg", res)
-            }
-          },
-          (error) => {
-            console.log("omg error", error)
-          }
-        )
+        this.setState(api.join(this.props.game, this.props.player))
       }
     }
   }
@@ -89,68 +69,22 @@ class Yahtzee extends React.Component {
   }
 
   loadGame() {
-    const headers = new Headers()
-    headers.append('Authorization', 'Basic ' + btoa(this.state.player + ':'))
-    fetch("http://yahtzee.akarasz.me/" + this.props.game, {
-      headers: headers,
-    })
-    .then(
-      (res) => {
-        if (res.status === 200) {
-          res.json().then((body) => {
-            this.setState({
-              ...body,
-              isLoaded: true,
-            })
-            this.handleSuggestionRefresh(body.Dices)
-            this.offerJoin()
-          })
-        } else if (res.status === 404) {
-          this.setState({
-            isLoaded: false,
-            error: "not found",
-          })
-        } else {
-          this.setState({
-            isLoaded: false,
-            error: "error",
-          })
+    api.load(this.props.game, this.props.player)
+      .then((res) => {
+        if (res.isLoaded) {
+          this.setState(res)
+          this.handleSuggestionRefresh(res.Dices)
+          this.offerJoin()
         }
-      },
-      (error) => {
-        this.setState({
-          isLoaded: false,
-          error: "error",
-        })
-        console.log(error)
-      }
-    )
+      })
   }
 
   handleRoll() {
-    const headers = new Headers()
-    headers.append('Authorization', 'Basic ' + btoa(this.props.player + ':'))
-    fetch("http://yahtzee.akarasz.me/" + this.props.game + "/roll", {
-      method: "POST",
-      headers: headers,
-    })
-    .then(
-      (res) => {
-        if (res.status === 200) {
-          res.json().then((body) => {
-            console.log(body)
-            this.setState({...body})
-
-            this.handleSuggestionRefresh(body.Dices)
-          })
-        } else {
-          console.log(res)
-        }
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
+    api.roll(this.props.game, this.props.player)
+      .then((res) => {
+        this.setState(res)
+        this.handleSuggestionRefresh(res.Dices)
+      })
   }
 
   handleSuggestionRefresh(dices) {
@@ -159,80 +93,21 @@ class Yahtzee extends React.Component {
       return
     }
 
-    const params = dices.map(d => "dice=" + d.Value).join("&")
-    fetch("http://yahtzee.akarasz.me/score?" + params, {
-      method: "GET",
-      headers: new Headers({
-        "Authorization": "Basic " + btoa(this.props.player + ":"),
-      }),
-    })
-    .then(
-      (res) => {
-        if (res.status === 200) {
-          res.json().then((body) => {
-            this.setState({
-              suggestions: body
-            })
-          })
-        } else {
-          console.log(res)
-        }
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
+    api.suggestions(this.props.player, dices)
+      .then((res) => this.setState({suggestions: res}))
   }
 
   handleScore(category) {
-    const headers = new Headers()
-    headers.append('Authorization', 'Basic ' + btoa(this.props.player + ':'))
-    fetch("http://yahtzee.akarasz.me/" + this.props.game + "/score", {
-      method: "POST",
-      headers: headers,
-      body: category,
-    })
-    .then(
-      (res) => {
-        if (res.status === 200) {
-          res.json().then((body) => {
-            this.setState({...body})
-            this.handleSuggestionRefresh(body.Dices)
-          })
-        } else {
-          console.log(res)
-        }
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
+    api.score(this.props.game, this.props.player, category)
+      .then((res) => {
+        this.setState(res)
+        this.handleSuggestionRefresh(res.Dices)
+      })
   }
 
   handleLock(idx) {
-    const headers = new Headers()
-    headers.append('Authorization', 'Basic ' + btoa(this.props.player + ':'))
-    fetch("http://yahtzee.akarasz.me/" + this.props.game + "/lock/" + idx, {
-      method: "POST",
-      headers: headers,
-    })
-    .then(
-      (res) => {
-        if (res.status === 200) {
-          res.json().then((body) => {
-            console.log(body)
-            this.setState({
-              Dices: body,
-            })
-          })
-        } else {
-          console.log(res)
-        }
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
+    api.lock(this.props.game, this.props.player, idx)
+      .then((res) => this.setState(res))
   }
 }
 
