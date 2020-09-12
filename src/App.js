@@ -64,6 +64,7 @@ class Player extends React.Component {
         window.location.hash = gameId
         return gameId
       })
+      .then(gameId => gameId.substring(1))
       .then(gameId => {
         api.join(gameId, this.props.name)
         return gameId

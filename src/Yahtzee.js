@@ -21,7 +21,7 @@ class Yahtzee extends React.Component {
       return <p>Loading game <strong>{this.props.game}</strong>... {this.state.error}</p>
     }
 
-    const myTurn = this.state.Players.length > 0 && this.state.Players[this.state.CurrentPlayer].Name === this.props.player
+    const myTurn = this.state.Players.length > 0 && this.state.Players[this.state.CurrentPlayer].User === this.props.player
 
     return (
       <div id={this.props.game} className="yahtzee">
@@ -53,7 +53,7 @@ class Yahtzee extends React.Component {
       this.state.RollCount === 0 &&
       this.state.CurrentPlayer === 0 &&
       this.state.Round === 0
-    const alreadyJoined = this.state.Players.map((p) => p.Name).includes(this.props.player)
+    const alreadyJoined = this.state.Players.map((p) => p.User).includes(this.props.player)
 
     if (gameNotStartedYet && !alreadyJoined) {
       if (window.confirm("Game hasn't started yet! Do you want to join?")) {
@@ -178,7 +178,7 @@ function Scores(props) {
           <tr>
             <th/>
             {props.players.map((p, i) => {
-              return <th key={i}>{p.Name}</th>
+              return <th key={i}>{p.User}</th>
             })}
           </tr>
         </thead>
