@@ -53,9 +53,7 @@ export const join = (gameID, user) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 201) {
-      return {
-        Players: body,
-      }
+      return body
     } else {
       throw (code, body)
     }
@@ -85,9 +83,7 @@ export const lock = (gameID, user, diceIdx) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      return {
-        Dices: body,
-      }
+      return body
     } else {
       throw (code, body)
     }
@@ -111,7 +107,7 @@ export const score = (gameID, user, category) => (
 )
 
 export const suggestions = (user, dices) => (
-  fetch(baseUrl + "/score?" + dices.map(d => "dice=" + d.Value).join("&"), {
+  fetch(baseUrl + "/score?dices=" + dices.map(d => d.Value).join(","), {
     method: "GET",
     headers: headers(user),
   })
