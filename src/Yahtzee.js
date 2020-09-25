@@ -80,14 +80,6 @@ class Yahtzee extends React.Component {
       .then((__) => {
         const ws = new WebSocket('ws://yahtzee.akarasz.me/' + this.props.game + '/ws')
 
-        ws.onopen = () => {
-          console.log('connected')
-        }
-
-        ws.onclose = () => {
-          console.log('disconnected')
-        }
-
         ws.onmessage = (e) => {
           this.setState(JSON.parse(e.data))
         }
