@@ -1,5 +1,5 @@
-import React from 'react';
-import './Yahtzee.css';
+import React from 'react'
+import './Yahtzee.css'
 import * as api from './api'
 
 class Yahtzee extends React.Component {
@@ -75,6 +75,21 @@ class Yahtzee extends React.Component {
           this.setState(res)
           this.handleSuggestionRefresh(res.Dices)
           this.offerJoin()
+        }
+      })
+      .then((__) => {
+        const ws = new WebSocket('ws://yahtzee.akarasz.me/' + this.props.game + '/ws')
+
+        ws.onopen = () => {
+          console.log('connected')
+        }
+
+        ws.onclose = () => {
+          console.log('disconnected')
+        }
+
+        ws.onmessage = (e) => {
+          console.log(e)
         }
       })
   }
