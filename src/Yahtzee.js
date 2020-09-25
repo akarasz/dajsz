@@ -89,7 +89,7 @@ class Yahtzee extends React.Component {
         }
 
         ws.onmessage = (e) => {
-          console.log(e)
+          this.setState(JSON.parse(e.data))
         }
       })
   }
