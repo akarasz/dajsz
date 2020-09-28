@@ -16,7 +16,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px double black;
+    border: 2px dashed black;
+    border-radius: .5em;
     height: 1.5cm;
     width: 1.5cm;
     font-size: 1.5em;
@@ -47,7 +48,7 @@
 }
 
 .yahtzee .dice.locked {
-    border: 2px solid black;
+    border-style: solid;
 }
 
 .yahtzee .controller {
@@ -63,7 +64,6 @@
 .yahtzee .controller .roll.button {
     border: 2px solid black;
     padding: .5em 2em;
-    border-radius: .5em;
     text-transform: uppercase;
     font-weight: bold;
     cursor: pointer;
