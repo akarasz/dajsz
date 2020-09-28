@@ -80,6 +80,7 @@
     text-transform: uppercase;
     font-weight: bold;
     cursor: pointer;
+    user-select: none;
 }
 
 .yahtzee .controller .roll.button.disabled {
