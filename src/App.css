@@ -10,4 +10,5 @@
 
 .actionable {
     cursor: pointer;
+    user-select: none;
 }
