@@ -1,4 +1,4 @@
-const baseUrl = "http://yahtzee.akarasz.me"
+const baseUrl = "https://yahtzee.akarasz.me"
 
 const headers = (user) => (
   new Headers({
