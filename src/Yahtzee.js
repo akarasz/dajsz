@@ -239,6 +239,20 @@ class ScoreLine extends React.Component {
         const currentPlayer = parseInt(this.props.currentPlayer) === i && this.props.round < 13
         const hasScore = this.props.category in p.ScoreSheet
 
+        if (this.props.category === 'bonus' && !('bonus' in p.ScoreSheet)) {
+          const total =
+            (p.ScoreSheet['ones'] || 0) +
+            (p.ScoreSheet['twos'] || 0) +
+            (p.ScoreSheet['threes'] || 0) +
+            (p.ScoreSheet['fours'] || 0) +
+            (p.ScoreSheet['fives'] || 0) +
+            (p.ScoreSheet['sixes'] || 0)
+          const remains = 63 - total
+          if (remains > 0) {
+            this.props.suggestions['bonus'] = "still need " + remains
+          }
+        }
+
         let className = ''
         if (currentPlayer) {
           className += ' current-player'
