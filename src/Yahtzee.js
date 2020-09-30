@@ -160,12 +160,16 @@ class Dice extends React.Component {
   }
 }
 
-const Controller = (props) => (
-  <div className="controller">
-    <div className="roll counter">{props.rollCount} rolls out of 3</div>
-    <RollButton {...props} />
-  </div>
-)
+function Controller(props) {
+  const className = "roll counter roll-" + props.rollCount
+
+  return (
+    <div className="controller">
+      <div className={className}><div /><div /><div /></div>
+      <RollButton {...props} />
+    </div>
+  )
+}
 
 class RollButton extends React.Component {
   render() {
