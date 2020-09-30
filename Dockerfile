@@ -12,6 +12,7 @@ RUN npm run build
 # production environment
 FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
+COPY scripts/30-globals.js.sh /docker-entrypoint.d/
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
