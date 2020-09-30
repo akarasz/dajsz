@@ -2,6 +2,8 @@ import React from 'react'
 import Yahtzee from './Yahtzee'
 import './App.css'
 import * as api from './api'
+import ReactGA from 'react-ga';
+import config from './config.js'
 
 class App extends React.Component {
   constructor(props) {
@@ -38,6 +40,13 @@ class App extends React.Component {
           undefined }
       </div>
     )
+  }
+
+  componentDidMount() {
+    if (config.tracking) {
+      ReactGA.initialize(config.tracking);
+      ReactGA.pageview(window.location.pathname + window.location.search);
+    }
   }
 }
 
