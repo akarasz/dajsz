@@ -1,5 +1,5 @@
 const config = {
-  tracking: window.gaTrackingId || ""
+  tracking: window.tracking || ""
 }
 
 export default config
