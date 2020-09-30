@@ -1,6 +1,7 @@
 import React from 'react'
 import './Yahtzee.css'
 import * as api from './api'
+import config from './config.js'
 
 class Yahtzee extends React.Component {
   constructor(props) {
@@ -78,7 +79,7 @@ class Yahtzee extends React.Component {
         }
       })
       .then((__) => {
-        const ws = new WebSocket('wss://yahtzee.akarasz.me/' + this.props.game + '/ws')
+        const ws = new WebSocket(config.baseUri.ws + this.props.game + '/ws')
 
         ws.onmessage = (e) => {
           this.setState(JSON.parse(e.data))

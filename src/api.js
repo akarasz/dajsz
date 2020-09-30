@@ -1,4 +1,4 @@
-const baseUrl = "https://yahtzee.akarasz.me"
+import config from './config.js'
 
 const headers = (user) => (
   new Headers({
@@ -7,7 +7,7 @@ const headers = (user) => (
 )
 
 export const create = (user) => (
-  fetch(baseUrl, {
+  fetch(config.baseUri.http, {
     method: "POST",
     headers: headers(user),
   })
@@ -21,7 +21,7 @@ export const create = (user) => (
 )
 
 export const load = (gameID, user) => (
-  fetch(baseUrl + "/" + gameID, {
+  fetch(config.baseUri.http + "/" + gameID, {
     headers: headers(user),
   })
   .then((res) => Promise.all([res.status, res.json()]))
@@ -46,7 +46,7 @@ export const load = (gameID, user) => (
 )
 
 export const join = (gameID, user) => (
-  fetch(baseUrl + "/" + gameID + "/join", {
+  fetch(config.baseUri.http + "/" + gameID + "/join", {
     method: "POST",
     headers: headers(user),
   })
@@ -61,7 +61,7 @@ export const join = (gameID, user) => (
 )
 
 export const roll = (gameID, user) => (
-  fetch(baseUrl + "/" + gameID + "/roll", {
+  fetch(config.baseUri.http + "/" + gameID + "/roll", {
     method: "POST",
     headers: headers(user),
   })
@@ -76,7 +76,7 @@ export const roll = (gameID, user) => (
 )
 
 export const lock = (gameID, user, diceIdx) => (
-  fetch(baseUrl + "/" + gameID + "/lock/" + diceIdx, {
+  fetch(config.baseUri.http + "/" + gameID + "/lock/" + diceIdx, {
     method: "POST",
     headers: headers(user),
   })
@@ -91,7 +91,7 @@ export const lock = (gameID, user, diceIdx) => (
 )
 
 export const score = (gameID, user, category) => (
-  fetch(baseUrl + "/" + gameID + "/score", {
+  fetch(config.baseUri.http + "/" + gameID + "/score", {
     method: "POST",
     headers: headers(user),
     body: category,
@@ -107,7 +107,7 @@ export const score = (gameID, user, category) => (
 )
 
 export const suggestions = (user, dices) => (
-  fetch(baseUrl + "/score?dices=" + dices.map(d => d.Value).join(","), {
+  fetch(config.baseUri.http + "/score?dices=" + dices.map(d => d.Value).join(","), {
     method: "GET",
     headers: headers(user),
   })
