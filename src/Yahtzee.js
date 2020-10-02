@@ -244,7 +244,9 @@ class ScoreLine extends React.Component {
       {this.props.players.map((p, i) => {
         const currentPlayer = parseInt(this.props.currentPlayer) === i && this.props.round < 13
         const hasScore = this.props.category in p.ScoreSheet
+        const hasSuggestions = Object.keys(this.props.suggestions).length !== 0
 
+        let bonusMessage
         if (this.props.category === 'bonus' && !('bonus' in p.ScoreSheet)) {
           const total =
             (p.ScoreSheet['ones'] || 0) +
@@ -255,9 +257,10 @@ class ScoreLine extends React.Component {
             (p.ScoreSheet['sixes'] || 0)
           const remains = 63 - total
           if (remains > 0) {
-            this.props.suggestions['bonus'] = "still need " + remains
+            bonusMessage = "still need " + remains
           }
         }
+        bonusMessage = hasSuggestions ? bonusMessage : ""
 
         let className = ''
         if (currentPlayer) {
@@ -273,8 +276,8 @@ class ScoreLine extends React.Component {
         }
 
         return <td className={className} key={i} onClick={this.props.active ? this.handleClick : undefined}>
-           {currentPlayer && !hasScore ?
-             this.props.suggestions[this.props.category] :
+           {(currentPlayer && !hasScore) ?
+             (this.props.category !== 'bonus' ? this.props.suggestions[this.props.category] : bonusMessage) :
              p.ScoreSheet[this.props.category]}
           </td>
       })}
