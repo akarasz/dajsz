@@ -58,7 +58,8 @@ class Yahtzee extends React.Component {
 
     if (gameNotStartedYet && !alreadyJoined) {
       if (window.confirm("Game hasn't started yet! Do you want to join?")) {
-        this.setState(api.join(this.props.game, this.props.player))
+        api.join(this.props.game, this.props.player)
+          .then((res) => this.setState(res))
       }
     }
   }
