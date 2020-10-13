@@ -16,4 +16,5 @@ docker:
 
 .PHONY := push
 push: docker
-	docker push $(docker_container)
+	docker push $(docker_container):latest
+	docker push $(docker_container):$(version)
