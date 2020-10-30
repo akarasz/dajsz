@@ -83,7 +83,6 @@ class Yahtzee extends React.Component {
         const ws = new WebSocket(config.baseUri.ws + '/' + this.props.game + '/ws')
 
         ws.onmessage = (e) => {
-          console.log(  )
           this.setState(JSON.parse(JSON.parse(e.data)))
         }
       })
