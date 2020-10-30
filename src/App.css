@@ -1,11 +1,21 @@
 .menu {
     display: flex;
+
+flex-direction: row;
     justify-content: space-between;
     margin: 1em 0;
 }
 
 .menu .player {
     text-align: right;
+}
+
+.menu .share {
+	background-image: url("share.png");
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 1em;
+	width: 1em;
 }
 
 .actionable {

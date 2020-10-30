@@ -90,6 +90,7 @@ class Player extends React.Component {
       <div className="menu">
         <div className="actions">
           <div className="actionable" onClick={this.handleClickOnNewGame}><em>New Game</em></div>
+          <div className="actionable"><div class="share"></div></div> 
         </div>
 
         <div className="player" onClick={this.handleClickOnName}>
