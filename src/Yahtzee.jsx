@@ -97,7 +97,8 @@ class Yahtzee extends React.Component {
   }
 
   handleSuggestionRefresh(dices) {
-    if (this.state.RollCount === 0) {
+    if (this.state.RollCount === 0 || this.state.Players.length === 0 ||
+      this.state.Players[this.state.CurrentPlayer].User !== this.props.player) {
       this.setState({suggestions: {}})
       return
     }
