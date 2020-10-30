@@ -1,6 +1,9 @@
 #root {
     margin: auto;
+}
 
-    min-width: 30em;
-    max-width: 40em;
+@media (min-width: 30em) {
+	#root {
+		max-width: 40em;
+	}
 }
