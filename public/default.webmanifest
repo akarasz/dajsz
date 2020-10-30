@@ -31,5 +31,6 @@
   ],
   "name": "Dajsz",
   "short_name": "Dajsz",
-  "start_url": "/"
+  "start_url": "./",
+  "display": "standalone"
 }
