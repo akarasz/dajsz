@@ -55,6 +55,7 @@ class Player extends React.Component {
     super(props)
     this.handleClickOnName = this.handleClickOnName.bind(this)
     this.handleClickOnNewGame = this.handleClickOnNewGame.bind(this)
+    this.handleClickOnShare = this.handleClickOnShare.bind(this)
   }
 
   handleClickOnName() {
@@ -81,6 +82,20 @@ class Player extends React.Component {
       .then((gameId) => this.props.onNewGame(gameId))
   }
 
+  handleClickOnShare() {
+    console.log("handling click on share")
+    console.log(navigator)
+    if (navigator.share) {
+      navigator.share({
+        title: 'This is title',
+        text: 'This is text',
+        url: 'https://example.com/',
+      })
+        .then(() => console.log('Successful share'))
+        .catch((error) => console.log('Error sharing', error));
+    }
+  }
+
   render() {
     const name = (this.props.name != null ?
       this.props.name :
@@ -89,8 +104,8 @@ class Player extends React.Component {
     return (
       <div className="menu">
         <div className="actions">
-          <div className="actionable" onClick={this.handleClickOnNewGame}><em>New Game</em></div>
-          <div className="actionable"><div class="share"></div></div> 
+          <div className="actionable button" onClick={this.handleClickOnNewGame}><em>New Game</em></div>
+          <div className="actionable button" onClick={this.handleClickOnShare}><div className="share"></div></div> 
         </div>
 
         <div className="player" onClick={this.handleClickOnName}>

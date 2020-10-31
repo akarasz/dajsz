@@ -1,9 +1,20 @@
 .menu {
     display: flex;
 
-flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     margin: 1em 0;
+}
+
+.menu .actions {
+	display: flex;
+	flex-direction: row;
+}
+
+.menu .actions .button {
+	border: 1px solid black;
+	padding: .5em 1em;
+	margin-right: .5em;
 }
 
 .menu .player {
