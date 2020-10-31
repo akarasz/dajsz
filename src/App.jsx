@@ -83,16 +83,23 @@ class Player extends React.Component {
   }
 
   handleClickOnShare() {
-    console.log("handling click on share")
+    const url = window.location.toString()
+
     console.log(navigator)
     if (navigator.share) {
       navigator.share({
-        title: 'This is title',
-        text: 'This is text',
-        url: 'https://example.com/',
+        title: 'Invited to Dajsz',
+        text: 'Click to join: ',
+        url: url,
       })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error));
+        .then(() => console.log('shared'))
+        .catch((error) => console.log('error sharing', error));
+    } else {
+      navigator.clipboard.writeText(url).then(function() {
+        alert("Game link copied to clipboard.")
+      }, function(err) {
+        console.error('error copy to clipboard', err);
+      });
     }
   }
 

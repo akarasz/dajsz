@@ -13,6 +13,7 @@
 
 .menu .actions .button {
 	border: 1px solid black;
+	border-radius:  1.5em;
 	padding: .5em 1em;
 	margin-right: .5em;
 }
