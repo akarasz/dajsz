@@ -1,11 +1,33 @@
 .menu {
     display: flex;
+
     justify-content: space-between;
+    align-items: center;
     margin: 1em 0;
+}
+
+.menu .actions {
+	display: flex;
+	flex-direction: row;
+}
+
+.menu .actions .button {
+	border: 1px solid black;
+	border-radius:  1.5em;
+	padding: .5em 1em;
+	margin-right: .5em;
 }
 
 .menu .player {
     text-align: right;
+}
+
+.menu .share {
+	background-image: url("share.png");
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 1em;
+	width: 1em;
 }
 
 .actionable {
