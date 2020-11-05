@@ -1,4 +1,4 @@
-const baseUrl = window.baseUrl || "yahtzee.akarasz.me"
+const baseUrl = window.baseUrl || "api.dajsz.hu"
 
 const config = {
   tracking: window.tracking || "",
