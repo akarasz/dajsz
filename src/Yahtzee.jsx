@@ -189,12 +189,7 @@ function Scores(props) {
     <div className="scores">
       <table>
         <thead>
-          <tr>
-            <th/>
-            {props.players.map((p, i) => {
-              return <th key={i}>{p.User}</th>
-            })}
-          </tr>
+          <ScoresHeader players={props.players} round={props.round} />
         </thead>
         <tbody>
           <ScoreLine {...props} title="Aces" category="ones" />
@@ -223,6 +218,29 @@ function Scores(props) {
       </table>
     </div>
   );
+}
+
+const ScoresHeader = (props) => {
+  var isWinner = []
+  if (props.round === 13) {
+    const total = props.players
+        .map(p => p.ScoreSheet)
+        .map(scores => Object.values(scores).reduce((a, b) => a + b, 0))
+
+    const max = Math.max(...total)
+
+    isWinner = total
+        .map(s => s === max)
+  }
+
+  return (
+    <tr>
+      <th/>
+      {props.players.map((p, i) => {
+        return <th key={i} className={isWinner[i] ? "winner" : ""}>{p.User}</th>
+      })}
+    </tr>
+  )
 }
 
 class ScoreLine extends React.Component {

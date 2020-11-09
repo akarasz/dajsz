@@ -120,6 +120,10 @@
   width: 100%;
 }
 
+.yahtzee .scores thead {
+  height: 2.5em;
+}
+
 .yahtzee .scores th, .yahtzee .scores td {
   padding: .4em;
   border: 1px solid black;
@@ -161,4 +165,8 @@
 
 .yahtzee .scores td.selected {
   background-color: #b3e5ff;
+}
+
+.yahtzee .scores .winner::before {
+  content: '👑 ';
 }
