@@ -168,5 +168,5 @@
 }
 
 .yahtzee .scores .winner::before {
-  content: '👑 ';
+  content: '🏆 ';
 }
