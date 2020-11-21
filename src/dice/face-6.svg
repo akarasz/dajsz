@@ -1,0 +1,8 @@
+<svg width='90' height='90' xmlns='http://www.w3.org/2000/svg'>
+	<circle cx='35' cy='28' r='6' fill='black'/>
+	<circle cx='35' cy='45' r='6' fill='black'/>
+	<circle cx='35' cy='62' r='6' fill='black'/>
+	<circle cx='55' cy='28' r='6' fill='black'/>
+	<circle cx='55' cy='45' r='6' fill='black'/>
+	<circle cx='55' cy='62' r='6' fill='black'/>
+</svg>

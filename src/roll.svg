@@ -1,0 +1,74 @@
+<svg width='90' height='90' xmlns='http://www.w3.org/2000/svg'>
+	<style>
+		.faces > g {
+			opacity: 0;
+			animation-duration: 0.3s;
+			animation-iteration-count: infinite;
+			animation-timing-function: steps(1);
+		}
+
+		@keyframes step-1 {  0.00000% { opacity: 1; }  16.66667% { opacity: 0; } }
+		@keyframes step-2 { 16.66667% { opacity: 1; }  33.33333% { opacity: 0; } }
+		@keyframes step-3 { 33.33333% { opacity: 1; }  50.00000% { opacity: 0; } }
+		@keyframes step-4 { 50.00000% { opacity: 1; }  66.66667% { opacity: 0; } }
+		@keyframes step-5 { 66.66667% { opacity: 1; }  83.33333% { opacity: 0; } }
+		@keyframes step-6 { 83.33333% { opacity: 1; } 100.00000% { opacity: 0; } }
+
+
+		.faces > :nth-child(1) {
+			animation-name: step-3;
+		}
+		.faces > :nth-child(2) {
+			animation-name: step-4;
+		}
+		.faces > :nth-child(3) {
+			animation-name: step-1;
+		}
+		.faces > :nth-child(4) {
+			animation-name: step-2;
+		}
+		.faces > :nth-child(5) {
+			animation-name: step-5;
+		}
+		.faces > :nth-child(6) {
+			animation-name: step-6;
+		}
+	</style>
+	<g class="faces">
+		<g>
+			<circle cx='45' cy='45' r='6' fill='black'/>
+		</g>
+		<g>
+			<circle cx='35' cy='35' r='6' fill='black'/>
+			<circle cx='55' cy='55' r='6' fill='black'/>
+		</g>
+		<g>
+			<circle cx='30' cy='30' r='6' fill='black'/>
+			<circle cx='45' cy='45' r='6' fill='black'/>
+			<circle cx='60' cy='60' r='6' fill='black'/>
+		</g>
+		<g>
+			<circle cx='30' cy='30' r='6' fill='black'/>
+			<circle cx='30' cy='60' r='6' fill='black'/>
+			<circle cx='60' cy='60' r='6' fill='black'/>
+			<circle cx='60' cy='30' r='6' fill='black'/>
+		</g>
+		<g>
+			<circle cx='30' cy='30' r='6' fill='black'/>
+			<circle cx='30' cy='60' r='6' fill='black'/>
+			<circle cx='45' cy='45' r='6' fill='black'/>
+			<circle cx='60' cy='60' r='6' fill='black'/>
+			<circle cx='60' cy='30' r='6' fill='black'/>
+		</g>
+		<g>
+			<circle cx='35' cy='28' r='6' fill='black'/>
+			<circle cx='35' cy='45' r='6' fill='black'/>
+			<circle cx='35' cy='62' r='6' fill='black'/>
+			<circle cx='55' cy='28' r='6' fill='black'/>
+			<circle cx='55' cy='45' r='6' fill='black'/>
+			<circle cx='55' cy='62' r='6' fill='black'/>
+		</g>
+	</g>
+
+
+</svg>
