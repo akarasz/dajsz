@@ -34,14 +34,14 @@ class Yahtzee extends React.Component {
           onLock={this.handleLock} />
         <Controller
           rollCount={this.state.RollCount}
-          active={myTurn && this.state.RollCount < 3 && this.state.Round < 13}
+          active={myTurn && this.state.RollCount < 3 && this.state.Round < 13 && !this.state.rolling}
           onRoll={this.handleRoll} />
         <Scores
           players={this.state.Players}
           suggestions={this.state.suggestions || {}}
           currentPlayer={this.state.CurrentPlayer}
           round={this.state.Round}
-          active={myTurn && this.state.RollCount > 0}
+          active={myTurn && this.state.RollCount > 0 && !this.state.rolling}
           onScore={this.handleScore} />
       </div>
     )
