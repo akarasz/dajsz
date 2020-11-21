@@ -9,6 +9,7 @@ class Yahtzee extends React.Component {
     this.loadGame = this.loadGame.bind(this)
     this.offerJoin = this.offerJoin.bind(this)
     this.handleRoll = this.handleRoll.bind(this)
+    this.handleRollStop = this.handleRollStop.bind(this)
     this.handleLock = this.handleLock.bind(this)
     this.handleScore = this.handleScore.bind(this)
     this.handleSuggestionRefresh = this.handleSuggestionRefresh.bind(this)
@@ -28,6 +29,7 @@ class Yahtzee extends React.Component {
       <div id={this.props.game} className="yahtzee">
         <Dices
           dices={this.state.Dices}
+          rolling={this.state.rolling}
           active={myTurn && this.state.RollCount > 0 && this.state.RollCount < 3}
           onLock={this.handleLock} />
         <Controller
@@ -91,9 +93,16 @@ class Yahtzee extends React.Component {
   handleRoll() {
     api.roll(this.props.game, this.props.player)
       .then((res) => {
-        this.setState(res)
-        this.handleSuggestionRefresh(res.Dices)
+        this.handleRollStop(res.Dices)
+        this.setState({...res, rolling: true})
       })
+  }
+
+  handleRollStop(dices) {
+    setTimeout(() => {
+      this.setState({rolling: false})
+      this.handleSuggestionRefresh(dices)
+    }, 200)
   }
 
   handleSuggestionRefresh(dices) {
@@ -130,6 +139,7 @@ function Dices(props) {
           key={i}
           value={d.Value}
           locked={d.Locked}
+          rolling={props.rolling}
           active={props.active}
           onLock={props.onLock} />
       })}
@@ -150,10 +160,17 @@ class Dice extends React.Component {
   }
 
   render() {
-    let className = "dice face-" + this.props.value
+    let className = "dice "
+    if (this.props.rolling && !this.props.locked) {
+      className += "rolling"
+    } else {
+      className += "face-" + this.props.value
+    }
+
     if (this.props.locked) {
       className += " locked"
     }
+
     if (this.props.active) {
       className += " actionable"
     }
