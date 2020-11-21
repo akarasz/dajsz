@@ -102,7 +102,7 @@ class Yahtzee extends React.Component {
     setTimeout(() => {
       this.setState({rolling: false})
       this.handleSuggestionRefresh(dices)
-    }, 300)
+    }, 200)
   }
 
   handleSuggestionRefresh(dices) {
@@ -161,7 +161,7 @@ class Dice extends React.Component {
 
   render() {
     let className = "dice "
-    if (this.props.rolling) {
+    if (this.props.rolling && !this.props.locked) {
       className += "rolling"
     } else {
       className += "face-" + this.props.value
