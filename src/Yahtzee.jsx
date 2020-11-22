@@ -42,7 +42,9 @@ class Yahtzee extends React.Component {
           currentPlayer={this.state.CurrentPlayer}
           round={this.state.Round}
           active={myTurn && this.state.RollCount > 0 && !this.state.rolling}
-          onScore={this.handleScore} />
+          onScore={this.handleScore}
+          lastScoredUser={this.state.lastScoredUser}
+          lastScoredCategory={this.state.lastScoredCategory} />
       </div>
     )
   }
@@ -119,8 +121,18 @@ class Yahtzee extends React.Component {
   handleScore(category) {
     api.score(this.props.game, this.props.player, category)
       .then((res) => {
-        this.setState(res)
+        this.setState({
+          ...res,
+          lastScoredUser: this.props.player,
+          lastScoredCategory: category,
+        })
         this.handleSuggestionRefresh(res.Dices)
+        setTimeout(() => {
+          this.setState({
+            lastScoredUser: undefined,
+            lastScoredCategory: undefined
+          })
+        }, 2000)
       })
   }
 
@@ -281,6 +293,7 @@ class ScoreLine extends React.Component {
         const currentPlayer = parseInt(this.props.currentPlayer) === i && this.props.round < 13
         const hasScore = this.props.category in p.ScoreSheet
         const hasSuggestions = Object.keys(this.props.suggestions).length !== 0
+        const actionable = (this.props.category !== 'bonus' && this.props.active)
 
         let bonusMessage
         if (this.props.category === 'bonus' && !('bonus' in p.ScoreSheet)) {
@@ -298,24 +311,34 @@ class ScoreLine extends React.Component {
         }
         bonusMessage = hasSuggestions ? bonusMessage : ""
 
-        let className = ''
+        let classNames = []
         if (currentPlayer) {
-          className += ' current-player'
-
-          if (this.props.category !== 'bonus' && this.props.active) {
-            className += ' actionable'
-          }
-
+          classNames.push('current-player')
         }
         if (!hasScore) {
-          className += ' suggestion'
+          classNames.push('suggestion')
+        }
+        if (actionable) {
+          classNames.push('actionable')
+        }
+        if (this.props.players[parseInt(this.props.currentPlayer)].User === this.props.lastScoredUser &&
+            this.props.category === this.props.lastScoredCategory &&
+            !currentPlayer) {
+          classNames.push('scored')
         }
 
-        return <td className={className} key={i} onClick={this.props.active ? this.handleClick : undefined}>
-           {(currentPlayer && !hasScore) ?
-             (this.props.category !== 'bonus' ? this.props.suggestions[this.props.category] : bonusMessage) :
-             p.ScoreSheet[this.props.category]}
-          </td>
+        let className = classNames.join(' ')
+
+        const val = (currentPlayer && !hasScore) ?
+            (this.props.category !== 'bonus' ?
+                this.props.suggestions[this.props.category] :
+                bonusMessage) :
+            p.ScoreSheet[this.props.category]
+
+        return (
+          <td className={className} key={i} onClick={actionable ? this.handleClick : undefined}>
+           {val}
+          </td>)
       })}
     </tr>
   }

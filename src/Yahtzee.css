@@ -152,6 +152,24 @@
   text-align: center;
 }
 
+.yahtzee .scores td.scored {
+  animation-name: scored-pulse;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes scored-pulse {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: yellow;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
 /* first row with the names */
 .yahtzee .scores tr:nth-child(1) th {
   font-weight: bold;
@@ -176,7 +194,7 @@
   font-weight: bold;
 }
 
-.yahtzee .scores td.current-player {
+.yahtzee .scores .current-player {
   background-color: #f0faff;
 }
 
