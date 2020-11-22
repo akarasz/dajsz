@@ -150,6 +150,12 @@
   padding: .4em;
   border: 1px solid black;
   text-align: center;
+  transition: background-color 0.5s linear;
+}
+
+.yahtzee .scores td.scored {
+  background-color: yellow;
+  transition-duration: 0s;
 }
 
 /* first row with the names */
@@ -176,7 +182,7 @@
   font-weight: bold;
 }
 
-.yahtzee .scores td.current-player {
+.yahtzee .scores .current-player {
   background-color: #f0faff;
 }
 
