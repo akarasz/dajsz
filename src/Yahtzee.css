@@ -150,12 +150,24 @@
   padding: .4em;
   border: 1px solid black;
   text-align: center;
-  transition: background-color 0.5s linear;
 }
 
 .yahtzee .scores td.scored {
-  background-color: yellow;
-  transition-duration: 0s;
+  animation-name: scored-pulse;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes scored-pulse {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: yellow;
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 /* first row with the names */
