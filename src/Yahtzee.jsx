@@ -322,7 +322,8 @@ class ScoreLine extends React.Component {
           classNames.push('actionable')
         }
         if (this.props.players[parseInt(this.props.currentPlayer)].User === this.props.lastScoredUser &&
-            this.props.category === this.props.lastScoredCategory) {
+            this.props.category === this.props.lastScoredCategory &&
+            !currentPlayer) {
           classNames.push('scored')
         }
 
