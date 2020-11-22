@@ -12,6 +12,7 @@ class Yahtzee extends React.Component {
     this.handleRollStop = this.handleRollStop.bind(this)
     this.handleLock = this.handleLock.bind(this)
     this.handleScore = this.handleScore.bind(this)
+    this.handleScoreStop = this.handleScoreStop.bind(this)
     this.handleSuggestionRefresh = this.handleSuggestionRefresh.bind(this)
     this.state = {
       isLoaded: false
@@ -21,6 +22,14 @@ class Yahtzee extends React.Component {
   render() {
     if (!this.state.isLoaded) {
       return <p>Loading game <strong>{this.props.game}</strong>... {this.state.error}</p>
+    }
+
+    if (this.state.rolling) {
+      setTimeout(() => this.handleRollStop(), 200)
+    }
+
+    if (this.state.lastScoredUser !== undefined || this.state.lastScoredCategory !== undefined) {
+      setTimeout(() => this.handleScoreStop(), 2000)
     }
 
     const myTurn = this.state.Players.length > 0 && this.state.Players[this.state.CurrentPlayer].User === this.props.player
@@ -87,7 +96,20 @@ class Yahtzee extends React.Component {
         const ws = new WebSocket(config.baseUri.ws + '/' + this.props.game + '/ws')
 
         ws.onmessage = (e) => {
-          this.setState(JSON.parse(JSON.parse(e.data)).Data)
+          const event = JSON.parse(JSON.parse(e.data))
+          if (event.Action === 'roll') {
+            this.setState({rolling: true})
+          } else if (event.Action === 'score') {
+            const currentCategories = Object.keys(this.state.Players.filter(p => p.User === event.User)[0].ScoreSheet)
+            const newCategories = Object.keys(event.Data.Players.filter(p => p.User === event.User)[0].ScoreSheet)
+            const diff = newCategories.filter(c => !currentCategories.includes(c))
+
+            this.setState({
+              lastScoredUser: event.User,
+              lastScoredCategory: diff,
+            })
+          }
+          this.setState(event.Data)
         }
       })
   }
@@ -95,16 +117,13 @@ class Yahtzee extends React.Component {
   handleRoll() {
     api.roll(this.props.game, this.props.player)
       .then((res) => {
-        this.handleRollStop(res.Dices)
-        this.setState({...res, rolling: true})
+        this.setState(res)
       })
   }
 
-  handleRollStop(dices) {
-    setTimeout(() => {
-      this.setState({rolling: false})
-      this.handleSuggestionRefresh(dices)
-    }, 200)
+  handleRollStop() {
+    this.setState({rolling: false})
+    this.handleSuggestionRefresh(this.state.Dices)
   }
 
   handleSuggestionRefresh(dices) {
@@ -121,19 +140,16 @@ class Yahtzee extends React.Component {
   handleScore(category) {
     api.score(this.props.game, this.props.player, category)
       .then((res) => {
-        this.setState({
-          ...res,
-          lastScoredUser: this.props.player,
-          lastScoredCategory: category,
-        })
+        this.setState(res)
         this.handleSuggestionRefresh(res.Dices)
-        setTimeout(() => {
-          this.setState({
-            lastScoredUser: undefined,
-            lastScoredCategory: undefined
-          })
-        }, 2000)
       })
+  }
+
+  handleScoreStop() {
+    this.setState({
+      lastScoredUser: undefined,
+      lastScoredCategory: undefined
+    })
   }
 
   handleLock(idx) {
@@ -156,7 +172,7 @@ function Dices(props) {
           onLock={props.onLock} />
       })}
     </div>
-  );
+  )
 }
 
 class Dice extends React.Component {
@@ -172,22 +188,20 @@ class Dice extends React.Component {
   }
 
   render() {
-    let className = "dice "
+    let classes = ["dice"]
     if (this.props.rolling && !this.props.locked) {
-      className += "rolling"
+      classes.push("rolling")
     } else {
-      className += "face-" + this.props.value
+      classes.push("face-" + this.props.value)
     }
-
     if (this.props.locked) {
-      className += " locked"
+      classes.push("locked")
     }
-
     if (this.props.active) {
-      className += " actionable"
+      classes.push("actionable")
     }
 
-    return <div className={className} onClick={this.handleClick} />
+    return <div className={classes.join(" ")} onClick={this.handleClick} />
   }
 }
 
@@ -311,6 +325,12 @@ class ScoreLine extends React.Component {
         }
         bonusMessage = hasSuggestions ? bonusMessage : ""
 
+        const val = (currentPlayer && !hasScore) ?
+            (this.props.category !== 'bonus' ?
+                this.props.suggestions[this.props.category] :
+                bonusMessage) :
+            p.ScoreSheet[this.props.category]
+
         let classNames = []
         if (currentPlayer) {
           classNames.push('current-player')
@@ -321,22 +341,14 @@ class ScoreLine extends React.Component {
         if (actionable) {
           classNames.push('actionable')
         }
-        if (this.props.players[parseInt(this.props.currentPlayer)].User === this.props.lastScoredUser &&
-            this.props.category === this.props.lastScoredCategory &&
+        if (this.props.players[i].User === this.props.lastScoredUser &&
+            this.props.lastScoredCategory.includes(this.props.category) &&
             !currentPlayer) {
           classNames.push('scored')
         }
 
-        let className = classNames.join(' ')
-
-        const val = (currentPlayer && !hasScore) ?
-            (this.props.category !== 'bonus' ?
-                this.props.suggestions[this.props.category] :
-                bonusMessage) :
-            p.ScoreSheet[this.props.category]
-
         return (
-          <td className={className} key={i} onClick={actionable ? this.handleClick : undefined}>
+          <td className={classNames.join(' ')} key={i} onClick={actionable ? this.handleClick : undefined}>
            {val}
           </td>)
       })}
