@@ -158,22 +158,20 @@ class Yahtzee extends React.Component {
   }
 }
 
-function Dices(props) {
-  return (
-    <div className="dices">
-      {props.dices.map((d, i) => {
-        return <Dice
-          index={i}
-          key={i}
-          value={d.Value}
-          locked={d.Locked}
-          rolling={props.rolling}
-          active={props.active}
-          onLock={props.onLock} />
-      })}
-    </div>
-  )
-}
+const Dices = (props) => (
+  <div className="dices">
+    {props.dices.map((d, i) => {
+      return <Dice
+        index={i}
+        key={i}
+        value={d.Value}
+        locked={d.Locked}
+        rolling={props.rolling}
+        active={props.active}
+        onLock={props.onLock} />
+    })}
+  </div>
+)
 
 class Dice extends React.Component {
   constructor(props) {
@@ -205,63 +203,68 @@ class Dice extends React.Component {
   }
 }
 
-function Controller(props) {
-  const className = "roll counter roll-" + props.rollCount
+const Controller = (props) => (
+  <div className="controller">
+    <RollCount rollCount={props.rollCount} />
+    <RollButton active={props.active} onRoll={props.onRoll} />
+  </div>
+)
 
-  return (
-    <div className="controller">
-      <div className={className}><div /><div /><div /></div>
-      <RollButton {...props} />
-    </div>
-  )
+const RollCount = (props) => {
+  let classes = ['roll', 'counter', 'roll-' + props.rollCount]
+  const className = classes.join(' ')
+
+  return <div className={className}><div /><div /><div /></div>
 }
 
-class RollButton extends React.Component {
-  render() {
-    let className = "roll button"
-    if (!this.props.active) {
-      className += " disabled"
-    }
-
-    return <div className={className} onClick={this.props.active ? this.props.onRoll : undefined}>Roll</div>
+const RollButton = (props) => {
+  let classes = ['roll', 'button']
+  if (!props.active) {
+    classes.push('disabled')
   }
+  const className = classes.join(' ')
+
+  let onClick = undefined
+  if (props.active) {
+    onClick = props.onRoll
+  }
+
+  return <div className={className} onClick={onClick}>Roll</div>
 }
 
-function Scores(props) {
-  return (
-    <div className="scores">
-      <table>
-        <thead>
-          <ScoresHeader players={props.players} round={props.round} />
-        </thead>
-        <tbody>
-          <ScoreLine {...props} title="Aces" category="ones" />
-          <ScoreLine {...props} title="Twos" category="twos" />
-          <ScoreLine {...props} title="Threes" category="threes" />
-          <ScoreLine {...props} title="Fours" category="fours" />
-          <ScoreLine {...props} title="Fives" category="fives" />
-          <ScoreLine {...props} title="Sixes" category="sixes" />
-          <ScoreLine {...props} title="Bonus" category="bonus" />
-          <ScoreLine {...props} title="Three of a kind" category="three-of-a-kind" />
-          <ScoreLine {...props} title="Four of a kind" category="four-of-a-kind" />
-          <ScoreLine {...props} title="Full House" category="full-house" />
-          <ScoreLine {...props} title="Small Straight" category="small-straight" />
-          <ScoreLine {...props} title="Large Straight" category="large-straight" />
-          <ScoreLine {...props} title="Yahtzee" category="yahtzee" />
-          <ScoreLine {...props} title="Chance" category="chance" />
-          <tr>
-            <td>Total</td>
-            {props.players.map((p, i) => {
-              let total = 0
-              Object.entries(p.ScoreSheet).forEach(([c, v]) => total += v)
-              return <td key={i}>{total}</td>
-            })}
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
-}
+const Scores = (props) => (
+  <div className="scores">
+    <table>
+      <thead>
+        <ScoresHeader players={props.players} round={props.round} />
+      </thead>
+      <tbody>
+        <ScoreLine {...props} title="Aces" category="ones" />
+        <ScoreLine {...props} title="Twos" category="twos" />
+        <ScoreLine {...props} title="Threes" category="threes" />
+        <ScoreLine {...props} title="Fours" category="fours" />
+        <ScoreLine {...props} title="Fives" category="fives" />
+        <ScoreLine {...props} title="Sixes" category="sixes" />
+        <ScoreLine {...props} title="Bonus" category="bonus" />
+        <ScoreLine {...props} title="Three of a kind" category="three-of-a-kind" />
+        <ScoreLine {...props} title="Four of a kind" category="four-of-a-kind" />
+        <ScoreLine {...props} title="Full House" category="full-house" />
+        <ScoreLine {...props} title="Small Straight" category="small-straight" />
+        <ScoreLine {...props} title="Large Straight" category="large-straight" />
+        <ScoreLine {...props} title="Yahtzee" category="yahtzee" />
+        <ScoreLine {...props} title="Chance" category="chance" />
+        <tr>
+          <td>Total</td>
+          {props.players.map((p, i) => {
+            let total = 0
+            Object.entries(p.ScoreSheet).forEach(([c, v]) => total += v)
+            return <td key={i}>{total}</td>
+          })}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+)
 
 const ScoresHeader = (props) => {
   var isWinner = []
