@@ -55,7 +55,6 @@ class Player extends React.Component {
     super(props)
     this.handleClickOnName = this.handleClickOnName.bind(this)
     this.handleClickOnNewGame = this.handleClickOnNewGame.bind(this)
-    this.handleClickOnShare = this.handleClickOnShare.bind(this)
   }
 
   handleClickOnName() {
@@ -82,27 +81,6 @@ class Player extends React.Component {
       .then((gameId) => this.props.onNewGame(gameId))
   }
 
-  handleClickOnShare() {
-    const url = window.location.toString()
-
-    console.log(navigator)
-    if (navigator.share) {
-      navigator.share({
-        title: 'Invited to Dajsz',
-        text: 'Click to join: ',
-        url: url,
-      })
-        .then(() => console.log('shared'))
-        .catch((error) => console.log('error sharing', error));
-    } else {
-      navigator.clipboard.writeText(url).then(function() {
-        alert("Game link copied to clipboard.")
-      }, function(err) {
-        console.error('error copy to clipboard', err);
-      });
-    }
-  }
-
   render() {
     const name = (this.props.name != null ?
       this.props.name :
@@ -112,7 +90,7 @@ class Player extends React.Component {
       <div className="menu">
         <div className="actions">
           <div className="actionable button" onClick={this.handleClickOnNewGame}><em>New Game</em></div>
-          <div className="actionable button" onClick={this.handleClickOnShare}><div className="share"></div></div> 
+          <InviteButtonChooser />
         </div>
 
         <div className="player" onClick={this.handleClickOnName}>
@@ -136,6 +114,89 @@ class Player extends React.Component {
     if (this.props.name == null) {
       this.handleClickOnName()
     }
+  }
+}
+
+const InviteButtonChooser = (props) => {
+  if (navigator.share) {
+    return <ShareButton />
+  } else if (navigator.clipboard) {
+    return <ClipboardButton />
+  } else {
+    return null
+  }
+}
+class ShareButton extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick() {
+    const url = window.location.toString()
+
+    navigator.share({
+      title: 'Invited to Dajsz',
+      text: 'Click to join: ',
+      url: url,
+    })
+      .then(() => console.log('shared'))
+      .catch((error) => console.log('error sharing', error));
+  }
+
+  render() {
+    return (
+      <div className="actionable button" onClick={this.handleClick}>
+        <div className="share icon"></div>
+      </div>)
+  }
+}
+
+class ClipboardButton extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      copied: false,
+    }
+
+    this.handleClick = this.handleClick.bind(this)
+
+    this.setCopied = this.setCopied.bind(this)
+    this.resetCopied = this.resetCopied.bind(this)
+  }
+
+  handleClick() {
+    const url = window.location.toString()
+
+    navigator.clipboard
+      .writeText(url)
+      .then(this.setCopied)
+  }
+
+  setCopied() {
+    this.setState({copied: true})
+  }
+
+  resetCopied() {
+    this.setState({copied: false})
+  }
+
+  render() {
+    if (this.state.copied) {
+      setTimeout(this.resetCopied, 5000)
+    }
+
+    const classes = ["clipboard", "icon"]
+    if (this.state.copied) {
+      classes.push("copied")
+    }
+    const className = classes.join(" ")
+
+    return (
+      <div className="actionable button" onClick={this.handleClick}>
+        <div className={className}></div>
+      </div>)
   }
 }
 
