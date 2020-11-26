@@ -305,7 +305,10 @@ class ScoreLine extends React.Component {
 
   render() {
     return <tr>
-      <td>{this.props.title}</td>
+        <td id={this.props.category} className="tooltipable">
+          {this.props.title}
+          <div className="tooltip">Szevasz {this.props.title}</div>
+        </td>
       {this.props.players.map((p, i) => {
         const currentPlayer = parseInt(this.props.currentPlayer) === i && this.props.round < 13
         const hasScore = this.props.category in p.ScoreSheet
