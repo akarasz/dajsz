@@ -22,12 +22,24 @@
   text-align: right;
 }
 
-.menu .share {
-  background-image: url("share.png");
+.menu .icon {
   background-repeat: no-repeat;
   background-size: cover;
   height: 1em;
   width: 1em;
+}
+
+.menu .icon.share {
+  background-image: url("share.png");
+}
+
+.menu .icon.clipboard {
+  background-image: url("clipboard.png");
+}
+
+
+.menu .icon.clipboard.copied {
+  background-image: url("clipboard-copied.png");
 }
 
 .actionable {

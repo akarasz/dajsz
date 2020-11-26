@@ -55,7 +55,6 @@ class Player extends React.Component {
     super(props)
     this.handleClickOnName = this.handleClickOnName.bind(this)
     this.handleClickOnNewGame = this.handleClickOnNewGame.bind(this)
-    this.handleClickOnShare = this.handleClickOnShare.bind(this)
   }
 
   handleClickOnName() {
@@ -82,27 +81,6 @@ class Player extends React.Component {
       .then((gameId) => this.props.onNewGame(gameId))
   }
 
-  handleClickOnShare() {
-    const url = window.location.toString()
-
-    console.log(navigator)
-    if (navigator.share) {
-      navigator.share({
-        title: 'Invited to Dajsz',
-        text: 'Click to join: ',
-        url: url,
-      })
-        .then(() => console.log('shared'))
-        .catch((error) => console.log('error sharing', error));
-    } else {
-      navigator.clipboard.writeText(url).then(function() {
-        alert("Game link copied to clipboard.")
-      }, function(err) {
-        console.error('error copy to clipboard', err);
-      });
-    }
-  }
-
   render() {
     const name = (this.props.name != null ?
       this.props.name :
@@ -112,7 +90,7 @@ class Player extends React.Component {
       <div className="menu">
         <div className="actions">
           <div className="actionable button" onClick={this.handleClickOnNewGame}><em>New Game</em></div>
-          <div className="actionable button" onClick={this.handleClickOnShare}><div className="share"></div></div> 
+          <ShareButton />
         </div>
 
         <div className="player" onClick={this.handleClickOnName}>
@@ -136,6 +114,42 @@ class Player extends React.Component {
     if (this.props.name == null) {
       this.handleClickOnName()
     }
+  }
+}
+
+class ShareButton extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleClickOnShare = this.handleClickOnShare.bind(this)
+  }
+
+
+  handleClickOnShare() {
+    const url = window.location.toString()
+
+    console.log(navigator)
+    if (navigator.share) {
+      navigator.share({
+        title: 'Invited to Dajsz',
+        text: 'Click to join: ',
+        url: url,
+      })
+        .then(() => console.log('shared'))
+        .catch((error) => console.log('error sharing', error));
+    } else {
+      navigator.clipboard.writeText(url).then(function() {
+        alert("Game link copied to clipboard.")
+      }, function(err) {
+        console.error('error copy to clipboard', err);
+      });
+    }
+  }
+
+  render() {
+    return (
+      <div className="actionable button" onClick={this.handleClickOnShare}>
+        <div className="share icon"></div>
+      </div>)
   }
 }
 
