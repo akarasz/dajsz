@@ -96,7 +96,7 @@
   background-position:right bottom;
 }
 
-/* animation for the roll class changes (otherwise it's instantaneous) */
+/* animation for the roll class changes (otherwise it"s instantaneous) */
 .yahtzee .controller .roll.counter.roll-1 div:nth-child(1),
 .yahtzee .controller .roll.counter.roll-2 div:nth-child(2),
 .yahtzee .controller .roll.counter.roll-3 div:nth-child(3) {
@@ -208,5 +208,5 @@
 }
 
 .yahtzee .scores .winner::before {
-  content: '🏆 ';
+  content: "🏆 ";
 }

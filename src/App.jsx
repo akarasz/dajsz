@@ -1,203 +1,134 @@
-import React from 'react'
-import Yahtzee from './Yahtzee'
-import './App.css'
-import * as api from './api'
-import ReactGA from 'react-ga';
-import config from './config.js'
+import React, { useState, useEffect } from "react"
+import Yahtzee from "./Yahtzee"
+import "./App.css"
+import * as api from "./api"
 
-class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleNameChange = this.handleNameChange.bind(this)
-    this.handleGameChange = this.handleGameChange.bind(this)
+const App = () => {
+  const gameFromHash = window.location.hash.substring(2)
+  const [game, setGame] = useState(gameFromHash !== "" ? gameFromHash : null)
+  const [player, setPlayer] = useState(window.localStorage.getItem("name"))
 
-    const gameFromHash = window.location.hash.substring(2)
-    this.state = {
-      game: (gameFromHash !== "" ? gameFromHash : null),
-      player: window.localStorage.getItem("name"),
-    }
-  }
-
-  handleNameChange(newName) {
+  const handleNameChange = (newName) => {
     window.localStorage.setItem("name", newName)
-    this.setState({player: newName})
+    setPlayer(newName)
   }
 
-  handleGameChange(newGame) {
-    this.setState({game: newGame})
+  const handleNewGame = (newGame) => {
+    setGame(newGame)
   }
 
-  render() {
-    return (
-      <div>
-        <Player
-          name={this.state.player}
-          onNameChange={this.handleNameChange}
-          onNewGame={this.handleGameChange}
-      />
-        { this.state.game != null ?
-          <Yahtzee player={this.state.player} game={this.state.game} /> :
-          undefined }
-      </div>
-    )
-  }
-
-  componentDidMount() {
-    if (config.tracking) {
-      ReactGA.initialize(config.tracking);
-      ReactGA.pageview(window.location.pathname + window.location.search);
-    }
-  }
+  return (
+    <div>
+      <Player
+        name={player}
+        onNameChange={handleNameChange}
+        onNewGame={handleNewGame}
+    />
+      { game != null ?
+        <Yahtzee player={player} game={game} /> :
+        undefined }
+    </div>
+  )
 }
 
-class Player extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleClickOnName = this.handleClickOnName.bind(this)
-    this.handleClickOnNewGame = this.handleClickOnNewGame.bind(this)
-  }
-
-  handleClickOnName() {
-    let newName = ""
-
-    newName = prompt("Please enter your name:", this.props.name);
-
-    if (newName != null) {
-      this.props.onNameChange(newName)
-    }
-  }
-
-  handleClickOnNewGame() {
-    api.create(this.props.name)
+const Player = ({ name, onNameChange, onNewGame }) => {
+  const handleClickOnNewGame = () => {
+    api.create(name)
       .then((gameId) => {
         window.location.hash = gameId
         return gameId
       })
       .then(gameId => gameId.substring(1))
       .then(gameId => {
-        api.join(gameId, this.props.name)
+        api.join(gameId, name)
         return gameId
       })
-      .then((gameId) => this.props.onNewGame(gameId))
+      .then((gameId) => onNewGame(gameId))
   }
 
-  render() {
-    const name = (this.props.name != null ?
-      this.props.name :
-      "<Player>")
+  const promptForName = (currentName, callback) => {
+    let newName = null
 
-    return (
-      <div className="menu">
-        <div className="actions">
-          <div className="actionable button" onClick={this.handleClickOnNewGame}><em>New Game</em></div>
-          <InviteButtonChooser />
-        </div>
+    while (newName === null) {
+      newName = prompt("Please enter your name:", currentName)
+    }
 
-        <div className="player" onClick={this.handleClickOnName}>
-          You play as <em className="actionable">{name}</em>.
-        </div>
+    callback(newName)
+  }
+
+  useEffect(() => {
+    if (name === null) {
+      promptForName(name, onNameChange)
+    }
+  }, [name, onNameChange])
+
+  const finalName = (name !== null ? name : "<Player>")
+
+  return (
+    <div className="menu">
+      <div className="actions">
+        <div className="actionable button" onClick={handleClickOnNewGame}><em>New Game</em></div>
+        <InviteButtonChooser />
       </div>
-    )
-  }
 
-  componentDidMount() {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-      .then(function(registration) {
-        console.log('Registration successful, scope is:', registration.scope);
-      })
-      .catch(function(error) {
-        console.log('Service worker registration failed, error:', error);
-      });
-    }
-
-    if (this.props.name == null) {
-      this.handleClickOnName()
-    }
-  }
+      <div className="player" onClick={() => promptForName(name, onNameChange)}>
+        You play as <em className="actionable">{finalName}</em>.
+      </div>
+    </div>)
 }
 
-const InviteButtonChooser = (props) => {
+const InviteButtonChooser = () => {
+  const url = window.location.toString()
+
   if (navigator.share) {
-    return <ShareButton />
+    return <ShareButton url={url} />
   } else if (navigator.clipboard) {
-    return <ClipboardButton />
+    return <ClipboardButton url={url} />
   } else {
     return null
   }
 }
-class ShareButton extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this)
-  }
 
-  handleClick() {
-    const url = window.location.toString()
-
+const ShareButton = ({ url }) => {
+  const handleClick = () => {
     navigator.share({
-      title: 'Invited to Dajsz',
-      text: 'Click to join: ',
+      title: "Invited to Dajsz",
+      text: "Click to join: ",
       url: url,
     })
-      .then(() => console.log('shared'))
-      .catch((error) => console.log('error sharing', error));
+      .then(() => console.log("shared"))
+      .catch((error) => console.log("error sharing", error))
   }
 
-  render() {
-    return (
-      <div className="actionable button" onClick={this.handleClick}>
-        <div className="share icon"></div>
-      </div>)
-  }
+  return (
+    <div className="actionable button" onClick={handleClick}>
+      <div className="share icon"></div>
+    </div>)
 }
 
-class ClipboardButton extends React.Component {
-  constructor(props) {
-    super(props)
+const ClipboardButton = ({ url }) => {
+  const [copied, setCopied] = useState(false)
 
-    this.state = {
-      copied: false,
-    }
-
-    this.handleClick = this.handleClick.bind(this)
-
-    this.setCopied = this.setCopied.bind(this)
-    this.resetCopied = this.resetCopied.bind(this)
-  }
-
-  handleClick() {
-    const url = window.location.toString()
-
+  const handleClick = () => {
     navigator.clipboard
       .writeText(url)
-      .then(this.setCopied)
+      .then(() => setCopied(true))
   }
 
-  setCopied() {
-    this.setState({copied: true})
+  if (copied) {
+    setTimeout(() => setCopied(false), 5000)
   }
 
-  resetCopied() {
-    this.setState({copied: false})
+  const classes = ["clipboard", "icon"]
+  if (copied) {
+    classes.push("copied")
   }
+  const className = classes.join(" ")
 
-  render() {
-    if (this.state.copied) {
-      setTimeout(this.resetCopied, 5000)
-    }
-
-    const classes = ["clipboard", "icon"]
-    if (this.state.copied) {
-      classes.push("copied")
-    }
-    const className = classes.join(" ")
-
-    return (
-      <div className="actionable button" onClick={this.handleClick}>
-        <div className={className}></div>
-      </div>)
-  }
+  return (
+    <div className="actionable button" onClick={handleClick}>
+      <div className={className}></div>
+    </div>)
 }
 
 export default App

@@ -1,7 +1,7 @@
-import React from 'react'
-import './Yahtzee.css'
-import * as api from './api'
-import config from './config.js'
+import React from "react"
+import "./Yahtzee.css"
+import * as api from "./api"
+import config from "./config.js"
 
 class Yahtzee extends React.Component {
   constructor(props) {
@@ -93,13 +93,13 @@ class Yahtzee extends React.Component {
         }
       })
       .then((__) => {
-        const ws = new WebSocket(config.baseUri.ws + '/' + this.props.game + '/ws')
+        const ws = new WebSocket(config.baseUri.ws + "/" + this.props.game + "/ws")
 
         ws.onmessage = (e) => {
           const event = JSON.parse(JSON.parse(e.data))
-          if (event.Action === 'roll') {
+          if (event.Action === "roll") {
             this.setState({rolling: true})
-          } else if (event.Action === 'score') {
+          } else if (event.Action === "score") {
             const currentCategories = Object.keys(this.state.Players.filter(p => p.User === event.User)[0].ScoreSheet)
             const newCategories = Object.keys(event.Data.Players.filter(p => p.User === event.User)[0].ScoreSheet)
             const diff = newCategories.filter(c => !currentCategories.includes(c))
@@ -158,75 +158,68 @@ class Yahtzee extends React.Component {
   }
 }
 
-const Dices = (props) => (
+const Dices = ({ dices, rolling, active, onLock }) => (
   <div className="dices">
-    {props.dices.map((d, i) => {
+    {dices.map((d, i) => {
       return <Dice
         index={i}
         key={i}
         value={d.Value}
         locked={d.Locked}
-        rolling={props.rolling}
-        active={props.active}
-        onLock={props.onLock} />
+        rolling={rolling}
+        active={active}
+        onLock={onLock} />
     })}
   </div>
 )
 
-class Dice extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick() {
-    if (this.props.active) {
-      this.props.onLock(this.props.index)
+const Dice = ({ active, rolling, locked, value, index, onLock }) => {
+  const handleClick = () => {
+    if (active) {
+      onLock(index)
     }
   }
 
-  render() {
-    let classes = ["dice"]
-    if (this.props.rolling && !this.props.locked) {
-      classes.push("rolling")
-    } else {
-      classes.push("face-" + this.props.value)
-    }
-    if (this.props.locked) {
-      classes.push("locked")
-    }
-    if (this.props.active) {
-      classes.push("actionable")
-    }
-
-    return <div className={classes.join(" ")} onClick={this.handleClick} />
+  const classes = ["dice"]
+  if (rolling && !locked) {
+    classes.push("rolling")
+  } else {
+    classes.push("face-" + value)
   }
+  if (locked) {
+    classes.push("locked")
+  }
+  if (active) {
+    classes.push("actionable")
+  }
+
+  return <div className={classes.join(" ")} onClick={handleClick} />
 }
 
-const Controller = (props) => (
+const Controller = ({ rollCount, active, onRoll }) => (
   <div className="controller">
-    <RollCount rollCount={props.rollCount} />
-    <RollButton active={props.active} onRoll={props.onRoll} />
+    <RollCount rollCount={rollCount} />
+    <RollButton active={active} onRoll={onRoll} />
   </div>
 )
 
-const RollCount = (props) => {
-  let classes = ['roll', 'counter', 'roll-' + props.rollCount]
-  const className = classes.join(' ')
+const RollCount = ({ rollCount }) => {
+  const classes = ["roll", "counter", "roll-" + rollCount]
+  const className = classes.join(" ")
 
   return <div className={className}><div /><div /><div /></div>
 }
 
-const RollButton = (props) => {
-  let classes = ['roll', 'button']
-  if (!props.active) {
-    classes.push('disabled')
+const RollButton = ({ active, onRoll }) => {
+  const classes = ["roll", "button"]
+  if (!active) {
+    classes.push("disabled")
   }
-  const className = classes.join(' ')
+  const className = classes.join(" ")
 
   let onClick = undefined
-  if (props.active) {
-    onClick = props.onRoll
+  if (active) {
+    onClick = onRoll
   }
 
   return <div className={className} onClick={onClick}>Roll</div>
@@ -266,10 +259,10 @@ const Scores = (props) => (
   </div>
 )
 
-const ScoresHeader = (props) => {
-  var isWinner = []
-  if (props.round === 13) {
-    const total = props.players
+const ScoresHeader = ({ round, players }) => {
+  let isWinner = []
+  if (round === 13) {
+    const total = players
         .map(p => p.ScoreSheet)
         .map(scores => Object.values(scores).reduce((a, b) => a + b, 0))
 
@@ -282,81 +275,74 @@ const ScoresHeader = (props) => {
   return (
     <tr>
       <th/>
-      {props.players.map((p, i) => {
+      {players.map((p, i) => {
         return <th key={i} className={isWinner[i] ? "winner" : ""}>{p.User}</th>
       })}
     </tr>
   )
 }
 
-class ScoreLine extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick() {
-    if (this.props.category === 'bonus') {
+const ScoreLine = (props) => {
+  const handleClick = () => {
+    if (props.category === "bonus") {
       return
     }
 
-    this.props.onScore(this.props.category)
+    props.onScore(props.category)
   }
 
-  render() {
-    return <tr>
-      <td>{this.props.title}</td>
-      {this.props.players.map((p, i) => {
-        const currentPlayer = parseInt(this.props.currentPlayer) === i && this.props.round < 13
-        const hasScore = this.props.category in p.ScoreSheet
-        const hasSuggestions = Object.keys(this.props.suggestions).length !== 0
-        const actionable = (this.props.category !== 'bonus' && this.props.active)
+  return <tr>
+    <td>{props.title}</td>
+    {props.players.map((p, i) => {
+      const currentPlayer = parseInt(props.currentPlayer) === i && props.round < 13
+      const hasScore = props.category in p.ScoreSheet
+      const hasSuggestions = Object.keys(props.suggestions).length !== 0
+      const actionable = (props.category !== "bonus" && props.active)
 
-        let bonusMessage
-        if (this.props.category === 'bonus' && !('bonus' in p.ScoreSheet)) {
-          const total =
-            (p.ScoreSheet['ones'] || 0) +
-            (p.ScoreSheet['twos'] || 0) +
-            (p.ScoreSheet['threes'] || 0) +
-            (p.ScoreSheet['fours'] || 0) +
-            (p.ScoreSheet['fives'] || 0) +
-            (p.ScoreSheet['sixes'] || 0)
-          const remains = 63 - total
-          if (remains > 0) {
-            bonusMessage = "still need " + remains
-          }
+      let bonusMessage
+      if (props.category === "bonus" && !("bonus" in p.ScoreSheet)) {
+        const total =
+          (p.ScoreSheet["ones"] || 0) +
+          (p.ScoreSheet["twos"] || 0) +
+          (p.ScoreSheet["threes"] || 0) +
+          (p.ScoreSheet["fours"] || 0) +
+          (p.ScoreSheet["fives"] || 0) +
+          (p.ScoreSheet["sixes"] || 0)
+        const remains = 63 - total
+        if (remains > 0) {
+          bonusMessage = "still need " + remains
         }
-        bonusMessage = hasSuggestions ? bonusMessage : ""
+      }
+      bonusMessage = hasSuggestions ? bonusMessage : ""
 
-        const val = (currentPlayer && !hasScore) ?
-            (this.props.category !== 'bonus' ?
-                this.props.suggestions[this.props.category] :
-                bonusMessage) :
-            p.ScoreSheet[this.props.category]
+      const val = (currentPlayer && !hasScore) ?
+          (props.category !== "bonus" ?
+              props.suggestions[props.category] :
+              bonusMessage) :
+          p.ScoreSheet[props.category]
 
-        let classNames = []
-        if (currentPlayer) {
-          classNames.push('current-player')
-        }
-        if (!hasScore) {
-          classNames.push('suggestion')
-        }
-        if (actionable) {
-          classNames.push('actionable')
-        }
-        if (this.props.players[i].User === this.props.lastScoredUser &&
-            this.props.lastScoredCategory.includes(this.props.category) &&
-            !currentPlayer) {
-          classNames.push('scored')
-        }
+      let classNames = []
+      if (currentPlayer) {
+        classNames.push("current-player")
+      }
+      if (!hasScore) {
+        classNames.push("suggestion")
+      }
+      if (actionable) {
+        classNames.push("actionable")
+      }
+      if (props.players[i].User === props.lastScoredUser &&
+          props.lastScoredCategory.includes(props.category) &&
+          !currentPlayer) {
+        classNames.push("scored")
+      }
 
-        return (
-          <td className={classNames.join(' ')} key={i} onClick={actionable ? this.handleClick : undefined}>
-           {val}
-          </td>)
-      })}
-    </tr>
-  }
+      return (
+        <td className={classNames.join(" ")} key={i} onClick={actionable ? handleClick : undefined}>
+         {val}
+        </td>)
+    })}
+  </tr>
 }
 
-export default Yahtzee;
+export default Yahtzee
