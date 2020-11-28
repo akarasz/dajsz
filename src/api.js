@@ -30,32 +30,21 @@ export const create = (user) => (
   })
 )
 
-export const load = (gameID, user) => (
+export const load = (gameID, user, onSuccess) => (
   fetch(config.baseUri.http + "/" + gameID, {
     headers: headers(user),
   })
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      return {
-        ...body,
-        isLoaded: true,
-      }
-    } else if (code === 404) {
-      return {
-        isLoaded: false,
-        error: "not found",
-      }
+      onSuccess(body)
     } else {
-      return {
-        isLoaded: false,
-        error: "error",
-      }
+      throw (code, body)
     }
   })
 )
 
-export const join = (gameID, user) => (
+export const join = (gameID, user, onSuccess) => (
   fetch(config.baseUri.http + "/" + gameID + "/join", {
     method: "POST",
     headers: headers(user),
@@ -63,14 +52,14 @@ export const join = (gameID, user) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 201) {
-      return body
+      onSuccess(body)
     } else {
       throw (code, body)
     }
   })
 )
 
-export const roll = (gameID, user) => (
+export const roll = (gameID, user, onSuccess) => (
   fetch(config.baseUri.http + "/" + gameID + "/roll", {
     method: "POST",
     headers: headers(user),
@@ -78,14 +67,14 @@ export const roll = (gameID, user) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      return body
+      onSuccess(body)
     } else {
       throw (code, body)
     }
   })
 )
 
-export const lock = (gameID, user, diceIdx) => (
+export const lock = (gameID, user, diceIdx, onSuccess) => (
   fetch(config.baseUri.http + "/" + gameID + "/lock/" + diceIdx, {
     method: "POST",
     headers: headers(user),
@@ -93,14 +82,14 @@ export const lock = (gameID, user, diceIdx) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      return body
+      onSuccess(body)
     } else {
       throw (code, body)
     }
   })
 )
 
-export const score = (gameID, user, category) => (
+export const score = (gameID, user, category, onSuccess) => (
   fetch(config.baseUri.http + "/" + gameID + "/score", {
     method: "POST",
     headers: headers(user),
@@ -109,14 +98,14 @@ export const score = (gameID, user, category) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      return body
+      onSuccess(body)
     } else {
       throw (code, body)
     }
   })
 )
 
-export const suggestions = (user, dices) => (
+export const suggestions = (user, dices, onSuccess) => (
   fetch(config.baseUri.http + "/score?dices=" + dices.map(d => d.Value).join(","), {
     method: "GET",
     headers: headers(user),
@@ -124,7 +113,7 @@ export const suggestions = (user, dices) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      return body
+      onSuccess(body)
     } else {
       throw (code, body)
     }

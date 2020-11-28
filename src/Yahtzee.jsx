@@ -17,50 +17,7 @@ const Yahtzee = ({ gameId, player }) => {
     setGame(current => { return { ...current, ...fresh } })
   }
 
-  const offerJoin = () => {
-    const gameNotStartedYet =
-      game.RollCount === 0 &&
-      game.CurrentPlayer === 0 &&
-      game.Round === 0
-    const alreadyJoined = game.Players.map((p) => p.User).includes(player)
-
-    if (gameNotStartedYet && !alreadyJoined) {
-      if (window.confirm("Game hasn't started yet! Do you want to join?")) {
-        api.join(gameId, player)
-          .then((res) => updateGame(res))
-      }
-    }
-  }
-
-  const loadGame = () => {
-    api.load(gameId, player)
-      .then((res) => {
-        if (res.isLoaded) {
-          updateGame(res)
-        }
-      })
-  }
-
-  const handleRoll = () => {
-    api.roll(gameId, player)
-      .then((res) => {
-        updateGame(res)
-      })
-  }
-
-  const handleScore = (category) => {
-    api.score(gameId, player, category)
-      .then((res) => {
-        updateGame(res)
-      })
-  }
-
-  const handleLock = (idx) => {
-    api.lock(gameId, player, idx)
-      .then((res) => updateGame(res))
-  }
-
-  useEffect(() => {
+  useEffect(() => { // handle suggestions
     if (rolling) {
       return
     }
@@ -76,27 +33,48 @@ const Yahtzee = ({ gameId, player }) => {
       return
     }
 
-    api.suggestions(player, game.Dices)
-      .then((res) => {
-        setSuggestions(res)
-      })
-    }, [rolling, game.RollCount, game.Players, game.CurrentPlayer]) // eslint-disable-line react-hooks/exhaustive-deps
+    api.suggestions(player, game.Dices, setSuggestions)
+  }, [rolling, game.RollCount, game.Players, game.CurrentPlayer]) // eslint-disable-line react-hooks/exhaustive-deps
 
 
-  useEffect(loadGame, [gameId]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { // handle game loading
+    setLoaded(false)
+    setGame({})
 
-  useEffect(() => {
+    api.load(gameId, player, (data) => {
+      updateGame(data)
+      setLoaded(true)
+    })
+  }, [gameId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => { // handle setting loaded state
     setLoaded('Players' in game)
   }, [game])
 
-  useEffect(() => {
-    if (!loaded) {
+  useEffect(() => { // handle offering to join
+    if (!game.Players || !loaded) {
       return
     }
-    offerJoin()
-  }, [loaded]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
+    const gameNotStartedYet =
+      game.RollCount === 0 &&
+      game.CurrentPlayer === 0 &&
+      game.Round === 0
+    const alreadyJoined = game.Players.map((p) => p.User).includes(player)
+
+    if (gameNotStartedYet && game.Players.length === 0) {
+      api.join(gameId, player, updateGame)
+      return
+    }
+
+    if (gameNotStartedYet && !alreadyJoined) {
+      if (window.confirm("Game hasn't started yet! Do you want to join?")) {
+        api.join(gameId, player, updateGame)
+      }
+    }
+  }, [loaded, gameId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => { // handle websocket creation
     if (!gameId) {
       return
     }
@@ -108,7 +86,7 @@ const Yahtzee = ({ gameId, player }) => {
     }
   }, [gameId])
 
-  useEffect(() => {
+  useEffect(() => { // handle websocket onevent
     if (!ws.current) {
       return
     }
@@ -129,7 +107,7 @@ const Yahtzee = ({ gameId, player }) => {
     }
   }, [game.Players])
 
-  useEffect(() => {
+  useEffect(() => { // handle stopping roll animation
     if (!rolling) {
       return
     }
@@ -139,7 +117,7 @@ const Yahtzee = ({ gameId, player }) => {
     }, 200)
   }, [rolling]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
+  useEffect(() => { // handle stopping blinking last score
     if (!lastScore) {
       return
     }
@@ -153,24 +131,28 @@ const Yahtzee = ({ gameId, player }) => {
 
   const myTurn = game.Players.length > 0 && game.Players[game.CurrentPlayer].User === player
 
+  const canLock = myTurn && game.RollCount > 0 && game.RollCount < 3
+  const canRoll = myTurn && game.RollCount < 3 && game.Round < 13 && !rolling
+  const canScroll = myTurn && game.RollCount > 0 && !rolling
+
   return (
     <div id={gameId} className="yahtzee">
       <Dices
         dices={game.Dices}
         rolling={rolling}
-        active={myTurn && game.RollCount > 0 && game.RollCount < 3}
-        onLock={handleLock} />
+        active={canLock}
+        onLock={(idx) => api.lock(gameId, player, idx, updateGame)} />
       <Controller
         rollCount={game.RollCount}
-        active={myTurn && game.RollCount < 3 && game.Round < 13 && !rolling}
-        onRoll={handleRoll} />
+        active={canRoll}
+        onRoll={() => api.roll(gameId, player, updateGame)} />
       <Scores
         players={game.Players}
         suggestions={suggestions}
         currentPlayer={game.CurrentPlayer}
         round={game.Round}
-        active={myTurn && game.RollCount > 0 && !rolling}
-        onScore={handleScore}
+        active={canScroll}
+        onScore={(category) => api.score(gameId, player, category, updateGame)}
         lastScore={lastScore} />
     </div>)
 }

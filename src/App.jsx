@@ -38,10 +38,6 @@ const Player = ({ name, onNameChange, onNewGame }) => {
         return gameId
       })
       .then(gameId => gameId.substring(1))
-      .then(gameId => {
-        api.join(gameId, name)
-        return gameId
-      })
       .then((gameId) => onNewGame(gameId))
   }
 
