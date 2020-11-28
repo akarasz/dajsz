@@ -4,17 +4,16 @@ import "./App.css"
 import * as api from "./api"
 
 const App = () => {
-  const gameFromHash = window.location.hash.substring(2)
-  const [game, setGame] = useState(gameFromHash !== "" ? gameFromHash : null)
-  const [player, setPlayer] = useState(window.localStorage.getItem("name"))
+  const [gameId, setGameId] = useState(window.location.hash.substring(2) || null)
+  const [player, setPlayer] = useState(window.localStorage.getItem("name") || null)
 
   const handleNameChange = (newName) => {
     window.localStorage.setItem("name", newName)
     setPlayer(newName)
   }
 
-  const handleNewGame = (newGame) => {
-    setGame(newGame)
+  const handleNewGame = (newGameId) => {
+    setGameId(newGameId)
   }
 
   return (
@@ -24,8 +23,8 @@ const App = () => {
         onNameChange={handleNameChange}
         onNewGame={handleNewGame}
     />
-      { game != null ?
-        <Yahtzee player={player} game={game} /> :
+      { gameId != null ?
+        <Yahtzee player={player} gameId={gameId} /> :
         undefined }
     </div>
   )

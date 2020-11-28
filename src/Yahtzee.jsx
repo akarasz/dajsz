@@ -1,161 +1,178 @@
-import React from "react"
+import React, { useState, useEffect, useRef } from "react"
 import "./Yahtzee.css"
 import * as api from "./api"
 import config from "./config.js"
 
-class Yahtzee extends React.Component {
-  constructor(props) {
-    super(props)
-    this.loadGame = this.loadGame.bind(this)
-    this.offerJoin = this.offerJoin.bind(this)
-    this.handleRoll = this.handleRoll.bind(this)
-    this.handleRollStop = this.handleRollStop.bind(this)
-    this.handleLock = this.handleLock.bind(this)
-    this.handleScore = this.handleScore.bind(this)
-    this.handleScoreStop = this.handleScoreStop.bind(this)
-    this.handleSuggestionRefresh = this.handleSuggestionRefresh.bind(this)
-    this.state = {
-      isLoaded: false
-    }
+const Yahtzee = ({ gameId, player }) => {
+
+  const [loaded, setLoaded] = useState(false)
+  const [rolling, setRolling] = useState(false)
+  const [lastScore, setLastScore] = useState(null)
+  const [game, setGame] = useState({})
+  const [suggestions, setSuggestions] = useState({})
+
+  const ws = useRef(null)
+
+  const updateGame = (fresh) => {
+    setGame(current => { return { ...current, ...fresh } })
   }
 
-  render() {
-    if (!this.state.isLoaded) {
-      return <p>Loading game <strong>{this.props.game}</strong>... {this.state.error}</p>
-    }
-
-    if (this.state.rolling) {
-      setTimeout(() => this.handleRollStop(), 200)
-    }
-
-    if (this.state.lastScoredUser !== undefined || this.state.lastScoredCategory !== undefined) {
-      setTimeout(() => this.handleScoreStop(), 2000)
-    }
-
-    const myTurn = this.state.Players.length > 0 && this.state.Players[this.state.CurrentPlayer].User === this.props.player
-
-    return (
-      <div id={this.props.game} className="yahtzee">
-        <Dices
-          dices={this.state.Dices}
-          rolling={this.state.rolling}
-          active={myTurn && this.state.RollCount > 0 && this.state.RollCount < 3}
-          onLock={this.handleLock} />
-        <Controller
-          rollCount={this.state.RollCount}
-          active={myTurn && this.state.RollCount < 3 && this.state.Round < 13 && !this.state.rolling}
-          onRoll={this.handleRoll} />
-        <Scores
-          players={this.state.Players}
-          suggestions={this.state.suggestions || {}}
-          currentPlayer={this.state.CurrentPlayer}
-          round={this.state.Round}
-          active={myTurn && this.state.RollCount > 0 && !this.state.rolling}
-          onScore={this.handleScore}
-          lastScoredUser={this.state.lastScoredUser}
-          lastScoredCategory={this.state.lastScoredCategory} />
-      </div>
-    )
-  }
-
-  componentDidMount() {
-    this.loadGame()
-  }
-
-  offerJoin() {
+  const offerJoin = () => {
     const gameNotStartedYet =
-      this.state.RollCount === 0 &&
-      this.state.CurrentPlayer === 0 &&
-      this.state.Round === 0
-    const alreadyJoined = this.state.Players.map((p) => p.User).includes(this.props.player)
+      game.RollCount === 0 &&
+      game.CurrentPlayer === 0 &&
+      game.Round === 0
+    const alreadyJoined = game.Players.map((p) => p.User).includes(player)
 
     if (gameNotStartedYet && !alreadyJoined) {
       if (window.confirm("Game hasn't started yet! Do you want to join?")) {
-        api.join(this.props.game, this.props.player)
-          .then((res) => this.setState(res))
+        api.join(gameId, player)
+          .then((res) => updateGame(res))
       }
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.game !== this.props.game) {
-      this.loadGame()
-    }
-  }
-
-  loadGame() {
-    api.load(this.props.game, this.props.player)
+  const loadGame = () => {
+    api.load(gameId, player)
       .then((res) => {
         if (res.isLoaded) {
-          this.setState(res)
-          this.handleSuggestionRefresh(res.Dices)
-          this.offerJoin()
-        }
-      })
-      .then((__) => {
-        const ws = new WebSocket(config.baseUri.ws + "/" + this.props.game + "/ws")
-
-        ws.onmessage = (e) => {
-          const event = JSON.parse(JSON.parse(e.data))
-          if (event.Action === "roll") {
-            this.setState({rolling: true})
-          } else if (event.Action === "score") {
-            const currentCategories = Object.keys(this.state.Players.filter(p => p.User === event.User)[0].ScoreSheet)
-            const newCategories = Object.keys(event.Data.Players.filter(p => p.User === event.User)[0].ScoreSheet)
-            const diff = newCategories.filter(c => !currentCategories.includes(c))
-
-            this.setState({
-              lastScoredUser: event.User,
-              lastScoredCategory: diff,
-            })
-          }
-          this.setState(event.Data)
+          updateGame(res)
         }
       })
   }
 
-  handleRoll() {
-    api.roll(this.props.game, this.props.player)
+  const handleRoll = () => {
+    api.roll(gameId, player)
       .then((res) => {
-        this.setState(res)
+        updateGame(res)
       })
   }
 
-  handleRollStop() {
-    this.setState({rolling: false})
-    this.handleSuggestionRefresh(this.state.Dices)
+  const handleScore = (category) => {
+    api.score(gameId, player, category)
+      .then((res) => {
+        updateGame(res)
+      })
   }
 
-  handleSuggestionRefresh(dices) {
-    if (this.state.RollCount === 0 || this.state.Players.length === 0 ||
-      this.state.Players[this.state.CurrentPlayer].User !== this.props.player) {
-      this.setState({suggestions: {}})
+  const handleLock = (idx) => {
+    api.lock(gameId, player, idx)
+      .then((res) => updateGame(res))
+  }
+
+  useEffect(() => {
+    if (rolling) {
       return
     }
 
-    api.suggestions(this.props.player, dices)
-      .then((res) => this.setState({suggestions: res}))
-  }
+    if (!game.Players) {
+      return
+    }
 
-  handleScore(category) {
-    api.score(this.props.game, this.props.player, category)
+    if (game.RollCount === 0 ||
+        game.Players.length === 0 ||
+        game.Players[game.CurrentPlayer].User !== player) {
+      setSuggestions({})
+      return
+    }
+
+    api.suggestions(player, game.Dices)
       .then((res) => {
-        this.setState(res)
-        this.handleSuggestionRefresh(res.Dices)
+        setSuggestions(res)
       })
+    }, [rolling, game.RollCount, game.Players, game.CurrentPlayer]) // eslint-disable-line react-hooks/exhaustive-deps
+
+
+  useEffect(loadGame, [gameId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setLoaded('Players' in game)
+  }, [game])
+
+  useEffect(() => {
+    if (!loaded) {
+      return
+    }
+    offerJoin()
+  }, [loaded]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!gameId) {
+      return
+    }
+
+    ws.current = new WebSocket(config.baseUri.ws + "/" + gameId + "/ws")
+
+    return () => {
+      ws.current.close();
+    }
+  }, [gameId])
+
+  useEffect(() => {
+    if (!ws.current) {
+      return
+    }
+
+    ws.current.onmessage = (e) => {
+      const event = JSON.parse(JSON.parse(e.data))
+      if (event.Action === "roll") {
+        setRolling(true)
+      } else if (event.Action === "score") {
+        const currentCategories = Object.keys(game.Players.filter(p => p.User === event.User)[0].ScoreSheet)
+        const newCategories = Object.keys(event.Data.Players.filter(p => p.User === event.User)[0].ScoreSheet)
+        const diff = newCategories.filter(c => !currentCategories.includes(c))
+
+        setLastScore({user: event.User, category: diff})
+      }
+
+      updateGame(event.Data)
+    }
+  }, [game.Players])
+
+  useEffect(() => {
+    if (!rolling) {
+      return
+    }
+
+    setTimeout(() => {
+      setRolling(false)
+    }, 200)
+  }, [rolling]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!lastScore) {
+      return
+    }
+
+    setTimeout(() => setLastScore(null), 2000)
+  }, [lastScore])
+
+  if (!loaded) {
+    return <p>Loading game <strong>{gameId}</strong>...</p>
   }
 
-  handleScoreStop() {
-    this.setState({
-      lastScoredUser: undefined,
-      lastScoredCategory: undefined
-    })
-  }
+  const myTurn = game.Players.length > 0 && game.Players[game.CurrentPlayer].User === player
 
-  handleLock(idx) {
-    api.lock(this.props.game, this.props.player, idx)
-      .then((res) => this.setState(res))
-  }
+  return (
+    <div id={gameId} className="yahtzee">
+      <Dices
+        dices={game.Dices}
+        rolling={rolling}
+        active={myTurn && game.RollCount > 0 && game.RollCount < 3}
+        onLock={handleLock} />
+      <Controller
+        rollCount={game.RollCount}
+        active={myTurn && game.RollCount < 3 && game.Round < 13 && !rolling}
+        onRoll={handleRoll} />
+      <Scores
+        players={game.Players}
+        suggestions={suggestions}
+        currentPlayer={game.CurrentPlayer}
+        round={game.Round}
+        active={myTurn && game.RollCount > 0 && !rolling}
+        onScore={handleScore}
+        lastScore={lastScore} />
+    </div>)
 }
 
 const Dices = ({ dices, rolling, active, onLock }) => (
@@ -331,8 +348,9 @@ const ScoreLine = (props) => {
       if (actionable) {
         classNames.push("actionable")
       }
-      if (props.players[i].User === props.lastScoredUser &&
-          props.lastScoredCategory.includes(props.category) &&
+      if (props.lastScore !== null &&
+          props.lastScore.user === props.players[i].User &&
+          props.lastScore.category.includes(props.category) &&
           !currentPlayer) {
         classNames.push("scored")
       }
