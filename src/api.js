@@ -16,6 +16,8 @@ const headers = (user) => (
   })
 )
 
+const doNothing = (data) => { return }
+
 export const create = (user) => (
   fetch(config.baseUri.http, {
     method: "POST",
@@ -37,7 +39,7 @@ export const load = (gameID, user, onSuccess) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      onSuccess(body)
+      (onSuccess || doNothing)(body)
     } else {
       throw (code, body)
     }
@@ -52,7 +54,7 @@ export const join = (gameID, user, onSuccess) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 201) {
-      onSuccess(body)
+      (onSuccess || doNothing)(body)
     } else {
       throw (code, body)
     }
@@ -67,7 +69,7 @@ export const roll = (gameID, user, onSuccess) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      onSuccess(body)
+      (onSuccess || doNothing)(body)
     } else {
       throw (code, body)
     }
@@ -82,7 +84,7 @@ export const lock = (gameID, user, diceIdx, onSuccess) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      onSuccess(body)
+      (onSuccess || doNothing)(body)
     } else {
       throw (code, body)
     }
@@ -98,7 +100,7 @@ export const score = (gameID, user, category, onSuccess) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      onSuccess(body)
+      (onSuccess || doNothing)(body)
     } else {
       throw (code, body)
     }
@@ -113,7 +115,7 @@ export const suggestions = (user, dices, onSuccess) => (
   .then((res) => Promise.all([res.status, res.json()]))
   .then(([code, body]) => {
     if (code === 200) {
-      onSuccess(body)
+      (onSuccess || doNothing)(body)
     } else {
       throw (code, body)
     }

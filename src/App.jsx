@@ -104,14 +104,18 @@ const ShareButton = ({ url }) => {
 const ClipboardButton = ({ url }) => {
   const [copied, setCopied] = useState(false)
 
+  useEffect(() => {
+    if (!copied) {
+      return
+    }
+
+    setTimeout(() => setCopied(false), 5000)
+  }, [copied])
+
   const handleClick = () => {
     navigator.clipboard
       .writeText(url)
       .then(() => setCopied(true))
-  }
-
-  if (copied) {
-    setTimeout(() => setCopied(false), 5000)
   }
 
   const classes = ["clipboard", "icon"]
