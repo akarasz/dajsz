@@ -139,13 +139,17 @@ const Yahtzee = ({ gameId, player }) => {
     return <p>Loading game <strong>{gameId}</strong>...</p>
   }
 
-  const activeTurn = game.Players.length > 0 && game.Players[game.CurrentPlayer].User === player
-  const canLock = activeTurn && game.RollCount > 0 && game.RollCount < 3
-  const canRoll = activeTurn && game.RollCount < 3 && game.Round < 13 && !rolling
-  const canScroll = activeTurn && game.RollCount > 0 && !rolling
+  const gameEnded = game.Round >= 13
+  const beforeFirstRoll = game.RollCount <= 0
+  const turnEnded = game.RollCount >= 3
+  const playersTurn = game.Players.length > 0 && game.Players[game.CurrentPlayer].User === player
+
+  const canLock = playersTurn && !beforeFirstRoll && !turnEnded
+  const canRoll = playersTurn && !turnEnded && !gameEnded && !rolling
+  const canScore = playersTurn && !beforeFirstRoll && !rolling
   const handleLock = (idx) => api.lock(gameId, player, idx)
   const handleRoll = () => api.roll(gameId, player)
-  const handleScroll = (category) => api.score(gameId, player, category)
+  const handleScore = (category) => api.score(gameId, player, category)
 
   return (
     <div id={gameId} className="yahtzee">
@@ -161,10 +165,11 @@ const Yahtzee = ({ gameId, player }) => {
       <Scores
         players={game.Players}
         suggestions={suggestions}
-        currentPlayer={game.CurrentPlayer}
-        round={game.Round}
-        active={canScroll}
-        onScore={handleScroll}
+        activePlayerIdx={game.CurrentPlayer}
+        gameEnded={gameEnded}
+        canClick={canScore}
+        onScore={handleScore}
+        playersTurn={playersTurn}
         lastScore={lastScore} />
     </div>)
 }
@@ -240,7 +245,7 @@ const Scores = (props) => (
   <div className="scores">
     <table>
       <thead>
-        <ScoresHeader players={props.players} round={props.round} />
+        <ScoresHeader players={props.players} gameEnded={props.gameEnded} />
       </thead>
       <tbody>
         <ScoreLine {...props} title="Aces" category="ones" />
@@ -270,9 +275,9 @@ const Scores = (props) => (
   </div>
 )
 
-const ScoresHeader = ({ round, players }) => {
+const ScoresHeader = ({ gameEnded, players }) => {
   let isWinner = []
-  if (round === 13) {
+  if (gameEnded) {
     const total = players
         .map(p => p.ScoreSheet)
         .map(scores => Object.values(scores).reduce((a, b) => a + b, 0))
@@ -293,68 +298,79 @@ const ScoresHeader = ({ round, players }) => {
   )
 }
 
-const ScoreLine = (props) => {
+const ScoreLine = ({ title, category, players, activePlayerIdx, suggestions, canClick, playersTurn, lastScore, gameEnded, onScore }) => {
   const handleClick = () => {
-    if (props.category === "bonus") {
+    if (category === "bonus") {
       return
     }
 
-    props.onScore(props.category)
+    onScore(category)
   }
 
-  return <tr>
-    <td>{props.title}</td>
-    {props.players.map((p, i) => {
-      const currentPlayer = parseInt(props.currentPlayer) === i && props.round < 13
-      const hasScore = props.category in p.ScoreSheet
-      const hasSuggestions = Object.keys(props.suggestions).length !== 0
-      const actionable = (props.category !== "bonus" && props.active)
+  return (
+    <tr>
+      <td>{title}</td>
+      {players.map((p, i) => <ScoreCell
+          scoreSheet={p.ScoreSheet}
+          category={category}
+          suggestion={suggestions[category]}
+          player={players[i]}
+          canClick={canClick}
+          playersTurn={playersTurn}
+          activePlayer={i === parseInt(activePlayerIdx)}
+          gameEnded={gameEnded}
+          lastScore={lastScore}
+          onClick={handleClick} />
+      )}
+    </tr>)
+}
 
-      let bonusMessage
-      if (props.category === "bonus" && !("bonus" in p.ScoreSheet)) {
-        const total =
-          (p.ScoreSheet["ones"] || 0) +
-          (p.ScoreSheet["twos"] || 0) +
-          (p.ScoreSheet["threes"] || 0) +
-          (p.ScoreSheet["fours"] || 0) +
-          (p.ScoreSheet["fives"] || 0) +
-          (p.ScoreSheet["sixes"] || 0)
-        const remains = 63 - total
-        if (remains > 0) {
-          bonusMessage = "still need " + remains
-        }
-      }
-      bonusMessage = hasSuggestions ? bonusMessage : ""
+const ScoreCell = ({ scoreSheet, category, suggestion, player, canClick, playersTurn, activePlayer, gameEnded, lastScore, onClick }) => {
 
-      const val = (currentPlayer && !hasScore) ?
-          (props.category !== "bonus" ?
-              props.suggestions[props.category] :
-              bonusMessage) :
-          p.ScoreSheet[props.category]
+  const sumUpperSection = () => {
+    return (scoreSheet["ones"] || 0) +
+      (scoreSheet["twos"] || 0) +
+      (scoreSheet["threes"] || 0) +
+      (scoreSheet["fours"] || 0) +
+      (scoreSheet["fives"] || 0) +
+      (scoreSheet["sixes"] || 0)
+  }
 
-      let classNames = []
-      if (currentPlayer) {
-        classNames.push("current-player")
-      }
-      if (!hasScore) {
-        classNames.push("suggestion")
-      }
-      if (actionable) {
-        classNames.push("actionable")
-      }
-      if (props.lastScore !== null &&
-          props.lastScore.user === props.players[i].User &&
-          props.lastScore.category.includes(props.category) &&
-          !currentPlayer) {
-        classNames.push("scored")
-      }
+  const bonus = category === "bonus"
+  const hasScore = category in scoreSheet
+  const scoredAnimation = lastScore && lastScore.user === player.User &&
+      lastScore.category.includes(category) && !activePlayer && !gameEnded
 
-      return (
-        <td className={classNames.join(" ")} key={i} onClick={actionable ? handleClick : undefined}>
-         {val}
-        </td>)
-    })}
-  </tr>
+  let val = scoreSheet[category]
+  if (!hasScore) {
+    if (bonus) {
+      const remains = 63 - sumUpperSection()
+      if (remains > 0) {
+        val = "need " + remains + " more"
+      }
+    } else if (activePlayer) {
+      val = suggestion
+    }
+  }
+
+  const classes = []
+  if (activePlayer && !gameEnded) {
+    classes.push("current-player")
+  }
+  if (!hasScore) {
+    classes.push("suggestion")
+  }
+  if (canClick && !bonus) {
+    classes.push("actionable")
+  }
+  if (scoredAnimation) {
+    classes.push("scored")
+  }
+  const className = classes.join(" ")
+
+  const handleClick = canClick ? onClick : undefined
+
+  return <td className={className} key={category} onClick={handleClick}>{val}</td>
 }
 
 export default Yahtzee
