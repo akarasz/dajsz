@@ -1,9 +1,15 @@
+@media (min-width: 30em) {
+  .menu {
+    max-width: 40em;
+  }
+}
+
 .menu {
   display: flex;
 
   justify-content: space-between;
   align-items: center;
-  margin: 1em 0;
+  margin: 1em auto;
 }
 
 .menu .actions {

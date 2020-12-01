@@ -5,6 +5,10 @@ import config from "./config.js"
 
 const Yahtzee = ({ gameId, player }) => {
 
+  if (!gameId) {
+    return null
+  }
+
   const [loaded, setLoaded] = useState(false)
   const [game, setGame] = useState({})
   const [suggestions, setSuggestions] = useState({})

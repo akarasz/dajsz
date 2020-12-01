@@ -1,6 +1,13 @@
+@media (min-width: 30em) {
+  .yahtzee {
+    max-width: 40em;
+  }
+}
+
 .yahtzee {
   display: flex;
   flex-direction: column;
+  margin: auto;
 }
 
 .yahtzee > div {
