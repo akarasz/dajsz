@@ -105,7 +105,7 @@ const Yahtzee = ({ gameId, player }) => {
     }
 
     ws.current.onmessage = (e) => {
-      const event = JSON.parse(JSON.parse(e.data))
+      const event = JSON.parse(e.data)
       if (event.Action === "roll") {
         setRolling(true)
       } else if (event.Action === "score") {
