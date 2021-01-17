@@ -17,7 +17,7 @@ const App = () => {
 
   return (
     <div>
-      <Player
+      <Header
         name={player}
         onNameChange={handleNameChange}
         onNewGame={handleNewGame}
@@ -29,7 +29,7 @@ const App = () => {
   )
 }
 
-const Player = ({ name, onNameChange, onNewGame }) => {
+const Header = ({ name, onNameChange, onNewGame }) => {
   const handleClickOnNewGame = () => {
     api.create(name)
       .then((gameId) => {
