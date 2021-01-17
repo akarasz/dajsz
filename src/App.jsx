@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
 import Yahtzee from "./Yahtzee"
-import "./App.css"
 import * as api from "./api"
 
 const App = () => {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react"
-import "./Yahtzee.css"
 import * as api from "./api"
 import config from "./config.js"
 

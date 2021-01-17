@@ -1,3 +1,67 @@
+body {
+  margin: 0;
+}
+
+#root {
+  margin: auto;
+}
+
+@media (min-width: 30em) {
+  #root {
+    max-width: 40em;
+  }
+}
+
+.menu {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+  margin: 1em 0;
+}
+
+.menu .actions {
+  display: flex;
+  flex-direction: row;
+}
+
+.menu .actions .button {
+  border: 1px solid black;
+  border-radius:  1.5em;
+  padding: .5em 1em;
+  margin-right: .5em;
+}
+
+.menu .player {
+  text-align: right;
+}
+
+.menu .icon {
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 1em;
+  width: 1em;
+}
+
+.menu .icon.share {
+  background-image: url("/share.png");
+}
+
+.menu .icon.clipboard {
+  background-image: url("/clipboard.png");
+}
+
+
+.menu .icon.clipboard.copied {
+  background-image: url("/clipboard-copied.png");
+}
+
+.actionable {
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .yahtzee {
   display: flex;
   flex-direction: column;
@@ -24,44 +88,44 @@
 }
 
 .yahtzee .dice.rolling::before {
-  content: url(./dice/roll.svg);
+  content: url("/dice/roll.svg");
   width: 90px;
   height: 90px;
 }
 
 .yahtzee .dice.face-1::before {
-  content: url(./dice/face-1.svg);
+  content: url("/dice/face-1.svg");
   width: 90px;
   height: 90px;
 }
 
 .yahtzee .dice.face-2::before {
-  content: url(./dice/face-2.svg);
+  content: url("/dice/face-2.svg");
   width: 90px;
   height: 90px;
 }
 
 .yahtzee .dice.face-3::before {
-  content: url(./dice/face-3.svg);
+  content: url("/dice/face-3.svg");
   width: 90px;
   height: 90px;
 }
 
 .yahtzee .dice.face-4::before {
-  content: url(./dice/face-4.svg);
+  content: url("/dice/face-4.svg");
   width: 90px;
   height: 90px;
 }
 
 .yahtzee .dice.face-5::before {
-  content: url(./dice/face-5.svg);
+  content: url("/dice/face-5.svg");
   width: 90px;
   height: 90px;
 
 }
 
 .yahtzee .dice.face-6::before {
-  content: url(./dice/face-6.svg);
+  content: url("/dice/face-6.svg");
   width: 90px;
   height: 90px;
 }
