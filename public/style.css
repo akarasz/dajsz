@@ -2,6 +2,8 @@
 
 body {
   margin: 0;
+
+  user-select: none;
 }
 
 #root {
@@ -65,8 +67,6 @@ header .item {
 
   color: rgba(255, 255, 255, .95);
   font-size: 1em;
-
-  user-select: none;
 
   align-self: center;
 }
