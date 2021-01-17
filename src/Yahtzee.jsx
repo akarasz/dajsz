@@ -207,7 +207,7 @@ const Dice = ({ active, rolling, locked, value, index, onLock }) => {
     classes.push("locked")
   }
   if (active) {
-    classes.push("actionable")
+    classes.push("action")
   }
 
   return <div className={classes.join(" ")} onClick={handleClick} />
@@ -228,7 +228,7 @@ const RollCount = ({ rollCount }) => {
 }
 
 const RollButton = ({ active, onRoll }) => {
-  const classes = ["roll", "button"]
+  const classes = ["roll", "action", "button"]
   if (!active) {
     classes.push("disabled")
   }
@@ -362,7 +362,7 @@ const ScoreCell = ({ scoreSheet, category, suggestion, player, canClick, players
     classes.push("suggestion")
   }
   if (canClick && !bonus) {
-    classes.push("actionable")
+    classes.push("action")
   }
   if (scoredAnimation) {
     classes.push("scored")

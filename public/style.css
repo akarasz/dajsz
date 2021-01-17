@@ -71,12 +71,12 @@ header .item {
   align-self: center;
 }
 
-header .action {
+.action {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
-header .action:hover {
+.action:hover {
   text-shadow: 0 0 1em rgba(255, 255, 255, 1);
 }
 
@@ -129,15 +129,9 @@ header img {
   filter: drop-shadow(0 0 .4em rgba(0, 0, 0, .5));
 }
 
-header .action:hover img {
+.action:hover img {
   -webkit-filter: drop-shadow(0 0 .4em rgba(255, 255, 255, 1));
   filter: drop-shadow(0 0 .4em rgba(255, 255, 255, 1));
-}
-
-.actionable {
-  cursor: pointer;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .yahtzee {
@@ -196,7 +190,6 @@ header .action:hover img {
 
 .yahtzee .dice.face-5::before {
   content: url("/dice/face-5.svg");
-
 }
 
 .yahtzee .dice.face-6::before {
@@ -259,16 +252,22 @@ header .action:hover img {
   border-bottom-right-radius: .75em;
 }
 
-.yahtzee .controller .roll.button {
-  border: 2px solid black;
-  padding: .5em 2em;
-  text-transform: uppercase;
-  font-weight: bold;
-  cursor: pointer;
-  user-select: none;
+.button {
+  padding: .5em 3em;
+  background-color: hsla(194, 40%, 20%, .8);
+  color: rgba(255, 255, 255, .95);
+  font-size: 1.2em;
+
+  box-shadow: 0 0 .6em rgba(0, 0, 0, .2);
+  border-radius: 5px;
+  text-shadow: 0 0 .3em rgba(0, 0, 0, 1);
 }
 
-.yahtzee .controller .roll.button.disabled {
+.button.disabled {
+  background-color: hsla(194, 10%, 20%, .1);
+  color: rgba(255, 255, 255, .95);
+  box-shadow: none;
+  text-shadow: none;
   cursor: not-allowed;
 }
 
