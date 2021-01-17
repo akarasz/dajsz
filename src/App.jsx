@@ -75,7 +75,7 @@ const Privacy = () => (
     <p>
       Dajsz uses Google Analytics for usage metrics. If you want to learn
       more about Google's privacy policy then you should head over 
-      <a href="https://support.google.com/analytics/answer/6004245">there</a>.
+      <a href="https://support.google.com/analytics/answer/6004245"> there</a>.
     </p>
   </div>
 )
