@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react"
+import { useParams } from "react-router-dom"
+
 import * as api from "./api"
 import config from "./config.js"
 
-const Yahtzee = ({ gameId, player }) => {
-
+const Yahtzee = ({ player }) => {
+  const { gameId } = useParams()
   const [loaded, setLoaded] = useState(false)
   const [game, setGame] = useState({})
   const [suggestions, setSuggestions] = useState({})

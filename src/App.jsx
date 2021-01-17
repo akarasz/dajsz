@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react"
+import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom"
+
 import Yahtzee from "./Yahtzee"
 import * as api from "./api"
 
 const App = () => {
-  const [gameId, setGameId] = useState(window.location.hash.substring(2) || null)
   const [player, setPlayer] = useState(window.localStorage.getItem("name") || null)
 
   const handleNameChange = (newName) => {
@@ -11,33 +12,34 @@ const App = () => {
     setPlayer(newName)
   }
 
-  const handleNewGame = (newGameId) => {
-    setGameId(newGameId)
-  }
-
   return (
-    <div>
+    <Router>
       <Header
         name={player}
-        onNameChange={handleNameChange}
-        onNewGame={handleNewGame}
-    />
-      { gameId != null ?
-        <Yahtzee player={player} gameId={gameId} /> :
-        undefined }
-    </div>
+        onNameChange={handleNameChange} />
+
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/:gameId">
+          <Yahtzee player={player} />
+        </Route>
+      </Switch>
+    </Router>
   )
 }
 
+const Home = () => (
+  <p></p>
+)
+
 const Header = ({ name, onNameChange, onNewGame }) => {
+  const history = useHistory()
+
   const handleClickOnNewGame = () => {
     api.create(name)
-      .then((gameId) => {
-        window.location.hash = gameId
-        return gameId
-      })
-      .then(gameId => gameId.substring(1))
-      .then((gameId) => onNewGame(gameId))
+      .then(gameId => history.push(gameId.substring(1)))
   }
 
   const promptForName = (currentName, callback) => {
@@ -72,23 +74,21 @@ const Header = ({ name, onNameChange, onNewGame }) => {
 }
 
 const InviteButtonChooser = () => {
-  const url = window.location.toString()
-
   if (navigator.share) {
-    return <ShareButton url={url} />
+    return <ShareButton />
   } else if (navigator.clipboard) {
-    return <ClipboardButton url={url} />
+    return <ClipboardButton />
   } else {
     return null
   }
 }
 
-const ShareButton = ({ url }) => {
+const ShareButton = () => {
   const handleClick = () => {
     navigator.share({
       title: "Invited to Dajsz",
       text: "Click to join: ",
-      url: url,
+      url: window.location.href,
     })
       .then(() => console.log("shared"))
       .catch((error) => console.log("error sharing", error))
@@ -100,7 +100,7 @@ const ShareButton = ({ url }) => {
     </div>)
 }
 
-const ClipboardButton = ({ url }) => {
+const ClipboardButton = () => {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -113,7 +113,7 @@ const ClipboardButton = ({ url }) => {
 
   const handleClick = () => {
     navigator.clipboard
-      .writeText(url)
+      .writeText(window.location.href)
       .then(() => setCopied(true))
   }
 
