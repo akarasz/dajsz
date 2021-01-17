@@ -27,7 +27,7 @@ body {
       "content";
   }
 
-  header .title {
+  header .title span {
     display: none !important;
   }
 }
@@ -84,11 +84,13 @@ header .item:last-child {
   border-right-width: 1px;
 }
 
-header .title {
+header .item.title {
   display: flex;
 
   padding: 0 2em;
   border-left-width: 0px;
+  border-right-width: 0px;
+  text-decoration: none;
 }
 
 header .title img {
@@ -132,6 +134,40 @@ header img {
 .action:hover img {
   -webkit-filter: drop-shadow(0 0 .4em rgba(255, 255, 255, 1));
   filter: drop-shadow(0 0 .4em rgba(255, 255, 255, 1));
+}
+
+.home {
+  margin-top: 3em;
+  grid-area: content;
+  padding: 0 2em;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.home > div {
+  margin: 1em 0;
+}
+
+.home div:last-child {
+  margin: 4em 0;
+  font-size: .8em;
+}
+
+.home ul {
+  padding-left: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.home ul li {
+  list-style-type: none;
+}
+
+.home a {
+  text-decoration: none;
+  color: rgba(0, 0, 0, .7);
 }
 
 .yahtzee {
@@ -260,6 +296,7 @@ header img {
 
   box-shadow: 0 0 .6em rgba(0, 0, 0, .2);
   border-radius: 5px;
+  text-align: center;
   text-shadow: 0 0 .3em rgba(0, 0, 0, 1);
 }
 

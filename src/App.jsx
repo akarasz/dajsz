@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom"
+import { BrowserRouter as Router, Switch, Link, Route, useHistory } from "react-router-dom"
 
 import Yahtzee from "./Yahtzee"
 import * as api from "./api"
@@ -20,7 +20,13 @@ const App = () => {
 
       <Switch>
         <Route exact path="/">
-          <Home />
+          <Home player={player} />
+        </Route>
+        <Route exact path="/privacy">
+          <Privacy />
+        </Route>
+        <Route exact path="/support">
+          <Support />
         </Route>
         <Route path="/:gameId">
           <Yahtzee player={player} />
@@ -30,11 +36,7 @@ const App = () => {
   )
 }
 
-const Home = () => (
-  <p></p>
-)
-
-const Header = ({ name, onNameChange, onNewGame }) => {
+const Home = ({ name }) => {
   const history = useHistory()
 
   const handleClickOnNewGame = () => {
@@ -42,6 +44,55 @@ const Header = ({ name, onNameChange, onNewGame }) => {
       .then(gameId => history.push(gameId.substring(1)))
   }
 
+  return (
+    <div class="home">
+      <div class="action button" onClick={handleClickOnNewGame}>New Game</div>
+      <div>
+        <ul>
+          <li><Link to="/privacy">Privacy</Link></li>
+          <li><Link to="/support">Support</Link></li>
+        </ul>
+      </div>
+    </div>)
+}
+
+const Privacy = () => (
+  <div class="home">
+    <Link to="/">← Go back</Link>
+    <p>
+      Dajsz and it's integrations are not storing any personal information, there 
+      is no permanent storage behind the service - all data created gets removed 
+      after 48 hours at the latest. You can check it for yourself - all code
+      is available for the public:
+    </p>
+
+    <ul>
+      <li><a href="https://github.com/akarasz/dajsz">Dajsz</a></li>
+      <li><a href="https://github.com/akarasz/dajsz-slack">Slack integration</a></li>
+      <li><a href="https://github.com/akarasz/yahtzee">Backend</a></li>
+    </ul>
+
+    <p>
+      Dajsz uses Google Analytics for usage metrics. If you want to learn
+      more about Google's privacy policy then you should head over 
+      <a href="https://support.google.com/analytics/answer/6004245">there</a>.
+    </p>
+  </div>
+)
+
+const Support = () => (
+  <div class="home">
+    <Link to="/">← Go back</Link>
+    <p>
+      If you have questions or concerns about Dajsz you can reach out at 
+      <a href="mailto:support@dajsz.hu"> support@dajsz.hu</a>. If you found
+      any bugs or issues you can report them 
+      <a href="https://github.com/akarasz/dajsz/issues"> here</a>.
+    </p>
+  </div>
+)
+
+const Header = ({ name, onNameChange, onNewGame }) => {
   const promptForName = (currentName, callback) => {
     const showPrompt = () => prompt("Please enter your name:", currentName)
     let newName = showPrompt()
@@ -66,11 +117,10 @@ const Header = ({ name, onNameChange, onNewGame }) => {
   return (
     <header>
       <div class="header-left">
-        <div class="title item">
-          <img src="/icon/dice-192.png" alt="logo" />
-          <span>Dajsz</span>
-        </div>
-        <div class="new-game action item" onClick={handleClickOnNewGame}>New Game</div>
+        <Link to="/" className="title action item">
+            <img src="/icon/dice-192.png" alt="logo" />
+            <span>Dajsz</span>
+        </Link>
       </div>
       <div class="header-right">
         <div class="name item" onClick={() => promptForName(name, onNameChange)}>You play as <em class="action" title={finalName}>{finalName}</em></div>
