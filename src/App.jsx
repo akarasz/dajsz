@@ -43,13 +43,16 @@ const Header = ({ name, onNameChange, onNewGame }) => {
   }
 
   const promptForName = (currentName, callback) => {
-    let newName = null
+    const showPrompt = () => prompt("Please enter your name:", currentName)
+    let newName = showPrompt()
 
-    while (newName === null) {
-      newName = prompt("Please enter your name:", currentName)
+    while (newName !== null && newName.trim() === "") {
+      newName = showPrompt()
     }
 
-    callback(newName)
+    if (newName !== null) {
+      callback(newName.trim())
+    }
   }
 
   useEffect(() => {
