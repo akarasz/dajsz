@@ -1,59 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
 body {
   margin: 0;
 }
 
 #root {
-  margin: auto;
+  margin: 0;
+
+  display: grid;
+
+  grid-template-columns: 1fr 40em 1fr;
+  grid-template-areas:
+    "header header header"
+    ". content .";
+
+  font-family: 'Poppins', sans-serif;
 }
 
-@media (min-width: 30em) {
+@media (max-width: 40em) {
   #root {
-    max-width: 40em;
+    grid-template-columns: 100%;
+    grid-template-areas:
+      "header"
+      "content";
+  }
+
+  header .title {
+    display: none !important;
   }
 }
 
-.menu {
-  display: flex;
+header {
+  grid-area: header;
 
+  display:  flex;
   justify-content: space-between;
-  align-items: center;
-  margin: 1em 0;
+
+  background-color: hsla(194, 40%, 20%, .8);
+
+  text-shadow: 0 0 .4em rgba(0, 0, 0, .5);
+  box-shadow: 0 0 2em rgba(0, 0, 0, .6);
+
+  white-space: nowrap;
 }
 
-.menu .actions {
+.header-left, .header-right {
   display: flex;
   flex-direction: row;
 }
 
-.menu .actions .button {
-  border: 1px solid black;
-  border-radius:  1.5em;
-  padding: .5em 1em;
-  margin-right: .5em;
+.header-left {
+  justify-content: flex-start;
 }
 
-.menu .player {
-  text-align: right;
+.header-right {
+  justify-content: flex-end;
 }
 
-.menu .icon {
-  background-repeat: no-repeat;
-  background-size: cover;
+header .item {
+  padding: .3em 1.2em;
+  border: 0px solid rgba(255, 255, 255, .1);
+
+  border-left-width: 1px;
+
+  color: rgba(255, 255, 255, .95);
+  font-size: 1em;
+
+  user-select: none;
+
+  align-self: center;
+}
+
+header .action {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+header .action:hover {
+  text-shadow: 0 0 1em rgba(255, 255, 255, 1);
+}
+
+header .item:last-child {
+  border-right-width: 1px;
+}
+
+header .title {
+  display: flex;
+
+  padding: 0 2em;
+  border-left-width: 0px;
+}
+
+header .title img {
+  padding-right: .8em;
+  height: 2em;
+}
+
+header .title span {
+  align-self: center;
+  font-weight: 800;
+  font-size: 1.2em;
+}
+
+header .item.name {
+  color: rgba(255, 255, 255, .7);
+  border-left-width: 0px;
+  border-right-width: 1px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 15em;
+}
+
+header .item.name em {
+  color: rgba(255, 255, 255, 1);
+  font-style: normal;
+  padding-left: .3em;
+}
+
+header .item.share {
+  padding: .8em;
+  border-width: 0;
+}
+
+header img {
   height: 1em;
-  width: 1em;
+  -webkit-filter: drop-shadow(0 0 .4em rgba(0, 0, 0, .5));
+  filter: drop-shadow(0 0 .4em rgba(0, 0, 0, .5));
 }
 
-.menu .icon.share {
-  background-image: url("/share.png");
-}
-
-.menu .icon.clipboard {
-  background-image: url("/clipboard.png");
-}
-
-
-.menu .icon.clipboard.copied {
-  background-image: url("/clipboard-copied.png");
+header .action:hover img {
+  -webkit-filter: drop-shadow(0 0 .4em rgba(255, 255, 255, 1));
+  filter: drop-shadow(0 0 .4em rgba(255, 255, 255, 1));
 }
 
 .actionable {
@@ -63,6 +141,10 @@ body {
 }
 
 .yahtzee {
+  margin-top: 3em;
+  grid-area: content;
+  font-size: .8em;
+
   display: flex;
   flex-direction: column;
 }
@@ -146,7 +228,7 @@ body {
    right side shows by default, when active shows the left side */
 .yahtzee .controller .roll.counter div {
   float: left;
-  background: linear-gradient(to right, rgba(189, 233, 255, 1) 50%, rgba(0, 0, 0, 0) 50%);
+  background: linear-gradient(to right, hsla(194, 40%, 20%, .3) 50%, rgba(0, 0, 0, 0) 50%);
   background-size: 200% 100%;
   background-position:right bottom;
 }
@@ -250,7 +332,7 @@ body {
 }
 
 .yahtzee .scores .current-player {
-  background-color: #f0faff;
+  background-color: hsla(194, 40%, 20%, .03);
 }
 
 .yahtzee .scores .suggestion {

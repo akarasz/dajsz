@@ -61,16 +61,20 @@ const Header = ({ name, onNameChange, onNewGame }) => {
   const finalName = (name !== null ? name : "<Player>")
 
   return (
-    <div className="menu">
-      <div className="actions">
-        <div className="actionable button" onClick={handleClickOnNewGame}><em>New Game</em></div>
+    <header>
+      <div class="header-left">
+        <div class="title item">
+          <img src="/icon/dice-192.png" alt="logo" />
+          <span>Dajsz</span>
+        </div>
+        <div class="new-game action item" onClick={handleClickOnNewGame}>New Game</div>
+      </div>
+      <div class="header-right">
+        <div class="name item" onClick={() => promptForName(name, onNameChange)}>You play as <em class="action" title={finalName}>{finalName}</em></div>
         <InviteButtonChooser />
       </div>
-
-      <div className="player" onClick={() => promptForName(name, onNameChange)}>
-        You play as <em className="actionable">{finalName}</em>.
-      </div>
-    </div>)
+    </header>
+    )
 }
 
 const InviteButtonChooser = () => {
@@ -95,8 +99,8 @@ const ShareButton = () => {
   }
 
   return (
-    <div className="actionable button" onClick={handleClick}>
-      <div className="share icon"></div>
+    <div class="share action item" title="Share" onClick={handleClick}>
+      <img src="/share.png" alt="share" />
     </div>)
 }
 
@@ -117,15 +121,11 @@ const ClipboardButton = () => {
       .then(() => setCopied(true))
   }
 
-  const classes = ["clipboard", "icon"]
-  if (copied) {
-    classes.push("copied")
-  }
-  const className = classes.join(" ")
+  const image = "/clipboard" + (copied ? "-copied" : "") + ".png"
 
   return (
-    <div className="actionable button" onClick={handleClick}>
-      <div className={className}></div>
+    <div class="share action item" title="Share" onClick={handleClick}>
+      <img src={image} alt="share" />
     </div>)
 }
 
