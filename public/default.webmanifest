@@ -1,41 +1,17 @@
 {
-  "background_color": "white",
-  "theme_color": "white",
+  "background_color": "#4c646c",
+  "theme_color": "#4c646c",
   "description": "Play a game of yahtzee with friends or by yourself.",
   "display": "fullscreen",
   "icons": [
     {
-      "src": "icon/dice-64.png",
-      "sizes": "64x64",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon/dice-96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon/dice-128.png",
+      "src": "icon/maskable-128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon/dice-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon/dice-256.png",
-      "sizes": "256x256",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon/dice-512.png",
+      "src": "icon/maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
