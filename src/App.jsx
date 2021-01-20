@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Switch, Link, Route, useHistory } from "react-router-dom"
 
 import Yahtzee from "./Yahtzee"
+import Modal from "./Modal"
 import * as api from "./api"
 
 const App = () => {
@@ -17,7 +18,6 @@ const App = () => {
       <Header
         name={player}
         onNameChange={handleNameChange} />
-
       <Switch>
         <Route exact path="/">
           <Home player={player} />
@@ -93,17 +93,19 @@ const Support = () => (
 )
 
 const Header = ({ name, onNameChange, onNewGame }) => {
+  const [showModal, setShowModal] = useState(false)
   const promptForName = (currentName, callback) => {
-    const showPrompt = () => prompt("Please enter your name:", currentName)
-    let newName = showPrompt()
+    setShowModal(!showModal)
+    // const showPrompt = () => prompt("Please enter your name:", currentName)
+    // let newName = showPrompt()
 
-    while (newName !== null && newName.trim() === "") {
-      newName = showPrompt()
-    }
+    // while (newName !== null && newName.trim() === "") {
+    //   newName = showPrompt()
+    // }
 
-    if (newName !== null) {
-      callback(newName.trim())
-    }
+    // if (newName !== null) {
+    //   callback(newName.trim())
+    // }
   }
 
   useEffect(() => {
@@ -126,8 +128,15 @@ const Header = ({ name, onNameChange, onNewGame }) => {
         <div class="name item" onClick={() => promptForName(name, onNameChange)}>You play as <em class="action" title={finalName}>{finalName}</em></div>
         <InviteButtonChooser />
       </div>
-    </header>
-    )
+
+      <Modal showing={showModal} setShowing={setShowModal}>
+        <div class="name dialog">
+          <p>Please enter your name:</p>
+          <input type="text" />
+          <div class="action small button">Save</div>
+        </div>
+      </Modal>
+    </header>)
 }
 
 const InviteButtonChooser = () => {

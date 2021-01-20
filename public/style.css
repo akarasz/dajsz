@@ -321,6 +321,11 @@ header img {
   background-color: hsla(194, 10%, 20%, .1);
 }
 
+.button.small {
+  padding: .3em 1.2em;
+  font-size: .9em;
+}
+
 .yahtzee .scores table {
   border: 2px solid black;
   border-collapse: collapse;
@@ -395,4 +400,38 @@ header img {
 
 .yahtzee .scores .winner::before {
   content: "🏆 ";
+}
+
+.dialog {
+  font-size: 1em;
+  text-shadow: none;
+}
+
+.dialog.name {
+  width: 20em;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog.name:first-child {
+  margin-top: 0;
+}
+
+.dialog.name:last-child {
+  margin-bottom: 0;
+}
+
+.dialog.name > * {
+  margin: .5em 0;
+}
+
+.dialog.name input[type=text] {
+  border: 0px solid black;
+  border-bottom-width: 1px;
+  padding: .5em 1em;
+  font-size: 1em;
+}
+
+.dialog.name input[type=text]:focus {
+  outline: none;
 }
