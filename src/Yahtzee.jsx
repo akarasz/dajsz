@@ -228,18 +228,11 @@ const RollCount = ({ rollCount }) => {
 }
 
 const RollButton = ({ active, onRoll }) => {
-  const classes = ["roll", "action", "button"]
-  if (!active) {
-    classes.push("disabled")
-  }
-  const className = classes.join(" ")
-
-  let onClick = undefined
   if (active) {
-    onClick = onRoll
+    return <button className="roll" onClick={onRoll}>Roll</button>
+  } else {
+    return <button className="roll" disabled>Roll</button>
   }
-
-  return <div className={className} onClick={onClick}>Roll</div>
 }
 
 const Scores = (props) => (

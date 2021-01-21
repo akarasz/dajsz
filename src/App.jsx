@@ -46,7 +46,7 @@ const Home = ({ name }) => {
 
   return (
     <div class="home">
-      <div class="action button" onClick={handleClickOnNewGame}>New Game</div>
+      <button onClick={handleClickOnNewGame}>New Game</button>
       <div>
         <ul>
           <li><Link to="/privacy">Privacy</Link></li>
@@ -160,8 +160,8 @@ const NameModal = ({ name, show, handleClose, handleSave }) => {
         <p>Please enter your name:</p>
         <input autoFocus type="text" value={input} onChange={updateInput} />
         <div class="buttons">
-          <div class="small action button" onClick={handleClick}>Save</div>
-          <div class="small secondary action button" onClick={handleCancel}>Cancel</div>
+          <button class="small" onClick={handleClick}>Save</button>
+          <button class="small secondary" onClick={handleCancel}>Cancel</button>
         </div>
       </div>
     </Modal>)

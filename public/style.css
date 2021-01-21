@@ -70,12 +70,12 @@ header .item {
   align-self: center;
 }
 
-.action {
+button, .action {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
-.action:hover {
+button:hover, .action:hover {
   text-shadow: 0 0 1em hsla(194, 0%, 100%, 1);
 }
 
@@ -293,23 +293,24 @@ header img {
   border-bottom-right-radius: .75em;
 }
 
-.button {
+button {
   padding: .5em 3em;
   background-color: hsla(194, 40%, 20%, .8);
   color: hsla(194, 0%, 100%, .95);
   font-size: 1.2em;
 
+  border: none;
   box-shadow: 0 0 .6em hsla(194, 0%, 0%, .2);
   border-radius: 5px;
   text-align: center;
   text-shadow: 0 0 .3em hsla(194, 0%, 0%, 1);
 }
 
-.button:hover {
+button:hover {
   background-color: hsla(194, 40%, 30%, .8);
 }
 
-.button.disabled {
+button[disabled] {
   background-color: hsla(194, 10%, 20%, .1);
   color: hsla(194, 0%, 100%, .95);
   box-shadow: none;
@@ -317,22 +318,22 @@ header img {
   cursor: not-allowed;
 }
 
-.button:hover.disabled {
+button[disabled]:hover {
   background-color: hsla(194, 10%, 20%, .1);
 }
 
-.button.small {
+button.small {
   padding: .3em 1.2em;
   font-size: .9em;
 }
 
-.button.secondary {
+button.secondary {
   background-color: hsla(194, 40%, 20%, .45);
   text-shadow: 0 0 .3em hsla(194, 0%, 0%, .8);
   box-shadow: none;
 }
 
-.button.secondary:hover {
+button.secondary:hover {
   background-color: hsla(194, 40%, 25%, .45);
   box-shadow: none;
 }
@@ -452,15 +453,15 @@ header img {
   flex-direction: row-reverse;
 }
 
-.dialog.name .buttons .button {
+.dialog.name .buttons button {
   margin-left: .5em;
   flex-grow: 2;
 }
 
-.dialog.name .buttons .button:last-child {
+.dialog.name .buttons button:last-child {
   margin-left: 0;
 }
 
-.dialog.name .buttons .button.secondary {
+.dialog.name .buttons button.secondary {
   flex-grow: 1;
 }
