@@ -326,6 +326,17 @@ header img {
   font-size: .9em;
 }
 
+.button.secondary {
+  background-color: hsla(194, 40%, 20%, .45);
+  text-shadow: 0 0 .3em hsla(194, 0%, 0%, .8);
+  box-shadow: none;
+}
+
+.button.secondary:hover {
+  background-color: hsla(194, 40%, 25%, .45);
+  box-shadow: none;
+}
+
 .yahtzee .scores table {
   border: 2px solid black;
   border-collapse: collapse;
@@ -434,4 +445,22 @@ header img {
 
 .dialog.name input[type=text]:focus {
   outline: none;
+}
+
+.dialog.name .buttons {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.dialog.name .buttons .button {
+  margin-left: .5em;
+  flex-grow: 2;
+}
+
+.dialog.name .buttons .button:last-child {
+  margin-left: 0;
+}
+
+.dialog.name .buttons .button.secondary {
+  flex-grow: 1;
 }

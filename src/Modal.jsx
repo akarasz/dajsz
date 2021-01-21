@@ -1,12 +1,12 @@
 import "./Modal.css"
 
-const Modal = ({ showing, setShowing, children }) => {
+const Modal = ({ showing, handleClose, children }) => {
   if (!showing) {
     return null
   }
 
   return (
-    <div className="modal" onClick={() => setShowing(false)}>
+    <div className="modal" onClick={handleClose}>
       <div onClick={(e) => e.stopPropagation()}>
         {children}
       </div>

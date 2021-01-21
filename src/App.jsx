@@ -17,7 +17,7 @@ const App = () => {
     <Router>
       <Header
         name={player}
-        onNameChange={handleNameChange} />
+        handleNameChange={handleNameChange} />
       <Switch>
         <Route exact path="/">
           <Home player={player} />
@@ -92,7 +92,7 @@ const Support = () => (
   </div>
 )
 
-const Header = ({ name, onNameChange, onNewGame }) => {
+const Header = ({ name, handleNameChange, onNewGame }) => {
   const [showModal, setShowModal] = useState(false)
   const promptForName = (currentName, callback) => {
     setShowModal(!showModal)
@@ -110,9 +110,9 @@ const Header = ({ name, onNameChange, onNewGame }) => {
 
   useEffect(() => {
     if (name === null) {
-      promptForName(name, onNameChange)
+      promptForName(name, handleNameChange)
     }
-  }, [name, onNameChange])
+  }, [name, handleNameChange])
 
   const finalName = (name !== null ? name : "<Player>")
 
@@ -125,18 +125,46 @@ const Header = ({ name, onNameChange, onNewGame }) => {
         </Link>
       </div>
       <div class="header-right">
-        <div class="name item" onClick={() => promptForName(name, onNameChange)}>You play as <em class="action" title={finalName}>{finalName}</em></div>
+        <div class="name item" onClick={() => promptForName(name, handleNameChange)}>
+          You play as <em class="action" title={finalName}>{finalName}</em>
+        </div>
         <InviteButtonChooser />
       </div>
 
-      <Modal showing={showModal} setShowing={setShowModal}>
-        <div class="name dialog">
-          <p>Please enter your name:</p>
-          <input type="text" />
-          <div class="action small button">Save</div>
-        </div>
-      </Modal>
+      <NameModal name={name} show={showModal} 
+        handleClose={() => setShowModal(false)} 
+        handleSave={handleNameChange} />
     </header>)
+}
+
+const NameModal = ({ name, show, handleClose, handleSave }) => {
+  const [input, setInput] = useState(name)
+
+  const updateInput = (e) => {
+    setInput(e.target.value)
+  }
+
+  const handleCancel = () => {
+    setInput(name)
+    handleClose()
+  }
+
+  const handleClick = () => {
+    handleSave(input)
+    handleClose()
+  }
+
+  return (
+    <Modal showing={show} handleClose={handleCancel}>
+      <div class="name dialog">
+        <p>Please enter your name:</p>
+        <input autoFocus type="text" value={input} onChange={updateInput} />
+        <div class="buttons">
+          <div class="small action button" onClick={handleClick}>Save</div>
+          <div class="small secondary action button" onClick={handleCancel}>Cancel</div>
+        </div>
+      </div>
+    </Modal>)
 }
 
 const InviteButtonChooser = () => {
