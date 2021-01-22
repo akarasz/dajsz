@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useContext, useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
 
+import { Context as AppContext } from "./App"
 import * as api from "./api"
 import config from "./config.js"
 
-const Yahtzee = ({ player }) => {
+const Yahtzee = () => {
   const { gameId } = useParams()
   const [loaded, setLoaded] = useState(false)
   const [game, setGame] = useState({})
   const [suggestions, setSuggestions] = useState({})
+  const {name} = useContext(AppContext)
 
   // states for animations
   const [rolling, setRolling] = useState(false)
@@ -40,10 +42,10 @@ const Yahtzee = ({ player }) => {
     }
 
     const rolledAlready = game.RollCount > 0
-    const activeTurn = game.Players[game.CurrentPlayer].User === player
+    const activeTurn = game.Players[game.CurrentPlayer].User === name
 
     if (activeTurn && rolledAlready) {
-      api.suggestions(player, game.Dices, setSuggestions)
+      api.suggestions(name, game.Dices, setSuggestions)
     } else {
       setSuggestions({})
     }
@@ -55,7 +57,7 @@ const Yahtzee = ({ player }) => {
     setSuggestions({})
     setGame({})
 
-    api.load(gameId, player, (data) => {
+    api.load(gameId, name, (data) => {
       updateGame(data)
       setLoaded(true)
     })
@@ -77,13 +79,13 @@ const Yahtzee = ({ player }) => {
     }
 
     const hasPlayers = game.Players.length > 0
-    const joinedAlready = game.Players.map((p) => p.User).includes(player)
+    const joinedAlready = game.Players.map((p) => p.User).includes(name)
 
     if (!hasPlayers) {
-      api.join(gameId, player, updateGame)
+      api.join(gameId, name, updateGame)
     } else if (!joinedAlready) {
       if (window.confirm("Do you want to join?")) {
-        api.join(gameId, player, updateGame)
+        api.join(gameId, name, updateGame)
       }
     }
   }, [loaded, gameId]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -143,14 +145,14 @@ const Yahtzee = ({ player }) => {
   const gameEnded = game.Round >= 13
   const beforeFirstRoll = game.RollCount <= 0
   const turnEnded = game.RollCount >= 3
-  const playersTurn = game.Players.length > 0 && game.Players[game.CurrentPlayer].User === player
+  const playersTurn = game.Players.length > 0 && game.Players[game.CurrentPlayer].User === name
 
   const canLock = playersTurn && !beforeFirstRoll && !turnEnded
   const canRoll = playersTurn && !turnEnded && !gameEnded && !rolling
   const canScore = playersTurn && !beforeFirstRoll && !rolling
-  const handleLock = (idx) => api.lock(gameId, player, idx)
-  const handleRoll = () => api.roll(gameId, player)
-  const handleScore = (category) => api.score(gameId, player, category)
+  const handleLock = (idx) => api.lock(gameId, name, idx)
+  const handleRoll = () => api.roll(gameId, name)
+  const handleScore = (category) => api.score(gameId, name, category)
 
   return (
     <div id={gameId} className="yahtzee">

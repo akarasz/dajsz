@@ -310,7 +310,8 @@ button:hover {
   background-color: hsla(194, 40%, 30%, .8);
 }
 
-button[disabled] {
+button[disabled],
+button[disabled].secondary {
   background-color: hsla(194, 10%, 20%, .1);
   color: hsla(194, 0%, 100%, .95);
   box-shadow: none;
@@ -318,7 +319,8 @@ button[disabled] {
   cursor: not-allowed;
 }
 
-button[disabled]:hover {
+button[disabled]:hover,
+button[disabled]:hover.secondary {
   background-color: hsla(194, 10%, 20%, .1);
 }
 
@@ -416,21 +418,13 @@ button.secondary:hover {
 
 .dialog {
   font-size: 1em;
+  margin: 2em;
   text-shadow: none;
 }
 
 .dialog.name {
-  width: 20em;
   display: flex;
   flex-direction: column;
-}
-
-.dialog.name:first-child {
-  margin-top: 0;
-}
-
-.dialog.name:last-child {
-  margin-bottom: 0;
 }
 
 .dialog.name > * {
