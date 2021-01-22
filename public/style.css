@@ -420,42 +420,36 @@ button.secondary:hover {
   font-size: 1em;
   margin: 2em;
   text-shadow: none;
-}
 
-.dialog.name {
   display: flex;
   flex-direction: column;
 }
 
-.dialog.name > * {
+.dialog > * {
   margin: .5em 0;
 }
 
-.dialog.name input[type=text] {
+.dialog input[type=text] {
   border: 0px solid black;
   border-bottom-width: 1px;
   padding: .5em 1em;
   font-size: 1em;
 }
 
-.dialog.name input[type=text]:focus {
+.dialog input[type=text]:focus {
   outline: none;
 }
 
-.dialog.name .buttons {
+.dialog .buttons {
   display: flex;
+  margin-top: 2em;
   flex-direction: row-reverse;
 }
 
-.dialog.name .buttons button {
+.dialog .buttons button {
   margin-left: .5em;
-  flex-grow: 2;
 }
 
-.dialog.name .buttons button:last-child {
+.dialog .buttons button:last-child {
   margin-left: 0;
-}
-
-.dialog.name .buttons button.secondary {
-  flex-grow: 1;
 }

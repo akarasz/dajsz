@@ -164,7 +164,7 @@ const NameChangeModal = ({ show, handleClose }) => {
 
   return (
     <Modal showing={show} handleClose={handleCancel}>
-      <div className="name dialog">
+      <div className="dialog">
         <p>Please enter your name:</p>
         <input autoFocus type="text" value={input !== null ? input : ""} onChange={updateInput} onKeyDown={handleKeyPress} />
         <div className="buttons">

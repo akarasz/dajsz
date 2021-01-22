@@ -1,7 +1,8 @@
-import React, { useContext, useState, useEffect, useRef } from "react"
+import { useContext, useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
 
 import { Context as AppContext } from "./App"
+import Modal from "./Modal"
 import * as api from "./api"
 import config from "./config.js"
 
@@ -10,7 +11,8 @@ const Yahtzee = () => {
   const [loaded, setLoaded] = useState(false)
   const [game, setGame] = useState({})
   const [suggestions, setSuggestions] = useState({})
-  const {name} = useContext(AppContext)
+  const { name } = useContext(AppContext)
+  const [showJoinModal, setShowJoinModal] = useState(false)
 
   // states for animations
   const [rolling, setRolling] = useState(false)
@@ -84,9 +86,7 @@ const Yahtzee = () => {
     if (!hasPlayers) {
       api.join(gameId, name, updateGame)
     } else if (!joinedAlready) {
-      if (window.confirm("Do you want to join?")) {
-        api.join(gameId, name, updateGame)
-      }
+      setShowJoinModal(true)
     }
   }, [loaded, gameId]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -155,7 +155,8 @@ const Yahtzee = () => {
   const handleScore = (category) => api.score(gameId, name, category)
 
   return (
-    <div id={gameId} className="yahtzee">
+    <>
+    <div className="yahtzee">
       <Dices
         dices={game.Dices}
         rolling={rolling}
@@ -174,7 +175,39 @@ const Yahtzee = () => {
         onScore={handleScore}
         playersTurn={playersTurn}
         lastScore={lastScore} />
-    </div>)
+    </div>
+    <JoinModal
+      show={showJoinModal}
+      handleClose={() => setShowJoinModal(false)}
+      updateGame={updateGame} />
+    </>)
+}
+
+const JoinModal = ({ show, handleClose, updateGame }) => {
+  const { name } = useContext(AppContext)
+  const { gameId } = useParams()
+
+  const handleYes = () => {
+    api.join(gameId, name, updateGame)
+    handleClose()
+  }
+
+  const handleNo = () => {
+    handleClose()
+  }
+
+  return (
+    <Modal showing={show} handleClose={handleNo}>
+      <div className="dialog">
+        <p>Do you want to join?</p>
+        <div className="buttons">
+          <button className="small"
+            onClick={handleYes}>Yes</button>
+          <button className="small secondary"
+            onClick={handleNo}>No</button>
+        </div>
+      </div>
+    </Modal>)
 }
 
 const Dices = ({ dices, rolling, active, onLock }) => (
