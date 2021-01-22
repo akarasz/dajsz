@@ -70,12 +70,12 @@ header .item {
   align-self: center;
 }
 
-.action {
+button, .action {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
-.action:hover {
+button:hover, .action:hover {
   text-shadow: 0 0 1em hsla(194, 0%, 100%, 1);
 }
 
@@ -293,23 +293,25 @@ header img {
   border-bottom-right-radius: .75em;
 }
 
-.button {
+button {
   padding: .5em 3em;
   background-color: hsla(194, 40%, 20%, .8);
   color: hsla(194, 0%, 100%, .95);
   font-size: 1.2em;
 
+  border: none;
   box-shadow: 0 0 .6em hsla(194, 0%, 0%, .2);
   border-radius: 5px;
   text-align: center;
   text-shadow: 0 0 .3em hsla(194, 0%, 0%, 1);
 }
 
-.button:hover {
+button:hover {
   background-color: hsla(194, 40%, 30%, .8);
 }
 
-.button.disabled {
+button[disabled],
+button[disabled].secondary {
   background-color: hsla(194, 10%, 20%, .1);
   color: hsla(194, 0%, 100%, .95);
   box-shadow: none;
@@ -317,8 +319,25 @@ header img {
   cursor: not-allowed;
 }
 
-.button:hover.disabled {
+button[disabled]:hover,
+button[disabled]:hover.secondary {
   background-color: hsla(194, 10%, 20%, .1);
+}
+
+button.small {
+  padding: .3em 1.2em;
+  font-size: .9em;
+}
+
+button.secondary {
+  background-color: hsla(194, 40%, 20%, .45);
+  text-shadow: 0 0 .3em hsla(194, 0%, 0%, .8);
+  box-shadow: none;
+}
+
+button.secondary:hover {
+  background-color: hsla(194, 40%, 25%, .45);
+  box-shadow: none;
 }
 
 .yahtzee .scores table {
@@ -395,4 +414,42 @@ header img {
 
 .yahtzee .scores .winner::before {
   content: "🏆 ";
+}
+
+.dialog {
+  font-size: 1em;
+  margin: 2em;
+  text-shadow: none;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog > * {
+  margin: .5em 0;
+}
+
+.dialog input[type=text] {
+  border: 0px solid black;
+  border-bottom-width: 1px;
+  padding: .5em 1em;
+  font-size: 1em;
+}
+
+.dialog input[type=text]:focus {
+  outline: none;
+}
+
+.dialog .buttons {
+  display: flex;
+  margin-top: 2em;
+  flex-direction: row-reverse;
+}
+
+.dialog .buttons button {
+  margin-left: .5em;
+}
+
+.dialog .buttons button:last-child {
+  margin-left: 0;
 }

@@ -1,42 +1,45 @@
-import React, { useState, useEffect } from "react"
+import { createContext, useContext, useState, useEffect } from "react"
 import { BrowserRouter as Router, Switch, Link, Route, useHistory } from "react-router-dom"
 
 import Yahtzee from "./Yahtzee"
+import Modal from "./Modal"
 import * as api from "./api"
 
-const App = () => {
-  const [player, setPlayer] = useState(window.localStorage.getItem("name") || null)
+export const Context = createContext({})
 
-  const handleNameChange = (newName) => {
+const App = () => {
+  const [name, setName] = useState(window.localStorage.getItem("name") || null)
+
+  const changeName = (newName) => {
     window.localStorage.setItem("name", newName)
-    setPlayer(newName)
+    setName(newName)
   }
 
   return (
-    <Router>
-      <Header
-        name={player}
-        onNameChange={handleNameChange} />
-
-      <Switch>
-        <Route exact path="/">
-          <Home player={player} />
-        </Route>
-        <Route exact path="/privacy">
-          <Privacy />
-        </Route>
-        <Route exact path="/support">
-          <Support />
-        </Route>
-        <Route path="/:gameId">
-          <Yahtzee player={player} />
-        </Route>
-      </Switch>
-    </Router>
+    <Context.Provider value={{name, changeName}}>
+      <Router>
+        <Header />
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route exact path="/privacy">
+            <Privacy />
+          </Route>
+          <Route exact path="/support">
+            <Support />
+          </Route>
+          <Route path="/:gameId">
+            <Yahtzee />
+          </Route>
+        </Switch>
+      </Router>
+    </Context.Provider>
   )
 }
 
-const Home = ({ name }) => {
+const Home = () => {
+  const { name } = useContext(Context)
   const history = useHistory()
 
   const handleClickOnNewGame = () => {
@@ -45,8 +48,8 @@ const Home = ({ name }) => {
   }
 
   return (
-    <div class="home">
-      <div class="action button" onClick={handleClickOnNewGame}>New Game</div>
+    <div className="home">
+      <button onClick={handleClickOnNewGame}>New Game</button>
       <div>
         <ul>
           <li><Link to="/privacy">Privacy</Link></li>
@@ -57,11 +60,11 @@ const Home = ({ name }) => {
 }
 
 const Privacy = () => (
-  <div class="home">
+  <div className="home">
     <Link to="/">← Go back</Link>
     <p>
-      Dajsz and it's integrations are not storing any personal information, there 
-      is no permanent storage behind the service - all data created gets removed 
+      Dajsz and it's integrations are not storing any personal information, there
+      is no permanent storage behind the service - all data created gets removed
       after 48 hours at the latest. You can check it for yourself - all code
       is available for the public:
     </p>
@@ -74,60 +77,106 @@ const Privacy = () => (
 
     <p>
       Dajsz uses Google Analytics for usage metrics. If you want to learn
-      more about Google's privacy policy then you should head over 
+      more about Google's privacy policy then you should head over
       <a href="https://support.google.com/analytics/answer/6004245"> there</a>.
     </p>
   </div>
 )
 
 const Support = () => (
-  <div class="home">
+  <div className="home">
     <Link to="/">← Go back</Link>
     <p>
-      If you have questions or concerns about Dajsz you can reach out at 
+      If you have questions or concerns about Dajsz you can reach out at
       <a href="mailto:support@dajsz.hu"> support@dajsz.hu</a>. If you found
-      any bugs or issues you can report them 
+      any bugs or issues you can report them
       <a href="https://github.com/akarasz/dajsz/issues"> here</a>.
     </p>
   </div>
 )
 
-const Header = ({ name, onNameChange, onNewGame }) => {
-  const promptForName = (currentName, callback) => {
-    const showPrompt = () => prompt("Please enter your name:", currentName)
-    let newName = showPrompt()
+const Header = () => {
+  const [showModal, setShowModal] = useState(false)
 
-    while (newName !== null && newName.trim() === "") {
-      newName = showPrompt()
-    }
-
-    if (newName !== null) {
-      callback(newName.trim())
-    }
-  }
+  const { name } = useContext(Context)
 
   useEffect(() => {
-    if (name === null) {
-      promptForName(name, onNameChange)
+    if (name === null || name === "") {
+      setShowModal(true)
     }
-  }, [name, onNameChange])
-
-  const finalName = (name !== null ? name : "<Player>")
+  }, [name])
 
   return (
     <header>
-      <div class="header-left">
+      <div className="header-left">
         <Link to="/" className="title action item">
             <img src="/icon/dice-192.png" alt="logo" />
             <span>Dajsz</span>
         </Link>
       </div>
-      <div class="header-right">
-        <div class="name item" onClick={() => promptForName(name, onNameChange)}>You play as <em class="action" title={finalName}>{finalName}</em></div>
+      <div className="header-right">
+        <div className="name item" onClick={() => setShowModal(true)}>
+          You play as <em className="action" title={name}>{name}</em>
+        </div>
         <InviteButtonChooser />
       </div>
-    </header>
-    )
+
+      <NameChangeModal show={showModal}
+        handleClose={() => setShowModal(false)} />
+    </header>)
+}
+
+const NameChangeModal = ({ show, handleClose }) => {
+  const { name, changeName } = useContext(Context)
+
+  const [input, setInput] = useState(name)
+
+  const updateInput = (e) => {
+    setInput(e.target.value)
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSave()
+    } else if (e.key === "Escape") {
+      handleCancel()
+    }
+  }
+
+  const handleCancel = () => {
+    setInput(name)
+
+    if (name === null || name.trim() === "") {
+      return
+    }
+
+    handleClose()
+  }
+
+  const handleSave = () => {
+    if (input === null || input.trim() === "") {
+      return
+    }
+
+    changeName(input.trim())
+    handleClose()
+  }
+
+  return (
+    <Modal showing={show} handleClose={handleCancel}>
+      <div className="dialog">
+        <p>Please enter your name:</p>
+        <input autoFocus type="text" value={input !== null ? input : ""} onChange={updateInput} onKeyDown={handleKeyPress} />
+        <div className="buttons">
+          <button className="small"
+            onClick={handleSave}
+            disabled={input === null || input.trim() === ""}>Save</button>
+          <button className="small secondary"
+            onClick={handleCancel}
+            disabled={name === null || name.trim() === ""}>Cancel</button>
+        </div>
+      </div>
+    </Modal>)
 }
 
 const InviteButtonChooser = () => {
@@ -152,7 +201,7 @@ const ShareButton = () => {
   }
 
   return (
-    <div class="share action item" title="Share" onClick={handleClick}>
+    <div className="share action item" title="Share" onClick={handleClick}>
       <img src="/share.png" alt="share" />
     </div>)
 }
@@ -177,7 +226,7 @@ const ClipboardButton = () => {
   const image = "/clipboard" + (copied ? "-copied" : "") + ".png"
 
   return (
-    <div class="share action item" title="Share" onClick={handleClick}>
+    <div className="share action item" title="Share" onClick={handleClick}>
       <img src={image} alt="share" />
     </div>)
 }

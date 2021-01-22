@@ -1,14 +1,18 @@
-import React, { useState, useEffect, useRef } from "react"
+import { useContext, useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
 
+import { Context as AppContext } from "./App"
+import Modal from "./Modal"
 import * as api from "./api"
 import config from "./config.js"
 
-const Yahtzee = ({ player }) => {
+const Yahtzee = () => {
   const { gameId } = useParams()
   const [loaded, setLoaded] = useState(false)
   const [game, setGame] = useState({})
   const [suggestions, setSuggestions] = useState({})
+  const { name } = useContext(AppContext)
+  const [showJoinModal, setShowJoinModal] = useState(false)
 
   // states for animations
   const [rolling, setRolling] = useState(false)
@@ -40,10 +44,10 @@ const Yahtzee = ({ player }) => {
     }
 
     const rolledAlready = game.RollCount > 0
-    const activeTurn = game.Players[game.CurrentPlayer].User === player
+    const activeTurn = game.Players[game.CurrentPlayer].User === name
 
     if (activeTurn && rolledAlready) {
-      api.suggestions(player, game.Dices, setSuggestions)
+      api.suggestions(name, game.Dices, setSuggestions)
     } else {
       setSuggestions({})
     }
@@ -55,7 +59,7 @@ const Yahtzee = ({ player }) => {
     setSuggestions({})
     setGame({})
 
-    api.load(gameId, player, (data) => {
+    api.load(gameId, name, (data) => {
       updateGame(data)
       setLoaded(true)
     })
@@ -77,14 +81,12 @@ const Yahtzee = ({ player }) => {
     }
 
     const hasPlayers = game.Players.length > 0
-    const joinedAlready = game.Players.map((p) => p.User).includes(player)
+    const joinedAlready = game.Players.map((p) => p.User).includes(name)
 
     if (!hasPlayers) {
-      api.join(gameId, player, updateGame)
+      api.join(gameId, name, updateGame)
     } else if (!joinedAlready) {
-      if (window.confirm("Do you want to join?")) {
-        api.join(gameId, player, updateGame)
-      }
+      setShowJoinModal(true)
     }
   }, [loaded, gameId]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -143,17 +145,18 @@ const Yahtzee = ({ player }) => {
   const gameEnded = game.Round >= 13
   const beforeFirstRoll = game.RollCount <= 0
   const turnEnded = game.RollCount >= 3
-  const playersTurn = game.Players.length > 0 && game.Players[game.CurrentPlayer].User === player
+  const playersTurn = game.Players.length > 0 && game.Players[game.CurrentPlayer].User === name
 
   const canLock = playersTurn && !beforeFirstRoll && !turnEnded
   const canRoll = playersTurn && !turnEnded && !gameEnded && !rolling
   const canScore = playersTurn && !beforeFirstRoll && !rolling
-  const handleLock = (idx) => api.lock(gameId, player, idx)
-  const handleRoll = () => api.roll(gameId, player)
-  const handleScore = (category) => api.score(gameId, player, category)
+  const handleLock = (idx) => api.lock(gameId, name, idx)
+  const handleRoll = () => api.roll(gameId, name)
+  const handleScore = (category) => api.score(gameId, name, category)
 
   return (
-    <div id={gameId} className="yahtzee">
+    <>
+    <div className="yahtzee">
       <Dices
         dices={game.Dices}
         rolling={rolling}
@@ -172,7 +175,39 @@ const Yahtzee = ({ player }) => {
         onScore={handleScore}
         playersTurn={playersTurn}
         lastScore={lastScore} />
-    </div>)
+    </div>
+    <JoinModal
+      show={showJoinModal}
+      handleClose={() => setShowJoinModal(false)}
+      updateGame={updateGame} />
+    </>)
+}
+
+const JoinModal = ({ show, handleClose, updateGame }) => {
+  const { name } = useContext(AppContext)
+  const { gameId } = useParams()
+
+  const handleYes = () => {
+    api.join(gameId, name, updateGame)
+    handleClose()
+  }
+
+  const handleNo = () => {
+    handleClose()
+  }
+
+  return (
+    <Modal showing={show} handleClose={handleNo}>
+      <div className="dialog">
+        <p>Do you want to join?</p>
+        <div className="buttons">
+          <button className="small"
+            onClick={handleYes}>Yes</button>
+          <button className="small secondary"
+            onClick={handleNo}>No</button>
+        </div>
+      </div>
+    </Modal>)
 }
 
 const Dices = ({ dices, rolling, active, onLock }) => (
@@ -228,18 +263,11 @@ const RollCount = ({ rollCount }) => {
 }
 
 const RollButton = ({ active, onRoll }) => {
-  const classes = ["roll", "action", "button"]
-  if (!active) {
-    classes.push("disabled")
-  }
-  const className = classes.join(" ")
-
-  let onClick = undefined
   if (active) {
-    onClick = onRoll
+    return <button className="roll" onClick={onRoll}>Roll</button>
+  } else {
+    return <button className="roll" disabled>Roll</button>
   }
-
-  return <div className={className} onClick={onClick}>Roll</div>
 }
 
 const Scores = (props) => (
