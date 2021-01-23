@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from "react"
+import { createContext, useContext, useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
 
 import { Context as AppContext } from "./App"
@@ -6,15 +6,41 @@ import Modal from "./Modal"
 import * as api from "./api"
 import config from "./config.js"
 
-const Yahtzee = () => {
-  const { gameId } = useParams()
-  const [loaded, setLoaded] = useState(false)
-  const [game, setGame] = useState({})
-  const [suggestions, setSuggestions] = useState({})
-  const { name } = useContext(AppContext)
-  const [showJoinModal, setShowJoinModal] = useState(false)
+export const Context = createContext({})
 
-  // states for animations
+const MyTurn = () => {
+  const { name } = useContext(AppContext)
+  const { game: { Players, CurrentPlayer }} = useContext(Context)
+
+  return Players.length > 0 && Players[CurrentPlayer].User === name
+}
+
+const BeforeFirstRoll = () => {
+  const { game: { RollCount }} = useContext(Context)
+
+  return RollCount <= 0
+}
+
+const AfterLastRoll = () => {
+  const { game: { RollCount }} = useContext(Context)
+
+  return RollCount >= 3
+}
+
+const AfterLastRound = () => {
+  const { game: { Round }} = useContext(Context)
+
+  return Round >= 13
+}
+
+const Yahtzee = () => {
+  const { name } = useContext(AppContext)
+
+  const { gameId } = useParams()
+
+  const [game, setGame] = useState(null)
+
+  const [showJoinModal, setShowJoinModal] = useState(false)
   const [rolling, setRolling] = useState(false)
   const [lastScore, setLastScore] = useState(null)
 
@@ -38,60 +64,16 @@ const Yahtzee = () => {
     return result
   }
 
-  useEffect(() => { // handle suggestions
-    if (!loaded || rolling) {
-      return
-    }
-
-    const rolledAlready = game.RollCount > 0
-    const activeTurn = game.Players[game.CurrentPlayer].User === name
-
-    if (activeTurn && rolledAlready) {
-      api.suggestions(name, game.Dices, setSuggestions)
-    } else {
-      setSuggestions({})
-    }
-  }, [rolling, game.RollCount, game.Players, game.CurrentPlayer]) // eslint-disable-line react-hooks/exhaustive-deps
-
-
   useEffect(() => { // handle game loading
-    setLoaded(false)
-    setSuggestions({})
-    setGame({})
+    setGame(null)
 
     api.load(gameId, name, (data) => {
       updateGame(data)
-      setLoaded(true)
     })
   }, [gameId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => { // handle setting loaded state
-    setLoaded(!(!game.Players))
-  }, [game])
-
-  useEffect(() => { // handle offering to join
-    if (!loaded) {
-      return
-    }
-
-    const startedAlready = game.RollCount + game.CurrentPlayer + game.Round > 0
-
-    if (startedAlready) {
-      return
-    }
-
-    const hasPlayers = game.Players.length > 0
-    const joinedAlready = game.Players.map((p) => p.User).includes(name)
-
-    if (!hasPlayers) {
-      api.join(gameId, name, updateGame)
-    } else if (!joinedAlready) {
-      setShowJoinModal(true)
-    }
-  }, [loaded, gameId]) // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => { // handle websocket creation
-    if (!gameId) {
+    if (gameId === null) {
       return
     }
 
@@ -103,6 +85,7 @@ const Yahtzee = () => {
   }, [gameId])
 
   useEffect(() => { // handle websocket onevent
+
     if (!ws.current) {
       return
     }
@@ -120,80 +103,58 @@ const Yahtzee = () => {
 
       updateGame(event.Data)
     }
-  }, [game.Players])
+  }, [game?.Players])
 
-  useEffect(() => { // handle stopping roll animation
-    if (!rolling) {
-      return
-    }
-
-    setTimeout(() => setRolling(false), 200)
-  }, [rolling])
-
-  useEffect(() => { // handle stopping blinking last score
-    if (!lastScore) {
-      return
-    }
-
-    setTimeout(() => setLastScore(null), 2000)
-  }, [lastScore])
-
-  if (!loaded) {
-    return <p>Loading game <strong>{gameId}</strong>...</p>
+  if (game === null) {
+    return null
   }
 
-  const gameEnded = game.Round >= 13
-  const beforeFirstRoll = game.RollCount <= 0
-  const turnEnded = game.RollCount >= 3
-  const playersTurn = game.Players.length > 0 && game.Players[game.CurrentPlayer].User === name
-
-  const canLock = playersTurn && !beforeFirstRoll && !turnEnded
-  const canRoll = playersTurn && !turnEnded && !gameEnded && !rolling
-  const canScore = playersTurn && !beforeFirstRoll && !rolling
-  const handleLock = (idx) => api.lock(gameId, name, idx)
-  const handleRoll = () => api.roll(gameId, name)
-  const handleScore = (category) => api.score(gameId, name, category)
-
   return (
-    <>
-    <div className="yahtzee">
-      <Dices
-        dices={game.Dices}
-        rolling={rolling}
-        active={canLock}
-        onLock={handleLock} />
-      <Controller
-        rollCount={game.RollCount}
-        active={canRoll}
-        onRoll={handleRoll} />
-      <Scores
-        players={game.Players}
-        suggestions={suggestions}
-        activePlayerIdx={game.CurrentPlayer}
-        gameEnded={gameEnded}
-        canClick={canScore}
-        onScore={handleScore}
-        playersTurn={playersTurn}
-        lastScore={lastScore} />
-    </div>
-    <JoinModal
-      show={showJoinModal}
-      handleClose={() => setShowJoinModal(false)}
-      updateGame={updateGame} />
-    </>)
+    <Context.Provider value={{ game, updateGame, rolling, setRolling, lastScore, setLastScore }}>
+      <div className="yahtzee">
+        <Dices />
+        <Controller />
+        <Scores
+          lastScore={lastScore} />
+      </div>
+      <JoinModal
+        show={showJoinModal}
+        setShow={setShowJoinModal} />
+    </Context.Provider>)
 }
 
-const JoinModal = ({ show, handleClose, updateGame }) => {
+const JoinModal = ({ show, setShow }) => {
   const { name } = useContext(AppContext)
+  const { updateGame, game } = useContext(Context)
   const { gameId } = useParams()
+
+  useEffect(() => { // handle offering to join
+    if (game === null) {
+      return
+    }
+
+    const startedAlready = game.RollCount + game.CurrentPlayer + game.Round > 0
+    if (startedAlready) {
+      return
+    }
+
+    const hasPlayers = game.Players.length > 0
+    const joinedAlready = game.Players.map((p) => p.User).includes(name)
+
+    if (!hasPlayers) {
+      api.join(gameId, name, updateGame)
+    } else if (!joinedAlready) {
+      setShow(true)
+    }
+  }, [game?.Players.length, gameId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleYes = () => {
     api.join(gameId, name, updateGame)
-    handleClose()
+    setShow(false)
   }
 
   const handleNo = () => {
-    handleClose()
+    setShow(false)
   }
 
   return (
@@ -210,104 +171,165 @@ const JoinModal = ({ show, handleClose, updateGame }) => {
     </Modal>)
 }
 
-const Dices = ({ dices, rolling, active, onLock }) => (
-  <div className="dices">
-    {dices.map((d, i) => {
-      return <Dice
-        index={i}
-        key={i}
-        value={d.Value}
-        locked={d.Locked}
-        rolling={rolling}
-        active={active}
-        onLock={onLock} />
-    })}
-  </div>
-)
+const Dices = () => {
+  const { game: { Dices }, rolling, setRolling } = useContext(Context)
 
-const Dice = ({ active, rolling, locked, value, index, onLock }) => {
-  const handleClick = () => {
-    if (active) {
-      onLock(index)
+  useEffect(() => { // handle stopping roll animation
+    if (!rolling) {
+      return
+    }
+
+    setTimeout(() => setRolling(false), 200)
+  }, [rolling, setRolling])
+
+
+  return (
+    <div className="dices">
+      {Dices.map((dice, i) => {
+        return <Dice key={i}
+          index={i}
+          dice={dice} />
+      })}
+    </div>)
+}
+
+const Dice = ({ dice, index }) => {
+  const { name } = useContext(AppContext)
+  const { rolling } = useContext(Context)
+  const { gameId } = useParams()
+  const myTurn = MyTurn()
+  const beforeFirstRoll = BeforeFirstRoll()
+  const afterLastRoll = AfterLastRoll()
+
+  const clickable = myTurn && !beforeFirstRoll && !afterLastRoll && !rolling
+
+  const handleLock = () => {
+    if (clickable) {
+      api.lock(gameId, name, index)
     }
   }
 
   const classes = ["dice"]
-  if (rolling && !locked) {
+  if (rolling && !dice.Locked) {
     classes.push("rolling")
   } else {
-    classes.push("face-" + value)
+    classes.push("face-" + dice.Value)
   }
-  if (locked) {
+  if (dice.Locked) {
     classes.push("locked")
   }
-  if (active) {
+  if (clickable) {
     classes.push("action")
   }
 
-  return <div className={classes.join(" ")} onClick={handleClick} />
+  return <div className={classes.join(" ")} onClick={handleLock} />
 }
 
-const Controller = ({ rollCount, active, onRoll }) => (
+const Controller = () => (
   <div className="controller">
-    <RollCount rollCount={rollCount} />
-    <RollButton active={active} onRoll={onRoll} />
+    <RollCount />
+    <RollButton />
   </div>
 )
 
-const RollCount = ({ rollCount }) => {
-  const classes = ["roll", "counter", "roll-" + rollCount]
+const RollCount = () => {
+  const { game: { RollCount }} = useContext(Context)
+
+  const classes = ["roll", "counter", "roll-" + RollCount]
   const className = classes.join(" ")
 
   return <div className={className}><div /><div /><div /></div>
 }
 
-const RollButton = ({ active, onRoll }) => {
-  if (active) {
-    return <button className="roll" onClick={onRoll}>Roll</button>
+const RollButton = () => {
+  const { name } = useContext(AppContext)
+  const { rolling } = useContext(Context)
+  const { gameId } = useParams()
+  const myTurn = MyTurn()
+  const afterLastRoll = AfterLastRoll()
+  const afterLastRound = AfterLastRound()
+
+  const clickable = myTurn && !afterLastRoll && !afterLastRound && !rolling
+
+  const handleRoll = () => {
+    api.roll(gameId, name)
+  }
+
+  if (clickable) {
+    return <button className="roll" onClick={handleRoll}>Roll</button>
   } else {
     return <button className="roll" disabled>Roll</button>
   }
 }
 
-const Scores = (props) => (
-  <div className="scores">
-    <table>
-      <thead>
-        <ScoresHeader players={props.players} gameEnded={props.gameEnded} />
-      </thead>
-      <tbody>
-        <ScoreLine {...props} title="Aces" category="ones" />
-        <ScoreLine {...props} title="Twos" category="twos" />
-        <ScoreLine {...props} title="Threes" category="threes" />
-        <ScoreLine {...props} title="Fours" category="fours" />
-        <ScoreLine {...props} title="Fives" category="fives" />
-        <ScoreLine {...props} title="Sixes" category="sixes" />
-        <ScoreLine {...props} title="Bonus" category="bonus" />
-        <ScoreLine {...props} title="Three of a kind" category="three-of-a-kind" />
-        <ScoreLine {...props} title="Four of a kind" category="four-of-a-kind" />
-        <ScoreLine {...props} title="Full House" category="full-house" />
-        <ScoreLine {...props} title="Small Straight" category="small-straight" />
-        <ScoreLine {...props} title="Large Straight" category="large-straight" />
-        <ScoreLine {...props} title="Yahtzee" category="yahtzee" />
-        <ScoreLine {...props} title="Chance" category="chance" />
-        <tr>
-          <td>Total</td>
-          {props.players.map((p, i) => {
-            let total = 0
-            Object.entries(p.ScoreSheet).forEach(([c, v]) => total += v)
-            return <td key={i}>{total}</td>
-          })}
-        </tr>
-      </tbody>
-    </table>
-  </div>
-)
+const Scores = () => {
+  const { name } = useContext(AppContext)
+  const { game: { Dices, RollCount, Players, CurrentPlayer }, rolling, lastScore, setLastScore } = useContext(Context)
+  const [suggestions, setSuggestions] = useState({})
 
-const ScoresHeader = ({ gameEnded, players }) => {
+  useEffect(() => { // handle suggestions
+    if (rolling || !Players || Players.length === 0) {
+      return
+    }
+
+    const rolledAlready = RollCount > 0
+    const activeTurn = Players[CurrentPlayer].User === name
+
+    if (activeTurn && rolledAlready) {
+      api.suggestions(name, Dices, setSuggestions)
+    } else {
+      setSuggestions({})
+    }
+  }, [rolling, RollCount, Players, CurrentPlayer]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => { // handle stopping blinking last score
+    if (!lastScore) {
+      return
+    }
+
+    setTimeout(() => setLastScore(null), 2000)
+  }, [lastScore, setLastScore])
+
+  return (
+    <div className="scores">
+      <table>
+        <thead>
+          <ScoresHeader />
+        </thead>
+        <tbody>
+          <ScoreLine suggestions={suggestions} title="Aces" category="ones" />
+          <ScoreLine suggestions={suggestions} title="Twos" category="twos" />
+          <ScoreLine suggestions={suggestions} title="Threes" category="threes" />
+          <ScoreLine suggestions={suggestions} title="Fours" category="fours" />
+          <ScoreLine suggestions={suggestions} title="Fives" category="fives" />
+          <ScoreLine suggestions={suggestions} title="Sixes" category="sixes" />
+          <ScoreLine suggestions={suggestions} title="Bonus" category="bonus" />
+          <ScoreLine suggestions={suggestions} title="Three of a kind" category="three-of-a-kind" />
+          <ScoreLine suggestions={suggestions} title="Four of a kind" category="four-of-a-kind" />
+          <ScoreLine suggestions={suggestions} title="Full House" category="full-house" />
+          <ScoreLine suggestions={suggestions} title="Small Straight" category="small-straight" />
+          <ScoreLine suggestions={suggestions} title="Large Straight" category="large-straight" />
+          <ScoreLine suggestions={suggestions} title="Yahtzee" category="yahtzee" />
+          <ScoreLine suggestions={suggestions} title="Chance" category="chance" />
+          <tr>
+            <td>Total</td>
+            {Players.map((p, i) => {
+              let total = 0
+              Object.entries(p.ScoreSheet).forEach(([c, v]) => total += v)
+              return <td key={i}>{total}</td>
+            })}
+          </tr>
+        </tbody>
+      </table>
+    </div>)
+}
+
+const ScoresHeader = () => {
+  const { game: { Players }} = useContext(Context)
+
   let isWinner = []
-  if (gameEnded) {
-    const total = players
+  if (AfterLastRound()) {
+    const total = Players
         .map(p => p.ScoreSheet)
         .map(scores => Object.values(scores).reduce((a, b) => a + b, 0))
 
@@ -320,41 +342,39 @@ const ScoresHeader = ({ gameEnded, players }) => {
   return (
     <tr>
       <th/>
-      {players.map((p, i) => {
+      {Players.map((p, i) => {
         return <th key={i} className={isWinner[i] ? "winner" : ""}>{p.User}</th>
       })}
     </tr>
   )
 }
 
-const ScoreLine = ({ title, category, players, activePlayerIdx, suggestions, canClick, playersTurn, lastScore, gameEnded, onScore }) => {
-  const handleClick = () => {
-    if (category === "bonus") {
-      return
-    }
-
-    onScore(category)
-  }
+const ScoreLine = ({ title, category, suggestions }) => {
+  const { game: { Players, CurrentPlayer } } = useContext(Context)
 
   return (
     <tr>
       <td>{title}</td>
-      {players.map((p, i) => <ScoreCell
-          scoreSheet={p.ScoreSheet}
+      {Players.map((p, i) => <ScoreCell key={i}
           category={category}
           suggestion={suggestions[category]}
-          player={players[i]}
-          canClick={canClick}
-          playersTurn={playersTurn}
-          activePlayer={i === parseInt(activePlayerIdx)}
-          gameEnded={gameEnded}
-          lastScore={lastScore}
-          onClick={handleClick} />
+          player={p}
+          activePlayer={i === parseInt(CurrentPlayer)} />
       )}
     </tr>)
 }
 
-const ScoreCell = ({ scoreSheet, category, suggestion, player, canClick, playersTurn, activePlayer, gameEnded, lastScore, onClick }) => {
+const ScoreCell = ({ category, suggestion, player, activePlayer }) => {
+  const { name } = useContext(AppContext)
+  const { lastScore, rolling } = useContext(Context)
+  const { gameId } = useParams()
+
+  const myTurn = MyTurn()
+  const beforeFirstRoll = BeforeFirstRoll()
+  const canClick = myTurn && !beforeFirstRoll && !rolling
+  const afterLastRound = AfterLastRound()
+
+  const scoreSheet = player.ScoreSheet
 
   const sumUpperSection = () => {
     return (scoreSheet["ones"] || 0) +
@@ -368,7 +388,7 @@ const ScoreCell = ({ scoreSheet, category, suggestion, player, canClick, players
   const bonus = category === "bonus"
   const hasScore = category in scoreSheet
   const scoredAnimation = lastScore && lastScore.user === player.User &&
-      lastScore.category.includes(category) && !activePlayer && !gameEnded
+      lastScore.category.includes(category) && !activePlayer && !afterLastRound
 
   let val = scoreSheet[category]
   if (!hasScore) {
@@ -382,8 +402,15 @@ const ScoreCell = ({ scoreSheet, category, suggestion, player, canClick, players
     }
   }
 
+  const handleClick = () => {
+    if (!canClick && !bonus) {
+      return
+    }
+
+    api.score(gameId, name, category)
+  }
   const classes = []
-  if (activePlayer && !gameEnded) {
+  if (activePlayer && !afterLastRound) {
     classes.push("current-player")
   }
   if (!hasScore) {
@@ -396,8 +423,6 @@ const ScoreCell = ({ scoreSheet, category, suggestion, player, canClick, players
     classes.push("scored")
   }
   const className = classes.join(" ")
-
-  const handleClick = canClick ? onClick : undefined
 
   return <td className={className} key={category} onClick={handleClick}>{val}</td>
 }
