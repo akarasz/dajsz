@@ -1,4 +1,4 @@
-.modal {
+.Modal {
   position: fixed;
   z-index: 1;
   left: 0;
@@ -12,8 +12,46 @@
   place-items: center;
 }
 
-.modal > div {
+.Modal > div {
   width: clamp(0em, 100%, 20em);
   background-color: rgba(255,255,255,1);
   box-shadow: 0 0 5em rgba(0,0,0,.6);
+}
+
+.Dialog {
+  font-size: 1em;
+  margin: 1.5em;
+  text-shadow: none;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.Dialog > * {
+  margin: .5em 0;
+}
+
+.Dialog input[type=text] {
+  border: 0px solid black;
+  border-bottom-width: 1px;
+  padding: .5em 1em;
+  font-size: 1em;
+}
+
+.Dialog input[type=text]:focus {
+  outline: none;
+}
+
+.Dialog .buttons {
+  display: flex;
+  margin-top: 2em;
+  flex-direction: row-reverse;
+}
+
+.Dialog .buttons button {
+  margin-left: .5em;
+}
+
+.Dialog .buttons button:last-child {
+  margin-left: 0;
 }

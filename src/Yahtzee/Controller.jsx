@@ -40,9 +40,9 @@ const RollButton = () => {
   }
 
   if (clickable) {
-    return <Button onClick={handleRoll}>Roll</Button>
+    return <Button text="Roll" onClick={handleRoll} />
   } else {
-    return <Button disabled>Roll</Button>
+    return <Button text="Roll" disabled />
   }
 }
 

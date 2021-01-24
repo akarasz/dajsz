@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom"
 
 import { Context as AppContext } from "./App"
 import { Button } from "./Button"
+import "./Home.css"
 
 import { create } from "./Yahtzee/api"
 
@@ -16,8 +17,9 @@ const Home = () => {
   }
 
   return (
-    <div className="home">
-      <Button onClick={handleClickOnNewGame}>New Game</Button>
+    <div className="Home">
+      <Button text="New Game"
+        onClick={handleClickOnNewGame} />
       <div>
         <ul>
           <li><Link to="/privacy">Privacy</Link></li>

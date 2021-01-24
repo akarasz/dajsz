@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
 
 import { Context as AppContext } from "./../App"
+import { Button } from "./../Button"
 import Modal from "./../Modal"
 
 import { baseUri, load, join } from "./api"
@@ -139,14 +140,10 @@ const JoinModal = ({ show, setShow }) => {
 
   return (
     <Modal showing={show} handleClose={handleNo}>
-      <div className="dialog">
-        <p>Do you want to join as <em>{name}</em> ?</p>
-        <div className="buttons">
-          <button className="small"
-            onClick={handleYes}>Yes</button>
-          <button className="small secondary"
-            onClick={handleNo}>No</button>
-        </div>
+      <p>Do you want to join as <em>{name}</em> ?</p>
+      <div className="buttons">
+        <Button small text="Yes" onClick={handleYes} />
+        <Button small secondary text="No" onClick={handleNo} />
       </div>
     </Modal>)
 }

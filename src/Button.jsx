@@ -1,7 +1,10 @@
 import "./Button.css"
 import "./Clickable.css"
 
-export const Button = ({ onClick, disabled, children }) => (
-  <button className="Clickable" onClick={onClick} disabled={disabled}>
-    {children}
+export const Button = ({ text, onClick, small, secondary, disabled }) => (
+  <button
+    className={`Clickable${small ? " Small" : ""}${secondary ? " Secondary" : ""}`}
+    onClick={onClick}
+    disabled={disabled}>
+    {text}
   </button>)

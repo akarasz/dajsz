@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 
 const Privacy = () => (
-  <div className="home">
+  <div>
     <Link to="/">← Go back</Link>
     <p>
       Dajsz and it's integrations are not storing any personal information, there

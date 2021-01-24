@@ -16,7 +16,8 @@ button:hover {
   text-shadow: 0 0 1em hsla(194, 0%, 100%, 1);
 }
 
-button[disabled] {
+button[disabled],
+button[disabled].Secondary {
   background-color: hsla(194, 10%, 20%, .1);
   color: hsla(194, 0%, 100%, .95);
   box-shadow: none;
@@ -24,6 +25,23 @@ button[disabled] {
   cursor: not-allowed;
 }
 
-button[disabled]:hover {
+button[disabled]:hover,
+button[disabled]:hover.Secondary {
   background-color: hsla(194, 10%, 20%, .1);
+}
+
+.Small {
+  padding: .3em 1.2em;
+  font-size: .9em;
+}
+
+.Secondary {
+  background-color: hsla(194, 40%, 20%, .45);
+  text-shadow: 0 0 .3em hsla(194, 0%, 0%, .8);
+  box-shadow: none;
+}
+
+.Secondary:hover {
+  background-color: hsla(194, 40%, 25%, .45);
+  box-shadow: none;
 }

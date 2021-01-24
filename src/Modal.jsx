@@ -6,9 +6,11 @@ const Modal = ({ showing, handleClose, children }) => {
   }
 
   return (
-    <div className="modal" onClick={handleClose}>
+    <div className="Modal" onClick={handleClose}>
       <div onClick={(e) => e.stopPropagation()}>
-        {children}
+        <div  className="Dialog">
+          {children}
+        </div>
       </div>
    </div>)
 }

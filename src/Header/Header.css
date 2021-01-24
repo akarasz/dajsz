@@ -1,5 +1,6 @@
 header {
   grid-area: header;
+  width: 100%;
 
   display:  flex;
   justify-content: space-between;
@@ -36,10 +37,6 @@ header {
   font-size: 1em;
 
   align-self: center;
-}
-
-.Item:last-child {
-  border-right-width: 1px;
 }
 
 .Item:hover img {

@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
 import { Context as AppContext } from "./../App"
+import { Button } from "./../Button"
 import Modal from "./../Modal"
 import "./../Clickable.css"
 
@@ -80,17 +81,15 @@ const NameChangeModal = ({ show, handleClose }) => {
 
   return (
     <Modal showing={show} handleClose={handleCancel}>
-      <div className="dialog">
-        <p>Please enter your name:</p>
-        <input autoFocus type="text" value={input !== null ? input : ""} onChange={updateInput} onKeyDown={handleKeyPress} />
-        <div className="buttons">
-          <button className="small"
-            onClick={handleSave}
-            disabled={input === null || input.trim() === ""}>Save</button>
-          <button className="small secondary"
-            onClick={handleCancel}
-            disabled={name === null || name.trim() === ""}>Cancel</button>
-        </div>
+      <p>Please enter your name:</p>
+      <input autoFocus type="text" value={input !== null ? input : ""} onChange={updateInput} onKeyDown={handleKeyPress} />
+      <div className="buttons">
+        <Button small text="Save"
+          onClick={handleSave}
+          disabled={input === null || input.trim() === ""} />
+        <Button small secondary text="Cancel"
+          onClick={handleCancel}
+          disabled={name === null || name.trim() === ""} />
       </div>
     </Modal>)
 }

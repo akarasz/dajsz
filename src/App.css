@@ -1,3 +1,22 @@
 .Content {
   grid-area: content;
+
+  margin-top: 3em;
+  /* padding: 0 2em; */
+
+  display: flex;
+  flex-direction: column;
+
+  width: clamp(0em, 100%, 40em);
+}
+
+.Content a {
+  text-decoration: none;
+  font-weight: 500;
+  color: hsla(194, 0%, 0%, 1);
+}
+
+.Content a:hover {
+  text-decoration: none;
+  color: hsla(194, 0%, 40%, 1);
 }
