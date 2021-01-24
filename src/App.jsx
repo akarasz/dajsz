@@ -47,7 +47,7 @@ const App = () => {
 }
 
 const Content = ({ children }) => (
-  <div class="Content">
+  <div className="Content">
     {children}
   </div>)
 

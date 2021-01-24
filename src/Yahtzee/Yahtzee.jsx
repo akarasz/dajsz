@@ -76,7 +76,7 @@ const Yahtzee = () => {
         setRolling(true)
       } else if (event.Action === "score") {
         setLastScore({
-          user: event.User,
+          user: game.Players.map(p => p.User).indexOf(event.User),
           category: scoreSheetDiff(game.Players, event.Data.Players)[event.User],
         })
       }

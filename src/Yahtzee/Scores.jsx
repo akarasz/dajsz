@@ -8,12 +8,75 @@ import { score, suggestions as getSuggestions } from "./api"
 import { Context as YahtzeeContext } from "./Yahtzee"
 import "./Scores.css"
 
+const UPPER_SECTION = [
+  { id: "ones", title: "Aces" },
+  { id: "twos", title: "Deuces" },
+  { id: "threes", title: "Threes" },
+  { id: "fours", title: "Fours" },
+  { id: "fives", title: "Fives" },
+  { id: "sixes", title: "Sixes" },
+]
+
+const CATEGORIES = [
+  ...UPPER_SECTION,
+  { id: "bonus", title: "Bonus" },
+  { id: "three-of-a-kind", title: "Three of a kind" },
+  { id: "four-of-a-kind", title: "Four of a kind" },
+  { id: "full-house", title: "Full House" },
+  { id: "small-straight", title: "Small Straight" },
+  { id: "large-straight", title: "Large Straight" },
+  { id: "yahtzee", title: "Yahtzee" },
+  { id: "chance", title: "Chance" },
+]
+
+const transformData = (players, suggestions, currentPlayer, dices) => {
+  // set scores from score sheet
+  const data = CATEGORIES.map(category => {
+    return {
+      content: players.map(player => {
+        return {
+          scored: player.ScoreSheet[category.id]
+        }
+      }),
+      ...category
+    }
+  })
+
+  if (players.length === 0) {
+    return data
+  }
+
+  // add hints for current player's column
+  data.forEach((row, i) => {
+    if (row.content[currentPlayer]["scored"] === undefined && suggestions[row.id] !== undefined) {
+      data[i].content[currentPlayer]["suggestion"] = suggestions[row.id]
+    }
+  })
+
+  // set bonus row (6th one in data)
+  data[6].content.forEach((current, i) => {
+    if (current["scored"] !== undefined) {
+      return
+    }
+
+    const total = UPPER_SECTION
+      .map(c => c.id)
+      .map(id => players[i].ScoreSheet[id] || 0)
+      .reduce((a, b) => a + b, 0)
+    const left = 63 - total || 63
+
+    current["hint"] = "need " + left + " more"
+  })
+
+  return data
+}
+
 const Scores = () => {
   const { name } = useContext(AppContext)
   const { game: { Dices, RollCount, Players, CurrentPlayer }, rolling, lastScore, setLastScore } = useContext(YahtzeeContext)
   const [suggestions, setSuggestions] = useState({})
 
-  useEffect(() => { // handle suggestions
+  useEffect(() => { // load suggestions
     if (rolling || !Players || Players.length === 0) {
       return
     }
@@ -43,20 +106,12 @@ const Scores = () => {
           <ScoresHeader />
         </thead>
         <tbody>
-          <ScoreLine suggestions={suggestions} title="Aces" category="ones" />
-          <ScoreLine suggestions={suggestions} title="Twos" category="twos" />
-          <ScoreLine suggestions={suggestions} title="Threes" category="threes" />
-          <ScoreLine suggestions={suggestions} title="Fours" category="fours" />
-          <ScoreLine suggestions={suggestions} title="Fives" category="fives" />
-          <ScoreLine suggestions={suggestions} title="Sixes" category="sixes" />
-          <ScoreLine suggestions={suggestions} title="Bonus" category="bonus" />
-          <ScoreLine suggestions={suggestions} title="Three of a kind" category="three-of-a-kind" />
-          <ScoreLine suggestions={suggestions} title="Four of a kind" category="four-of-a-kind" />
-          <ScoreLine suggestions={suggestions} title="Full House" category="full-house" />
-          <ScoreLine suggestions={suggestions} title="Small Straight" category="small-straight" />
-          <ScoreLine suggestions={suggestions} title="Large Straight" category="large-straight" />
-          <ScoreLine suggestions={suggestions} title="Yahtzee" category="yahtzee" />
-          <ScoreLine suggestions={suggestions} title="Chance" category="chance" />
+          {transformData(Players, suggestions, CurrentPlayer, Dices).map((row, i) => (
+            <ScoreLine key={i}
+              highlight={CurrentPlayer}
+              blink={lastScore?.category?.includes(row.id) ? (lastScore.user !== CurrentPlayer ? lastScore.user : undefined) : undefined}
+              {...row} />)
+          )}
           <tr>
             <td>Total</td>
             {Players.map((p, i) => {
@@ -95,82 +150,34 @@ const ScoresHeader = () => {
   )
 }
 
-const ScoreLine = ({ title, category, suggestions }) => {
-  const { game: { Players, CurrentPlayer } } = useContext(YahtzeeContext)
-
+const ScoreLine = ({ title, id, content, highlight, blink }) => {
   return (
     <tr>
       <td>{title}</td>
-      {Players.map((p, i) => <ScoreCell key={i}
-          category={category}
-          suggestion={suggestions[category]}
-          player={p}
-          activePlayer={i === parseInt(CurrentPlayer)} />
-      )}
+      {content.map((cell, i) => <ScoreCell key={i}
+        category={id}
+        highlight={i === highlight}
+        blink={i === blink}
+        {...cell} />)}
     </tr>)
 }
 
-const ScoreCell = ({ category, suggestion, player, activePlayer }) => {
+const ScoreCell = ({ category, scored, suggestion, hint, highlight, blink }) => {
   const { name } = useContext(AppContext)
-  const { lastScore, rolling, game: { Players, CurrentPlayer, RollCount, Round } } = useContext(YahtzeeContext)
   const { gameId } = useParams()
 
-  const myTurn = Players.length > 0 && Players[CurrentPlayer].User === name
-  const beforeFirstRoll = RollCount <= 0
-  const canClick = myTurn && !beforeFirstRoll && !rolling
-  const afterLastRound = Round >= 13
-
-  const scoreSheet = player.ScoreSheet
-
-  const sumUpperSection = () => {
-    return (scoreSheet["ones"] || 0) +
-      (scoreSheet["twos"] || 0) +
-      (scoreSheet["threes"] || 0) +
-      (scoreSheet["fours"] || 0) +
-      (scoreSheet["fives"] || 0) +
-      (scoreSheet["sixes"] || 0)
+  if (suggestion !== undefined) {
+    return (
+      <td
+        className={`Suggestion Clickable${highlight ? " Highlighted" : ""}${blink ? " Blinking" : ""}`}
+        onClick={() => score(gameId, name, category)}>{suggestion}</td>)
+  } else if (hint !== undefined) {
+    return (
+      <td
+        className={`Suggestion${highlight ? " Highlighted" : ""}${blink ? " Blinking" : ""}`}>{hint}</td>)
+  } else {
+    return <td className={`${highlight ? "Highlighted" : ""}${blink ? " Blinking" : ""}`}>{scored}</td>
   }
-
-  const bonus = category === "bonus"
-  const hasScore = category in scoreSheet
-  const scoredAnimation = lastScore && lastScore.user === player.User &&
-      lastScore.category.includes(category) && !activePlayer && !afterLastRound
-
-  let val = scoreSheet[category]
-  if (!hasScore) {
-    if (bonus) {
-      const remains = 63 - sumUpperSection()
-      if (remains > 0) {
-        val = "need " + remains + " more"
-      }
-    } else if (activePlayer) {
-      val = suggestion
-    }
-  }
-
-  const handleClick = () => {
-    if (!canClick && !bonus) {
-      return
-    }
-
-    score(gameId, name, category)
-  }
-  const classes = []
-  if (activePlayer && !afterLastRound) {
-    classes.push("Emphasized")
-  }
-  if (!hasScore) {
-    classes.push("Suggestion")
-  }
-  if (canClick && !bonus) {
-    classes.push("Clickable")
-  }
-  if (scoredAnimation) {
-    classes.push("Blinking")
-  }
-  const className = classes.join(" ")
-
-  return <td className={className} key={category} onClick={handleClick}>{val}</td>
 }
 
 export default Scores
