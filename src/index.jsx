@@ -2,10 +2,9 @@ import React from "react"
 import ReactDOM from "react-dom"
 import App from "./App"
 import ReactGA from "react-ga"
-import config from "./config.js"
 
-if (config.tracking) {
-  ReactGA.initialize(config.tracking)
+if (window.tracking) {
+  ReactGA.initialize(window.tracking)
   ReactGA.pageview(window.location.pathname + window.location.search)
 }
 

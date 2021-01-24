@@ -1,4 +1,4 @@
-import config from "./config.js"
+export const baseUri = "api.dajsz.hu"
 
 const b64EncodeUnicode = (str) => {
   // first we use encodeURIComponent to get percent-encoded UTF-8,
@@ -19,7 +19,7 @@ const headers = (user) => (
 const doNothing = (data) => { return }
 
 export const create = (user) => (
-  fetch(config.baseUri.http, {
+  fetch("https://" + baseUri, {
     method: "POST",
     headers: headers(user),
   })
@@ -33,7 +33,7 @@ export const create = (user) => (
 )
 
 export const load = (gameID, user, onSuccess) => (
-  fetch(config.baseUri.http + "/" + gameID, {
+  fetch("https://" + baseUri + "/" + gameID, {
     headers: headers(user),
   })
   .then((res) => Promise.all([res.status, res.json()]))
@@ -47,7 +47,7 @@ export const load = (gameID, user, onSuccess) => (
 )
 
 export const join = (gameID, user, onSuccess) => (
-  fetch(config.baseUri.http + "/" + gameID + "/join", {
+  fetch("https://" + baseUri + "/" + gameID + "/join", {
     method: "POST",
     headers: headers(user),
   })
@@ -62,7 +62,7 @@ export const join = (gameID, user, onSuccess) => (
 )
 
 export const roll = (gameID, user, onSuccess) => (
-  fetch(config.baseUri.http + "/" + gameID + "/roll", {
+  fetch("https://" + baseUri + "/" + gameID + "/roll", {
     method: "POST",
     headers: headers(user),
   })
@@ -77,7 +77,7 @@ export const roll = (gameID, user, onSuccess) => (
 )
 
 export const lock = (gameID, user, diceIdx, onSuccess) => (
-  fetch(config.baseUri.http + "/" + gameID + "/lock/" + diceIdx, {
+  fetch("https://" + baseUri + "/" + gameID + "/lock/" + diceIdx, {
     method: "POST",
     headers: headers(user),
   })
@@ -92,7 +92,7 @@ export const lock = (gameID, user, diceIdx, onSuccess) => (
 )
 
 export const score = (gameID, user, category, onSuccess) => (
-  fetch(config.baseUri.http + "/" + gameID + "/score", {
+  fetch("https://" + baseUri + "/" + gameID + "/score", {
     method: "POST",
     headers: headers(user),
     body: category,
@@ -108,7 +108,7 @@ export const score = (gameID, user, category, onSuccess) => (
 )
 
 export const suggestions = (user, dices, onSuccess) => (
-  fetch(config.baseUri.http + "/score?dices=" + dices.map(d => d.Value).join(","), {
+  fetch("https://" + baseUri + "/score?dices=" + dices.map(d => d.Value).join(","), {
     method: "GET",
     headers: headers(user),
   })

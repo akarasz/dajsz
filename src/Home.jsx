@@ -2,7 +2,7 @@ import { useContext } from "react"
 import { Link, useHistory } from "react-router-dom"
 
 import { Context as AppContext } from "./App"
-import { create } from "./api"
+import { create } from "./Yahtzee/api"
 
 const Home = () => {
   const { name } = useContext(AppContext)

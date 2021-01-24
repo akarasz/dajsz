@@ -1,11 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react"
-import { BrowserRouter as Router, Switch, Link, Route, useHistory } from "react-router-dom"
+import { createContext, useState } from "react"
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 
 import Header from "./Header"
 import Home from "./Home"
 import Privacy from "./Privacy"
 import Support from "./Support"
-import Yahtzee from "./Yahtzee"
+import Yahtzee from "./Yahtzee/Yahtzee"
 
 export const Context = createContext({})
 
