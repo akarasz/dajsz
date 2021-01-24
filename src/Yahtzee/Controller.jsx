@@ -2,12 +2,14 @@ import { useContext } from "react"
 import { useParams } from "react-router-dom"
 
 import { Context as AppContext } from "./../App"
+import { Button } from "./../Button"
 
 import { roll } from "./api"
 import { Context as YahtzeeContext } from "./Yahtzee"
+import "./Controller.css"
 
 const Controller = () => (
-  <div className="controller">
+  <div className="Controller">
     <RollCount />
     <RollButton />
   </div>
@@ -16,10 +18,10 @@ const Controller = () => (
 const RollCount = () => {
   const { game: { RollCount }} = useContext(YahtzeeContext)
 
-  const classes = ["roll", "counter", "roll-" + RollCount]
-  const className = classes.join(" ")
-
-  return <div className={className}><div /><div /><div /></div>
+  return (
+    <div className="RollCounter" data-roll={RollCount}>
+      <div /><div /><div />
+    </div>)
 }
 
 const RollButton = () => {
@@ -38,9 +40,9 @@ const RollButton = () => {
   }
 
   if (clickable) {
-    return <button className="roll" onClick={handleRoll}>Roll</button>
+    return <Button onClick={handleRoll}>Roll</Button>
   } else {
-    return <button className="roll" disabled>Roll</button>
+    return <Button disabled>Roll</Button>
   }
 }
 

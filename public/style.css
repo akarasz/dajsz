@@ -70,12 +70,14 @@ header .item {
   align-self: center;
 }
 
-button, .action {
+button, /* refactored */
+.action /* refactored in Dices */ {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
-button:hover, .action:hover {
+button:hover, /* refactored */
+.action:hover {
   text-shadow: 0 0 1em hsla(194, 0%, 100%, 1);
 }
 
@@ -188,59 +190,7 @@ header img {
   margin: 1em 0;
 }
 
-.yahtzee .controller {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
-.yahtzee .controller .roll.counter {
-}
-
-.yahtzee .controller .roll.counter {
-  width: 12em;
-  height: 1.5em;
-  display: grid;
-  column-gap: 1px;
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-/* background of the bits - 200% width, left side is blue, right is opaque
-   right side shows by default, when active shows the left side */
-.yahtzee .controller .roll.counter div {
-  float: left;
-  background: linear-gradient(to right, hsla(194, 40%, 20%, .3) 50%, hsla(194, 0%, 0%, 0) 50%);
-  background-size: 200% 100%;
-  background-position:right bottom;
-}
-
-/* animation for the roll class changes (otherwise it"s instantaneous) */
-.yahtzee .controller .roll.counter.roll-1 div:nth-child(1),
-.yahtzee .controller .roll.counter.roll-2 div:nth-child(2),
-.yahtzee .controller .roll.counter.roll-3 div:nth-child(3) {
-  transition:all .05s ease-in;
-}
-
-.yahtzee .controller .roll.counter.roll-1 div:nth-child(1),
-.yahtzee .controller .roll.counter.roll-2 div:nth-child(1),
-.yahtzee .controller .roll.counter.roll-3 div:nth-child(1) {
-  background-position: left bottom;
-  border-top-left-radius: .75em;
-  border-bottom-left-radius: .75em;
-}
-
-.yahtzee .controller .roll.counter.roll-2 div:nth-child(2),
-.yahtzee .controller .roll.counter.roll-3 div:nth-child(2) {
-  background-position: left bottom;
-}
-
-.yahtzee .controller .roll.counter.roll-3 div:nth-child(3) {
-  background-position: left bottom;
-  border-top-right-radius: .75em;
-  border-bottom-right-radius: .75em;
-}
-
-button {
+button { /* refactored */
   padding: .5em 3em;
   background-color: hsla(194, 40%, 20%, .8);
   color: hsla(194, 0%, 100%, .95);
@@ -253,11 +203,11 @@ button {
   text-shadow: 0 0 .3em hsla(194, 0%, 0%, 1);
 }
 
-button:hover {
+button:hover { /* refactored */
   background-color: hsla(194, 40%, 30%, .8);
 }
 
-button[disabled],
+button[disabled], /* refactored */
 button[disabled].secondary {
   background-color: hsla(194, 10%, 20%, .1);
   color: hsla(194, 0%, 100%, .95);
@@ -266,7 +216,7 @@ button[disabled].secondary {
   cursor: not-allowed;
 }
 
-button[disabled]:hover,
+button[disabled]:hover, /* refactored */
 button[disabled]:hover.secondary {
   background-color: hsla(194, 10%, 20%, .1);
 }

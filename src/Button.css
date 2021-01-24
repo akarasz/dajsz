@@ -1,0 +1,32 @@
+button {
+  padding: .5em 3em;
+  background-color: hsla(194, 40%, 20%, .8);
+  color: hsla(194, 0%, 100%, .95);
+  font-size: 1.2em;
+
+  border: none;
+  box-shadow: 0 0 .6em hsla(194, 0%, 0%, .2);
+  border-radius: 5px;
+  text-align: center;
+  text-shadow: 0 0 .3em hsla(194, 0%, 0%, 1);
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:hover {
+  background-color: hsla(194, 40%, 30%, .8);
+  text-shadow: 0 0 1em hsla(194, 0%, 100%, 1);
+}
+
+button[disabled] {
+  background-color: hsla(194, 10%, 20%, .1);
+  color: hsla(194, 0%, 100%, .95);
+  box-shadow: none;
+  text-shadow: none;
+  cursor: not-allowed;
+}
+
+button[disabled]:hover {
+  background-color: hsla(194, 10%, 20%, .1);
+}
