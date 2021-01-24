@@ -71,7 +71,7 @@ header .item {
 }
 
 button, /* refactored */
-.action /* refactored in Dices */ {
+.action /* refactored in Dices, ScoreSheet */ {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -235,82 +235,6 @@ button.secondary {
 button.secondary:hover {
   background-color: hsla(194, 40%, 25%, .45);
   box-shadow: none;
-}
-
-.yahtzee .scores table {
-  border: 2px solid black;
-  border-collapse: collapse;
-  table-layout: fixed;
-  width: 100%;
-}
-
-.yahtzee .scores thead {
-  height: 2.5em;
-}
-
-.yahtzee .scores th, .yahtzee .scores td {
-  padding: .4em;
-  border: 1px solid black;
-  text-align: center;
-}
-
-.yahtzee .scores td.scored {
-  animation-name: scored-pulse;
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-}
-
-@keyframes scored-pulse {
-  0% {
-    background-color: transparent;
-  }
-  50% {
-    background-color: yellow;
-  }
-  100% {
-    background-color: transparent;
-  }
-}
-
-/* first row with the names */
-.yahtzee .scores tr:nth-child(1) th {
-  font-weight: bold;
-  border-bottom-width: 2px;
-}
-
-/* first column with the categories */
-.yahtzee .scores td:nth-child(1), .yahtzee .scores th:nth-child(1) {
-  font-weight: bold;
-  border-right-width: 2px;
-  width: 10em;
-}
-
-/* separator between upper and lower sections */
-.yahtzee .scores tr:nth-child(7) td {
-  border-bottom-width: 2px;
-}
-
-/* separator above Total */
-.yahtzee .scores tr:last-child td {
-  border-top-width: 2px;
-  font-weight: bold;
-}
-
-.yahtzee .scores .current-player {
-  background-color: hsla(194, 40%, 20%, .03);
-}
-
-.yahtzee .scores .suggestion {
-  color: #aaa;
-  font-style: italic;
-}
-
-.yahtzee .scores td.selected {
-  background-color: #b3e5ff;
-}
-
-.yahtzee .scores .winner::before {
-  content: "🏆 ";
 }
 
 .dialog {

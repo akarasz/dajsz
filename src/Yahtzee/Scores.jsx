@@ -5,6 +5,7 @@ import { Context as AppContext } from "./../App"
 
 import { score, suggestions as getSuggestions } from "./api"
 import { Context as YahtzeeContext } from "./Yahtzee"
+import "./Scores.css"
 
 const Scores = () => {
   const { name } = useContext(AppContext)
@@ -35,7 +36,7 @@ const Scores = () => {
   }, [lastScore, setLastScore])
 
   return (
-    <div className="scores">
+    <div className="Scores">
       <table>
         <thead>
           <ScoresHeader />
@@ -87,7 +88,7 @@ const ScoresHeader = () => {
     <tr>
       <th/>
       {Players.map((p, i) => {
-        return <th key={i} className={isWinner[i] ? "winner" : ""}>{p.User}</th>
+        return <th key={i} className={isWinner[i] ? "Winner" : ""}>{p.User}</th>
       })}
     </tr>
   )
@@ -155,16 +156,16 @@ const ScoreCell = ({ category, suggestion, player, activePlayer }) => {
   }
   const classes = []
   if (activePlayer && !afterLastRound) {
-    classes.push("current-player")
+    classes.push("Emphasized")
   }
   if (!hasScore) {
-    classes.push("suggestion")
+    classes.push("Suggestion")
   }
   if (canClick && !bonus) {
-    classes.push("action")
+    classes.push("Clickable")
   }
   if (scoredAnimation) {
-    classes.push("scored")
+    classes.push("Blinking")
   }
   const className = classes.join(" ")
 

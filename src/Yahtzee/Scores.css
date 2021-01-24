@@ -1,0 +1,82 @@
+.Scores table {
+  border: 2px solid black;
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.Scores thead {
+  height: 2.5em;
+}
+
+.Scores th,
+.Scores td {
+  padding: .4em;
+  border: 1px solid black;
+  text-align: center;
+}
+
+@keyframes blinking {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: yellow;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.Scores td.Blinking {
+  animation-name: blinking;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+/* first row with the names */
+.Scores tr:nth-child(1) th {
+  font-weight: bold;
+  border-bottom-width: 2px;
+}
+
+/* first column with the categories */
+.Scores td:nth-child(1),
+.Scores th:nth-child(1) {
+  font-weight: bold;
+  border-right-width: 2px;
+  width: 10em;
+}
+
+/* separator between upper and lower sections */
+.Scores tr:nth-child(7) td {
+  border-bottom-width: 2px;
+}
+
+/* separator above Total */
+.Scores tr:last-child td {
+  border-top-width: 2px;
+  font-weight: bold;
+}
+
+.Emphasized {
+  background-color: hsla(194, 40%, 20%, .03);
+}
+
+.Suggestion {
+  color: #aaa;
+  font-style: italic;
+}
+
+.Blinking {
+  background-color: #b3e5ff;
+}
+
+.Clickable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.Winner::before {
+  content: "🏆 ";
+}
