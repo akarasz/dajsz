@@ -1,6 +1,5 @@
 {
-  "background_color": "#4c646c",
-  "theme_color": "#4c646c",
+  "background_color": "#4b646b",
   "description": "Play a game of yahtzee with friends or by yourself.",
   "display": "fullscreen",
   "icons": [
