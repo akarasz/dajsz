@@ -188,59 +188,6 @@ header img {
   margin: 1em 0;
 }
 
-.yahtzee .dices {
-  display: flex;
-  justify-content: space-around;
-}
-
-.yahtzee .dice {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px dashed black;
-  border-radius: .5em;
-  height: 1.5cm;
-  width: 1.5cm;
-  font-size: 1.5em;
-}
-
-.yahtzee .dice::before {
-  width: 90px;
-  height: 90px;
-}
-
-.yahtzee .dice.rolling::before {
-  content: url("/dice/roll.svg");
-}
-
-.yahtzee .dice.face-1::before {
-  content: url("/dice/face-1.svg");
-}
-
-.yahtzee .dice.face-2::before {
-  content: url("/dice/face-2.svg");
-}
-
-.yahtzee .dice.face-3::before {
-  content: url("/dice/face-3.svg");
-}
-
-.yahtzee .dice.face-4::before {
-  content: url("/dice/face-4.svg");
-}
-
-.yahtzee .dice.face-5::before {
-  content: url("/dice/face-5.svg");
-}
-
-.yahtzee .dice.face-6::before {
-  content: url("/dice/face-6.svg");
-}
-
-.yahtzee .dice.locked {
-  border-style: solid;
-}
-
 .yahtzee .controller {
   display: flex;
   align-items: center;

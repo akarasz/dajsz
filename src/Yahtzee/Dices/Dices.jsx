@@ -1,10 +1,12 @@
 import { useContext, useEffect } from "react"
 import { useParams } from "react-router-dom"
 
-import { Context as AppContext } from "./../App"
+import { Context as AppContext } from "./../../App"
 
-import { lock } from "./api"
-import { Context as YahtzeeContext } from "./Yahtzee"
+import { lock } from "./../api"
+import { Context as YahtzeeContext } from "./../Yahtzee"
+
+import "./Dices.css"
 
 const Dices = () => {
   const { game: { Dices }, rolling, setRolling } = useContext(YahtzeeContext)
@@ -19,7 +21,7 @@ const Dices = () => {
 
 
   return (
-    <div className="dices">
+    <div className="Dices">
       {Dices.map((dice, i) => {
         return <Dice key={i}
           index={i}
@@ -45,17 +47,17 @@ const Dice = ({ dice, index }) => {
     }
   }
 
-  const classes = ["dice"]
+  const classes = ["Dice"]
   if (rolling && !dice.Locked) {
-    classes.push("rolling")
+    classes.push("Rolling")
   } else {
-    classes.push("face-" + dice.Value)
+    classes.push("Face-" + dice.Value)
   }
   if (dice.Locked) {
-    classes.push("locked")
+    classes.push("Locked")
   }
   if (clickable) {
-    classes.push("action")
+    classes.push("Actionable")
   }
 
   return <div className={classes.join(" ")} onClick={handleLock} />

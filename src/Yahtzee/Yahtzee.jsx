@@ -5,9 +5,10 @@ import { Context as AppContext } from "./../App"
 import Modal from "./../Modal"
 
 import { baseUri, load, join } from "./api"
-import Dices from "./Dices"
 import Controller from "./Controller"
 import Scores from "./Scores"
+
+import Dices from "./Dices/Dices"
 
 export const Context = createContext({})
 

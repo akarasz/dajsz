@@ -1,0 +1,57 @@
+.Dices {
+  display: flex;
+  justify-content: space-around;
+}
+
+.Dice {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed black;
+  border-radius: .5em;
+  height: 1.5cm;
+  width: 1.5cm;
+  font-size: 1.5em;
+}
+
+.Dice::before {
+  width: 90px;
+  height: 90px;
+}
+
+.Dice.Rolling::before {
+  content: url("roll.svg");
+}
+
+.Dice.Face-1::before {
+  content: url("face-1.svg");
+}
+
+.Dice.Face-2::before {
+  content: url("face-2.svg");
+}
+
+.Dice.Face-3::before {
+  content: url("face-3.svg");
+}
+
+.Dice.Face-4::before {
+  content: url("face-4.svg");
+}
+
+.Dice.Face-5::before {
+  content: url("face-5.svg");
+}
+
+.Dice.Face-6::before {
+  content: url("face-6.svg");
+}
+
+.Dice.Locked {
+  border-style: solid;
+}
+
+.Dice.Actionable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
