@@ -108,7 +108,7 @@ const JoinModal = ({ show, setShow }) => {
   const { gameId } = useParams()
 
   useEffect(() => { // handle offering to join
-    if (game === null) {
+    if (game === null || name === null || name === "") {
       return
     }
 
@@ -125,7 +125,7 @@ const JoinModal = ({ show, setShow }) => {
     } else if (!joinedAlready) {
       setShow(true)
     }
-  }, [game?.Players.length, gameId]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [game?.Players.length, gameId, name]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleYes = () => {
     join(gameId, name, updateGame)
@@ -139,7 +139,7 @@ const JoinModal = ({ show, setShow }) => {
   return (
     <Modal showing={show} handleClose={handleNo}>
       <div className="dialog">
-        <p>Do you want to join?</p>
+        <p>Do you want to join as <em>{name}</em> ?</p>
         <div className="buttons">
           <button className="small"
             onClick={handleYes}>Yes</button>
