@@ -9,9 +9,6 @@ button {
   border-radius: 5px;
   text-align: center;
   text-shadow: 0 0 .3em hsla(194, 0%, 0%, 1);
-
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 button:hover {

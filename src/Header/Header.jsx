@@ -1,8 +1,15 @@
 import { useContext, useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
-import { Context as AppContext } from "./App"
-import Modal from "./Modal"
+import { Context as AppContext } from "./../App"
+import Modal from "./../Modal"
+import "./../Clickable.css"
+
+import "./Header.css"
+import logo from "./logo.png"
+import share from "./share.png"
+import clipboard from "./clipboard.png"
+import copiedClipboard from "./clipboard-copied.png"
 
 const Header = () => {
   const [showModal, setShowModal] = useState(false)
@@ -17,15 +24,15 @@ const Header = () => {
 
   return (
     <header>
-      <div className="header-left">
-        <Link to="/" className="title action item">
-            <img src="/icon/dice-192.png" alt="logo" />
+      <div className="Left">
+        <Link to="/" className="Clickable Title Item">
+            <img src={logo} alt="logo" />
             <span>Dajsz</span>
         </Link>
       </div>
-      <div className="header-right">
-        <div className="name item" onClick={() => setShowModal(true)}>
-          You play as <em className="action" title={name}>{name}</em>
+      <div className="Right">
+        <div className="Name Item" onClick={() => setShowModal(true)}>
+          You play as <em className="Clickable" title={name}>{name}</em>
         </div>
         <InviteButtonChooser />
       </div>
@@ -110,8 +117,8 @@ const ShareButton = () => {
   }
 
   return (
-    <div className="share action item" title="Share" onClick={handleClick}>
-      <img src="/share.png" alt="share" />
+    <div className="Clickable Share Item" title="Share" onClick={handleClick}>
+      <img src={share} alt="share" />
     </div>)
 }
 
@@ -132,10 +139,10 @@ const ClipboardButton = () => {
       .then(() => setCopied(true))
   }
 
-  const image = "/clipboard" + (copied ? "-copied" : "") + ".png"
+  const image = copied ? copiedClipboard : clipboard
 
   return (
-    <div className="share action item" title="Share" onClick={handleClick}>
+    <div className="Clickable Share Item" title="Share" onClick={handleClick}>
       <img src={image} alt="share" />
     </div>)
 }

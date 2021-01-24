@@ -1,0 +1,101 @@
+header {
+  grid-area: header;
+
+  display:  flex;
+  justify-content: space-between;
+
+  background-color: hsla(194, 40%, 20%, .8);
+
+  text-shadow: 0 0 .4em hsla(194, 0%, 0%, .5);
+  box-shadow: 0 0 2em hsla(194, 0%, 0%, .6);
+
+  white-space: nowrap;
+}
+
+.Left,
+.Right {
+  display: flex;
+  flex-direction: row;
+}
+
+.Left {
+  justify-content: flex-start;
+}
+
+.Right {
+  justify-content: flex-end;
+}
+
+.Item {
+  padding: .3em 1.2em;
+  border: 0px solid hsla(194, 0%, 100%, .1);
+
+  border-left-width: 1px;
+
+  color: hsla(194, 0%, 100%, .95);
+  font-size: 1em;
+
+  align-self: center;
+}
+
+.Item:last-child {
+  border-right-width: 1px;
+}
+
+.Item:hover img {
+  -webkit-filter: drop-shadow(0 0 .4em hsla(194, 0%, 100%, 1));
+  filter: drop-shadow(0 0 .4em hsla(194, 0%, 100%, 1));
+}
+
+.Title {
+  display: flex;
+
+  padding: 0 2em;
+  border-left-width: 0px;
+  border-right-width: 0px;
+  text-decoration: none;
+}
+
+@media (max-width: 40em) {
+  .Title span {
+    display: none !important;
+  }
+}
+
+.Title img {
+  padding-right: .8em;
+  height: 2em;
+}
+
+.Title span {
+  align-self: center;
+  font-weight: 800;
+  font-size: 1.2em;
+}
+
+.Name {
+  color: hsla(194, 0%, 100%, .7);
+  border-left-width: 0px;
+  border-right-width: 1px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 15em;
+}
+
+.Name em {
+  color: hsla(194, 0%, 100%, 1);
+  font-style: normal;
+  padding-left: .3em;
+}
+
+.Share {
+  padding: .8em;
+  border-width: 0;
+}
+
+img {
+  height: 1em;
+  -webkit-filter: drop-shadow(0 0 .4em hsla(194, 0%, 0%, .5));
+  filter: drop-shadow(0 0 .4em hsla(194, 0%, 0%, .5));
+}

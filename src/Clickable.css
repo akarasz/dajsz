@@ -1,0 +1,8 @@
+.Clickable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.Clickable:hover {
+  text-shadow: 0 0 1em hsla(194, 0%, 100%, 1);
+}

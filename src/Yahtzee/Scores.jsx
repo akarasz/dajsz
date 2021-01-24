@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { Context as AppContext } from "./../App"
+import "./../Clickable.css"
 
 import { score, suggestions as getSuggestions } from "./api"
 import { Context as YahtzeeContext } from "./Yahtzee"

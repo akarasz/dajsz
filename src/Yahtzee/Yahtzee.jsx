@@ -7,6 +7,7 @@ import Modal from "./../Modal"
 import { baseUri, load, join } from "./api"
 import Controller from "./Controller"
 import Scores from "./Scores"
+import "./Yahtzee.css"
 
 import Dices from "./Dices/Dices"
 
@@ -90,7 +91,7 @@ const Yahtzee = () => {
 
   return (
     <Context.Provider value={{ game, updateGame, rolling, setRolling, lastScore, setLastScore }}>
-      <div className="yahtzee">
+      <div className="Yahtzee">
         <Dices />
         <Controller />
         <Scores

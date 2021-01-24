@@ -1,10 +1,14 @@
 import { createContext, useState } from "react"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 
-import Header from "./Header"
 import Home from "./Home"
 import Privacy from "./Privacy"
 import Support from "./Support"
+
+import "./App.css"
+
+import Header from "./Header/Header"
+
 import Yahtzee from "./Yahtzee/Yahtzee"
 
 export const Context = createContext({})
@@ -21,23 +25,30 @@ const App = () => {
     <Context.Provider value={{name, changeName}}>
       <Router>
         <Header />
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/privacy">
-            <Privacy />
-          </Route>
-          <Route exact path="/support">
-            <Support />
-          </Route>
-          <Route path="/:gameId">
-            <Yahtzee />
-          </Route>
-        </Switch>
+        <Content>
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route exact path="/privacy">
+              <Privacy />
+            </Route>
+            <Route exact path="/support">
+              <Support />
+            </Route>
+            <Route path="/:gameId">
+              <Yahtzee />
+            </Route>
+          </Switch>
+        </Content>
       </Router>
     </Context.Provider>
   )
 }
+
+const Content = ({ children }) => (
+  <div class="Content">
+    {children}
+  </div>)
 
 export default App

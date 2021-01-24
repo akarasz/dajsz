@@ -50,8 +50,3 @@
 .Dice.Locked {
   border-style: solid;
 }
-
-.Dice.Actionable {
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}

@@ -1,0 +1,11 @@
+.Yahtzee {
+  margin-top: 3em;
+  font-size: .8em;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.Yahtzee > div {
+  margin: 1em 0;
+}

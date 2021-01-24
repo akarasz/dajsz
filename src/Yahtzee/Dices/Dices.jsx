@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react"
 import { useParams } from "react-router-dom"
 
 import { Context as AppContext } from "./../../App"
+import "./../../Clickable.css"
 
 import { lock } from "./../api"
 import { Context as YahtzeeContext } from "./../Yahtzee"
@@ -57,7 +58,7 @@ const Dice = ({ dice, index }) => {
     classes.push("Locked")
   }
   if (clickable) {
-    classes.push("Actionable")
+    classes.push("Clickable")
   }
 
   return <div className={classes.join(" ")} onClick={handleLock} />

@@ -72,11 +72,6 @@
   background-color: #b3e5ff;
 }
 
-.Clickable {
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
 .Winner::before {
   content: "🏆 ";
 }
