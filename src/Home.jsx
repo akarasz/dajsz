@@ -18,9 +18,10 @@ const Home = () => {
 
   return (
     <div className="Home">
-      <Button text="New Game"
-        onClick={handleClickOnNewGame} />
-      <div>
+      <div className="Main">
+        <Button text="New Game" onClick={handleClickOnNewGame} />
+      </div>
+      <div className="Footer">
         <ul>
           <li><Link to="/privacy">Privacy</Link></li>
           <li><Link to="/support">Support</Link></li>

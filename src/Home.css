@@ -1,19 +1,22 @@
-.Home ul {
+.Home button {
+  width: 100%;
+}
+
+.Main {
+}
+
+.Footer {
+  margin: 4em 0;
+  font-size: .8em;
+}
+
+.Footer ul {
   padding-left: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
 }
 
-.Home ul li {
+.Footer li {
   list-style-type: none;
-}
-
-.Home button {
-  width: 100%;
-}
-
-.Home div:last-child {
-  margin: 4em 0;
-  font-size: .8em;
 }
