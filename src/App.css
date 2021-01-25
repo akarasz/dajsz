@@ -19,3 +19,7 @@
   text-decoration: none;
   color: hsla(194, 0%, 40%, 1);
 }
+
+.Main {
+  padding: 0 1.5em;
+}

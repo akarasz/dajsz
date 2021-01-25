@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom"
 
+import "./App.css"
+
 const Support = () => (
-  <div className="home">
+  <div className="Main">
     <Link to="/">← Go back</Link>
     <p>
       If you have questions or concerns about Dajsz you can reach out at

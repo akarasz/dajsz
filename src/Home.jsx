@@ -4,6 +4,7 @@ import { Link, useHistory } from "react-router-dom"
 import { Context as AppContext } from "./App"
 import { Button } from "./Button"
 import "./Home.css"
+import "./App.css"
 
 import { create } from "./Yahtzee/api"
 
