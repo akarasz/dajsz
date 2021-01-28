@@ -144,7 +144,7 @@ const ScoresHeader = ({currentPlayer}) => {
     <tr>
       <th/>
       {Players.map((p, i) => {
-        return <th key={i} className={`${isWinner[i] ? "Winner" : ""}${Players[currentPlayer].User === p.User ? " Highlighted" : ""}`}>{p.User}</th>
+        return <th key={i} className={isWinner[i] ? "Winner" : ""}>{p.User}</th>
       })}
     </tr>
   )
