@@ -60,7 +60,7 @@
 }
 
 .Highlighted {
-  background-color: hsla(194, 40%, 20%, .03);
+  background-color: hsla(194, 40%, 20%, .15);
 }
 
 .Suggestion {

@@ -44,6 +44,19 @@ const Yahtzee = () => {
     return result
   }
 
+  useEffect(() => { // handle clearing notification on focus
+    window.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  });
+
+  const onVisibilityChange = () => {
+    if (document.visibilityState === "visible") {
+      navigator.clearAppBadge()
+    }
+  }
+
   useEffect(() => { // handle game loading
     setGame(null)
 
@@ -79,11 +92,14 @@ const Yahtzee = () => {
           user: game.Players.map(p => p.User).indexOf(event.User),
           category: scoreSheetDiff(game.Players, event.Data.Players)[event.User],
         })
+        if (event.Data.Players[event.Data.CurrentPlayer].User === name) {
+          navigator.setAppBadge();
+        }
       }
 
       updateGame(event.Data)
     }
-  }, [game?.Players])
+  }, [game?.Players, name])
 
   if (game === null) {
     return null
