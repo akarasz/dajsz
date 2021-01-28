@@ -125,7 +125,7 @@ const Scores = () => {
     </div>)
 }
 
-const ScoresHeader = ({currentPlayer}) => {
+const ScoresHeader = () => {
   const { game: { Players, Round }} = useContext(YahtzeeContext)
 
   let isWinner = []
