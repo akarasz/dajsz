@@ -103,7 +103,7 @@ const Scores = () => {
     <div className="Scores">
       <table>
         <thead>
-          <ScoresHeader currentPlayer={CurrentPlayer} />
+          <ScoresHeader />
         </thead>
         <tbody>
           {transformData(Players, suggestions, CurrentPlayer, Dices).map((row, i) => (
