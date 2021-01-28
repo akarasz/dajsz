@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react"
+import { createContext, useState } from "react"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 
 import Home from "./Home"
@@ -19,19 +19,6 @@ const App = () => {
   const changeName = (newName) => {
     window.localStorage.setItem("name", newName)
     setName(newName)
-  }
-
-  useEffect(() => {
-    window.addEventListener("visibilitychange", onVisibilityChange);
-    return () => {
-      window.removeEventListener("visibilitychange", onVisibilityChange);
-    };
-  });
-
-  const onVisibilityChange = () => {
-    if (document.visibilityState === "visible") {
-      navigator.clearAppBadge()
-    }
   }
 
   return (

@@ -44,6 +44,19 @@ const Yahtzee = () => {
     return result
   }
 
+  useEffect(() => { // handle clearing notification on focus
+    window.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  });
+
+  const onVisibilityChange = () => {
+    if (document.visibilityState === "visible") {
+      navigator.clearAppBadge()
+    }
+  }
+
   useEffect(() => { // handle game loading
     setGame(null)
 
