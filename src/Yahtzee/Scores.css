@@ -60,11 +60,11 @@
 }
 
 .Highlighted {
-  background-color: hsla(194, 40%, 20%, .15);
+  background-color: hsla(194, 70%, 50%, .1);
 }
 
 .Suggestion {
-  color: #aaa;
+  color: #888;
   font-style: italic;
 }
 
