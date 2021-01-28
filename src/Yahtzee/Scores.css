@@ -59,10 +59,8 @@
   font-weight: bold;
 }
 
-.Scores td.Highlighted {
+.Highlighted {
   background-color: hsla(194, 40%, 20%, .15);
-  border-left: 2px solid black;
-  border-right: 2px solid black;
 }
 
 .Suggestion {
