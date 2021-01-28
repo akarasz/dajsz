@@ -28,7 +28,6 @@ const Yahtzee = () => {
 
   const updateGame = (fresh) => {
     setGame(current => { return { ...current, ...fresh } })
-    console.log(fresh)
   }
 
   const scoreSheetDiff = (oldPlayersArray, newPlayersArray) => {
