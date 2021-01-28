@@ -16,11 +16,6 @@
   text-align: center;
 }
 
-.Scores th.Highlighted {
-  border-left: 2px solid black;
-  border-right: 2px solid black;
-}
-
 @keyframes blinking {
   0% {
     background-color: transparent;
