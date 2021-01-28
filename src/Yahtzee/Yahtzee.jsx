@@ -28,6 +28,7 @@ const Yahtzee = () => {
 
   const updateGame = (fresh) => {
     setGame(current => { return { ...current, ...fresh } })
+    console.log(fresh)
   }
 
   const scoreSheetDiff = (oldPlayersArray, newPlayersArray) => {
@@ -79,11 +80,14 @@ const Yahtzee = () => {
           user: game.Players.map(p => p.User).indexOf(event.User),
           category: scoreSheetDiff(game.Players, event.Data.Players)[event.User],
         })
+        if (event.Data.Players[event.Data.CurrentPlayer].User === name) {
+          navigator.setAppBadge();
+        }
       }
 
       updateGame(event.Data)
     }
-  }, [game?.Players])
+  }, [game?.Players, name])
 
   if (game === null) {
     return null
