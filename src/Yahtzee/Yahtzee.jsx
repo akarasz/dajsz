@@ -52,9 +52,13 @@ const Yahtzee = () => {
   });
 
   const onVisibilityChange = () => {
-    if (document.visibilityState === "visible") {
+    if (document.visibilityState === "visible" && isAppBadgeAvailable()) {
       navigator.clearAppBadge()
     }
+  }
+
+  const isAppBadgeAvailable = () => {
+    return (typeof navigator.clearAppBadge === "function" && typeof navigator.setAppBadge === "function")
   }
 
   useEffect(() => { // handle game loading
@@ -92,8 +96,12 @@ const Yahtzee = () => {
           user: game.Players.map(p => p.User).indexOf(event.User),
           category: scoreSheetDiff(game.Players, event.Data.Players)[event.User],
         })
-        if (event.Data.Players[event.Data.CurrentPlayer].User === name) {
-          navigator.setAppBadge();
+        if (isAppBadgeAvailable()) {
+          if (event.Data.Players[event.Data.CurrentPlayer].User === name) {
+            navigator.setAppBadge();
+          } else {
+            navigator.clearAppBadge();
+          }
         }
       }
 
