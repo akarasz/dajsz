@@ -16,6 +16,11 @@
   text-align: center;
 }
 
+.Scores th.Highlighted {
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+}
+
 @keyframes blinking {
   0% {
     background-color: transparent;
@@ -59,8 +64,10 @@
   font-weight: bold;
 }
 
-.Highlighted {
-  background-color: hsla(194, 40%, 20%, .03);
+.Scores td.Highlighted {
+  background-color: hsla(194, 40%, 20%, .15);
+  border-left: 2px solid black;
+  border-right: 2px solid black;
 }
 
 .Suggestion {

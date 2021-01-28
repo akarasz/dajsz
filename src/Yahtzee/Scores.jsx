@@ -103,7 +103,7 @@ const Scores = () => {
     <div className="Scores">
       <table>
         <thead>
-          <ScoresHeader />
+          <ScoresHeader currentPlayer={CurrentPlayer} />
         </thead>
         <tbody>
           {transformData(Players, suggestions, CurrentPlayer, Dices).map((row, i) => (
@@ -125,7 +125,7 @@ const Scores = () => {
     </div>)
 }
 
-const ScoresHeader = () => {
+const ScoresHeader = ({currentPlayer}) => {
   const { game: { Players, Round }} = useContext(YahtzeeContext)
 
   let isWinner = []
@@ -144,7 +144,7 @@ const ScoresHeader = () => {
     <tr>
       <th/>
       {Players.map((p, i) => {
-        return <th key={i} className={isWinner[i] ? "Winner" : ""}>{p.User}</th>
+        return <th key={i} className={`${isWinner[i] ? "Winner" : ""}${Players[currentPlayer].User === p.User ? " Highlighted" : ""}`}>{p.User}</th>
       })}
     </tr>
   )
