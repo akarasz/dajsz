@@ -37,7 +37,6 @@ const RollButton = () => {
 
   const handleRoll = () => {
     roll(gameId, name)
-    navigator.clearAppBadge();
   }
 
   if (clickable) {
