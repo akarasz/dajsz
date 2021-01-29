@@ -13,10 +13,12 @@ body {
   display: grid;
 
   grid-template-columns: 100%;
+  grid-template-rows: auto 1fr;
   grid-template-areas:
     "header"
     "content";
 
   width: clamp(0em 100% 40em);
+  min-height: 100vh;
   justify-items: center;
 }

@@ -1,9 +1,19 @@
+.Home {
+  display: grid;
+  height: 100%;
+  grid-template-rows: 1fr auto;
+  row-gap: 2em;
+}
+
 .Home button {
   width: 100%;
 }
 
+.Main {
+  align-self: center;
+}
+
 .Footer {
-  margin: 4em 0;
   font-size: .8em;
 }
 
