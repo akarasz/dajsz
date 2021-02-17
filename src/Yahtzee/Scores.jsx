@@ -76,6 +76,8 @@ const Scores = () => {
   const { game: { Dices, RollCount, Players, CurrentPlayer }, rolling, lastScore, setLastScore } = useContext(YahtzeeContext)
   const [suggestions, setSuggestions] = useState({})
 
+  const { gameId } = useParams()
+
   useEffect(() => { // load suggestions
     if (rolling || !Players || Players.length === 0) {
       return
@@ -85,11 +87,11 @@ const Scores = () => {
     const activeTurn = Players[CurrentPlayer].User === name
 
     if (activeTurn && rolledAlready) {
-      getSuggestions(name, Dices, setSuggestions)
+      getSuggestions(name, gameId, setSuggestions)
     } else {
       setSuggestions({})
     }
-  }, [rolling, RollCount, Players, CurrentPlayer]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [rolling, RollCount, Players, CurrentPlayer, gameId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => { // handle stopping blinking last score
     if (!lastScore) {

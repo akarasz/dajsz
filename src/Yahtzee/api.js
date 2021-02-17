@@ -107,8 +107,8 @@ export const score = (gameID, user, category, onSuccess) => (
   })
 )
 
-export const suggestions = (user, dices, onSuccess) => (
-  fetch("https://" + baseUri + "/score?dices=" + dices.map(d => d.Value).join(","), {
+export const suggestions = (user, gameID, onSuccess) => (
+  fetch("https://" + baseUri + "/" + gameID + "/hints", {
     method: "GET",
     headers: headers(user),
   })
