@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 
 import { Context as AppContext } from "./../App"
 
-import { baseUri, load } from "./api"
+import { load } from "./api"
 import Controller from "./Controller"
 import Scores from "./Scores"
 import JoinModal from "./JoinModal"
@@ -74,7 +74,7 @@ const Yahtzee = () => {
       return
     }
 
-    ws.current = new WebSocket("wss://" + baseUri + "/" + gameId + "/ws")
+    ws.current = new WebSocket(window.wsUrl + "/" + gameId + "/ws")
 
     return () => {
       ws.current.close();

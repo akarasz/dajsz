@@ -1,5 +1,3 @@
-export const baseUri = "api.dajsz.hu"
-
 const b64EncodeUnicode = (str) => {
   // first we use encodeURIComponent to get percent-encoded UTF-8,
   // then we convert the percent encodings into raw bytes which
@@ -19,7 +17,7 @@ const headers = (user) => (
 const doNothing = (data) => { return }
 
 export const create = (user) => (
-  fetch("https://" + baseUri, {
+  fetch(window.apiUrl, {
     method: "POST",
     headers: headers(user),
   })
@@ -33,7 +31,7 @@ export const create = (user) => (
 )
 
 export const load = (gameID, user, onSuccess) => (
-  fetch("https://" + baseUri + "/" + gameID, {
+  fetch(window.apiUrl + "/" + gameID, {
     headers: headers(user),
   })
   .then((res) => Promise.all([res.status, res.json()]))
@@ -47,7 +45,7 @@ export const load = (gameID, user, onSuccess) => (
 )
 
 export const join = (gameID, user, onSuccess) => (
-  fetch("https://" + baseUri + "/" + gameID + "/join", {
+  fetch(window.apiUrl + "/" + gameID + "/join", {
     method: "POST",
     headers: headers(user),
   })
@@ -62,7 +60,7 @@ export const join = (gameID, user, onSuccess) => (
 )
 
 export const roll = (gameID, user, onSuccess) => (
-  fetch("https://" + baseUri + "/" + gameID + "/roll", {
+  fetch(window.apiUrl + "/" + gameID + "/roll", {
     method: "POST",
     headers: headers(user),
   })
@@ -77,7 +75,7 @@ export const roll = (gameID, user, onSuccess) => (
 )
 
 export const lock = (gameID, user, diceIdx, onSuccess) => (
-  fetch("https://" + baseUri + "/" + gameID + "/lock/" + diceIdx, {
+  fetch(window.apiUrl + "/" + gameID + "/lock/" + diceIdx, {
     method: "POST",
     headers: headers(user),
   })
@@ -92,7 +90,7 @@ export const lock = (gameID, user, diceIdx, onSuccess) => (
 )
 
 export const score = (gameID, user, category, onSuccess) => (
-  fetch("https://" + baseUri + "/" + gameID + "/score", {
+  fetch(window.apiUrl + "/" + gameID + "/score", {
     method: "POST",
     headers: headers(user),
     body: category,
@@ -108,7 +106,7 @@ export const score = (gameID, user, category, onSuccess) => (
 )
 
 export const suggestions = (user, gameID, onSuccess) => (
-  fetch("https://" + baseUri + "/" + gameID + "/hints", {
+  fetch(window.apiUrl + "/" + gameID + "/hints", {
     method: "GET",
     headers: headers(user),
   })
