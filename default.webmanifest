@@ -1,0 +1,23 @@
+{
+  "background_color": "#4b646b",
+  "description": "Play a game of yahtzee with friends or by yourself.",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "icon/maskable-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "name": "Dajsz",
+  "short_name": "Dajsz",
+  "start_url": "https://dajsz.hu",
+  "display": "standalone"
+}
