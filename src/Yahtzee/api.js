@@ -1,4 +1,4 @@
-export const baseUri = "api.dajsz.hu"
+export const baseUri = "api.dajsz.akarasz.me"
 
 const b64EncodeUnicode = (str) => {
   // first we use encodeURIComponent to get percent-encoded UTF-8,

@@ -7,7 +7,7 @@ const Support = () => (
     <Link to="/">← Go back</Link>
     <p>
       If you have questions or concerns about Dajsz you can reach out at
-      <a href="mailto:support@dajsz.hu"> support@dajsz.hu</a>. If you found
+      <a href="mailto:dajsz@akarasz.me"> dajsz@akarasz.me</a>. If you found
       any bugs or issues you can report them
       <a href="https://github.com/akarasz/dajsz/issues"> here</a>.
     </p>
